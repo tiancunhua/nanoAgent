@@ -11,7 +11,7 @@ context_embedding.py —— 同一个词在不同上下文中的向量变化
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
 
-print("加载模型…")
+print("加载模型...")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
 model.eval()
@@ -46,7 +46,6 @@ def cosine_sim(v1, v2):
 
 
 # ==================== 实验 1: 一词多义 ====================
-
 print("\n" + "=" * 65)
 print("实验 1: 'bank' 在不同语境中的向量变化")
 print("=" * 65)
@@ -102,11 +101,11 @@ if len(results) >= 4:
 
     print(f"\n  Embedding 层相似度 = 1.000（同一个 token，同一行向量）")
     print(f"  最后一层相似度 < 1.000（上下文不同，语义不同）")
-    print(f"  → Transformer 逐层将"一词一义"的固定向量")
-    print(f"    变成了"一词多义"的上下文感知向量")
+    print("  → Transformer 逐层将'一词一义'的固定向量")
+    print("    变成了'一词多义'的上下文感知向量")
+
 
 # ==================== 实验 2: 另一组多义词 ====================
-
 print(f"\n\n{'=' * 65}")
 print("实验 2: 'apple' 在不同语境中")
 print("=" * 65)
@@ -134,8 +133,8 @@ if len(apple_results) >= 4:
         sim_f = cosine_sim(apple_results[i]["vectors"][-1], apple_results[j]["vectors"][-1]).item()
         print(f"  {label:<25} {sim_e:>10.3f} {sim_f:>10.3f}")
 
-# ==================== 实验 3: 位置编码的影响 ====================
 
+# ==================== 实验 3: 位置编码的影响 ====================
 print(f"\n\n{'=' * 65}")
 print("实验 3: 位置编码")
 print("=" * 65)
@@ -159,5 +158,5 @@ for p1, p2 in position_pairs:
     bar = "█" * int(max(0, sim) * 20)
     print(f"  位置 {p1} vs 位置 {p2:>4}: {sim:>7.3f}  {bar}")
 
-print(f"\n  观察：相邻位置的向量更相似，远距离位置差异更大。")
-print(f"  这让模型能区分"第 1 个词"和"第 100 个词"。")
+print("\n  观察：相邻位置的向量更相似，远距离位置差异更大。")
+print("  这让模型能区分'第 1 个词'和'第 100 个词'。")
