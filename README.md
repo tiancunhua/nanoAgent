@@ -4,7 +4,7 @@
 
 - **从零开始理解大模型**：理解 LLM 的底层机制
 - **从零开始理解 Agent**：理解模型如何调用工具、记忆、规划和协作
-- **从零开始写好 Skill**：理解如何给 Agent 编写可复用的工作手册
+- **[从零开始写好 Skill](./skill/README.md)**：理解如何给 Agent 编写可复用的工作手册
 
 建议阅读顺序：先读 **大模型** 建立底层直觉，再读 **Agent** 理解模型如何长出手脚，最后读 **Skill** 学会把经验沉淀为可复用能力。
 
@@ -72,30 +72,6 @@
 | 03 | 手把手写你的第一个 Skill | [skill/03-first-skill/](./skill/03-first-skill/) |
 | 04 | 写 Skill 太费劲？让 skill-creator 来帮你 | [skill/04-skill-creator/](./skill/04-skill-creator/) |
 | 05 | 拆开写，串起用：Skill 的组合之道 | [skill/05-composition/](./skill/05-composition/) |
-
----
-
-## 快速开始
-
-Agent 系列代码依赖 OpenAI SDK。先安装依赖并设置环境变量：
-
-```bash
-pip install -r agent/requirements.txt
-
-export OPENAI_API_KEY="your-key"
-export OPENAI_BASE_URL="https://api.openai.com/v1"
-export OPENAI_MODEL="gpt-4o-mini"
-```
-
-运行第一个 Agent 示例：
-
-```bash
-python agent/01-essence/agent-essence.py "列出当前目录下所有 Python 文件"
-```
-
-更多运行方式见 [Agent 系列导读](./agent/README.md)。
-
----
 
 ## License
 

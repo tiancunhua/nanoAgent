@@ -1,19 +1,14 @@
-# nanoAgent
+# 从零开始理解 Agent —— 系列导读
 
 [English](./README.md) | 中文
 
-> *"问题不在于你看到了什么，而在于你看见了什么。"* — 梭罗
+> 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。
 
-用最简单的方式构建一个能与系统交互的智能体。
+## 这个系列讲什么
 
-这是一个使用 OpenAI 函数调用的最小化 AI 智能体实现。智能体可以执行 bash 命令、读取文件和写入文件。
+很多人会用 ChatGPT，但不理解 Agent。这个系列从一个仅 **103 行**的极简实现出发，每篇增加一个核心能力，最终搭建出涵盖记忆、规划、工具扩展、多智能体、安全等所有关键特性的完整 Agent。
 
-## 仓库结构
-
-- `agent/`：从零开始理解 Agent（主系列 + full + bonus）
-- `llm/`：从零开始理解大模型（章节文章 + 配套代码）
-
-大模型系列入口：[`llm/README.md`](../llm/README.md)
+**一句话总结：** Agent = LLM + 工具 + 循环。理解了这个，你就理解了 Claude Code、Cursor、Devin 的底层。
 
 ## 安装
 
@@ -102,7 +97,7 @@ python agent/01-essence/agent-essence.py "找到所有 .py 文件并统计总代
 
 ---
 
-## 系列文章
+## 正篇：七篇文章 × 七个代码文件
 
 **「从零开始理解 Agent」** —— 7 篇文章，7 个代码文件，逐层拆解。
 
@@ -129,10 +124,6 @@ python agent/01-essence/agent-essence.py "找到所有 .py 文件并统计总代
 | 14 | [14-eval/](./14-eval/) | [Agent 怎么知道自己做完了？](./14-eval/nanoAgent-bonus-eval.md) | — |
 | 15 | [15-agent-creation-modes/](./15-agent-creation-modes/) | [谁来创建 Agent？](./15-agent-creation-modes/nanoagent-bonus-agent-creation-modes.md) | `agent-preset.py` |
 | 16 | [16-mcp-real/](./16-mcp-real/) | [真正的 MCP 长什么样？](./16-mcp-real/nanoagent-bonus-mcp-real.md) | `nano_mcp_http_server.py` / `nano_mcp_http_agent.py` |
-
-→ [系列导读与目录](./README.md)
-
----
 
 ## 许可证
 
