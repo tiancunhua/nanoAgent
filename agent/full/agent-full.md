@@ -45,4 +45,4 @@ python agent/full/agent-full.py --team "创建一个 TODO 应用，包含 Python
 
 ---
 
-*← [返回系列导读](../../README.md)*
+*← [返回系列导读](../README.md)*
