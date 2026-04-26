@@ -718,16 +718,16 @@ export OPENAI_API_KEY="your-key"
 export OPENAI_BASE_URL="https://api.openai.com/v1"
 
 # 第一篇：感受最基础的 Agent 循环
-python 01-essence/agent-essence.py "统计当前目录下有多少个 Python 文件"
+python agent/01-essence/agent-essence.py "统计当前目录下有多少个 Python 文件"
 
 # 第二篇：体验记忆与规划
-python 02-memory/agent-memory.py --plan "找到所有 TODO 注释并整理到 todo.md"
+python agent/02-memory/agent-memory.py --plan "找到所有 TODO 注释并整理到 todo.md"
 
 # 第四篇：体验 SubAgent 分工
-python 04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"
+python agent/04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"
 
 # 第七篇：体验安全防线（尝试执行危险命令会被拦截）
-python 07-safety/agent-safe.py "删除所有临时文件"
+python agent/07-safety/agent-safe.py "删除所有临时文件"
 ```
 
 ---

@@ -24,13 +24,13 @@
 
 ```bash
 # 标准模式
-python full/agent-full.py "你的任务"
+python agent/full/agent-full.py "你的任务"
 
 # 跳过用户确认（信任场景）
-python full/agent-full.py --auto "你的任务"
+python agent/full/agent-full.py --auto "你的任务"
 
 # 使用多智能体团队模式
-python full/agent-full.py --team "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"
+python agent/full/agent-full.py --team "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"
 ```
 
 ---
@@ -45,4 +45,4 @@ python full/agent-full.py --team "创建一个 TODO 应用，包含 Python 后�
 
 ---
 
-*← [返回系列导读](../README.md)*
+*← [返回系列导读](../../README.md)*

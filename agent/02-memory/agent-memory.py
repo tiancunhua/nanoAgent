@@ -7,8 +7,7 @@ from typing import Any
 from openai import OpenAI
 
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"),
-    base_url=os.environ.get("OPENAI_BASE_URL")
+    api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL")
 )
 
 MEMORY_FILE = "agent_memory.md"
@@ -22,11 +21,14 @@ tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "command": {"type": "string", "description": "The bash command to execute"}
+                    "command": {
+                        "type": "string",
+                        "description": "The bash command to execute",
+                    }
                 },
-                "required": ["command"]
-            }
-        }
+                "required": ["command"],
+            },
+        },
     },
     {
         "type": "function",
@@ -38,9 +40,9 @@ tools = [
                 "properties": {
                     "path": {"type": "string", "description": "Path to the file"}
                 },
-                "required": ["path"]
-            }
-        }
+                "required": ["path"],
+            },
+        },
     },
     {
         "type": "function",
@@ -51,41 +53,48 @@ tools = [
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "Path to the file"},
-                    "content": {"type": "string", "description": "Content to write"}
+                    "content": {"type": "string", "description": "Content to write"},
                 },
-                "required": ["path", "content"]
-            }
-        }
-    }
+                "required": ["path", "content"],
+            },
+        },
+    },
 ]
+
 
 def execute_bash(command):
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            command, shell=True, capture_output=True, text=True, timeout=30
+        )
         return result.stdout + result.stderr
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 def read_file(path):
     try:
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             return f.read()
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 def write_file(path, content):
     try:
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             f.write(content)
         return f"Successfully wrote to {path}"
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 available_functions = {
     "execute_bash": execute_bash,
     "read_file": read_file,
-    "write_file": write_file
+    "write_file": write_file,
 }
+
 
 def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
     if not raw_arguments:
@@ -96,35 +105,41 @@ def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
     except json.JSONDecodeError as error:
         return {"_argument_error": f"Invalid JSON arguments: {error}"}
 
+
 def load_memory():
     if not os.path.exists(MEMORY_FILE):
         return ""
     try:
-        with open(MEMORY_FILE, 'r') as f:
+        with open(MEMORY_FILE, "r") as f:
             content = f.read()
-            lines = content.split('\n')
-            return '\n'.join(lines[-50:]) if len(lines) > 50 else content
+            lines = content.split("\n")
+            return "\n".join(lines[-50:]) if len(lines) > 50 else content
     except:
         return ""
+
 
 def save_memory(task, result):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = f"\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n"
     try:
-        with open(MEMORY_FILE, 'a') as f:
+        with open(MEMORY_FILE, "a") as f:
             f.write(entry)
     except:
         pass
+
 
 def create_plan(task):
     print("[Planning] Breaking down task...")
     response = client.chat.completions.create(
         model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
         messages=[
-            {"role": "system", "content": "Break down the task into 3-5 simple, actionable steps. Return as JSON array of strings."},
-            {"role": "user", "content": f"Task: {task}"}
+            {
+                "role": "system",
+                "content": "Break down the task into 3-5 simple, actionable steps. Return as JSON array of strings.",
+            },
+            {"role": "user", "content": f"Task: {task}"},
         ],
-        response_format={"type": "json_object"}
+        response_format={"type": "json_object"},
     )
     try:
         plan_data = json.loads(response.choices[0].message.content)
@@ -141,6 +156,7 @@ def create_plan(task):
     except:
         return [task]
 
+
 def run_agent_step(task, messages, max_iterations=5):
     messages.append({"role": "user", "content": task})
     actions = []
@@ -148,7 +164,7 @@ def run_agent_step(task, messages, max_iterations=5):
         response = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             messages=messages,
-            tools=tools
+            tools=tools,
         )
         message = response.choices[0].message
         messages.append(message)
@@ -170,12 +186,21 @@ def run_agent_step(task, messages, max_iterations=5):
             else:
                 function_response = function_impl(**function_args)
                 actions.append({"tool": function_name, "args": function_args})
-            messages.append({"role": "tool", "tool_call_id": tool_call.id, "content": function_response})
+            messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": function_response,
+                }
+            )
     return "Max iterations reached", actions, messages
+
 
 def run_agent_plus(task, use_plan=False):
     memory = load_memory()
-    system_prompt = "You are a helpful assistant that can interact with the system. Be concise."
+    system_prompt = (
+        "You are a helpful assistant that can interact with the system. Be concise."
+    )
     if memory:
         system_prompt += f"\n\nPrevious context:\n{memory}"
     messages = [{"role": "system", "content": system_prompt}]
@@ -194,12 +219,13 @@ def run_agent_plus(task, use_plan=False):
     save_memory(task, final_result)
     return final_result
 
+
 if __name__ == "__main__":
     use_plan = "--plan" in sys.argv
     if use_plan:
         sys.argv.remove("--plan")
     if len(sys.argv) < 2:
-        print("Usage: python 02-memory/agent-memory.py [--plan] 'your task here'")
+        print("Usage: python agent/02-memory/agent-memory.py [--plan] 'your task here'")
         print("  --plan: Enable task planning and decomposition")
         sys.exit(1)
     task = " ".join(sys.argv[1:])

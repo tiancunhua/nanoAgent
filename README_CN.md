@@ -8,6 +8,13 @@
 
 这是一个使用 OpenAI 函数调用的最小化 AI 智能体实现。智能体可以执行 bash 命令、读取文件和写入文件。
 
+## 仓库结构
+
+- `agent/`：从零开始理解 Agent（主系列 + full + bonus）
+- `llm/`：从零开始理解大模型（章节文章 + 配套代码）
+
+大模型系列入口：[`llm/README.md`](./llm/README.md)
+
 ## 安装
 
 ```bash
@@ -40,9 +47,9 @@ set OPENAI_MODEL=gpt-4o-mini
 ## 快速开始
 
 ```bash
-python 01-essence/agent-essence.py "列出当前目录下所有 python 文件"
-python 01-essence/agent-essence.py "创建一个名为 hello.txt 的文件，内容是 'Hello World'"
-python 01-essence/agent-essence.py "读取 README.md 的内容"
+python agent/01-essence/agent-essence.py "列出当前目录下所有 python 文件"
+python agent/01-essence/agent-essence.py "创建一个名为 hello.txt 的文件，内容是 'Hello World'"
+python agent/01-essence/agent-essence.py "读取 README.md 的内容"
 ```
 
 ## 工作原理
@@ -84,13 +91,13 @@ for _ in range(max_iterations):
 
 ```bash
 # 系统操作
-python 01-essence/agent-essence.py "当前目录是什么，里面有哪些文件？"
+python agent/01-essence/agent-essence.py "当前目录是什么，里面有哪些文件？"
 
 # 文件操作
-python 01-essence/agent-essence.py "创建一个打印 hello world 的 python 脚本"
+python agent/01-essence/agent-essence.py "创建一个打印 hello world 的 python 脚本"
 
 # 组合任务
-python 01-essence/agent-essence.py "找到所有 .py 文件并统计总代码行数"
+python agent/01-essence/agent-essence.py "找到所有 .py 文件并统计总代码行数"
 ```
 
 ---
@@ -101,13 +108,13 @@ python 01-essence/agent-essence.py "找到所有 .py 文件并统计总代码行
 
 | # | 目录 | 文章 | 代码 | 行数 |
 |---|------|------|------|------|
-| 01 | [01-essence/](./01-essence/) | [底层原理，只有 100 行](./01-essence/agent-essence.md) | `agent-essence.py` | 103 |
-| 02 | [02-memory/](./02-memory/) | [记忆与规划](./02-memory/agent-memory.md) | `agent-memory.py` | 206 |
-| 03 | [03-skills-mcp/](./03-skills-mcp/) | [Rules、Skills 与 MCP](./03-skills-mcp/agent-skills-mcp.md) | `agent-skills-mcp.py` | 282 |
-| 04 | [04-subagent/](./04-subagent/) | [SubAgent 子智能体](./04-subagent/agent-subagent.md) | `agent-subagent.py` | 192 |
-| 05 | [05-teams/](./05-teams/) | [多智能体团队协作](./05-teams/agent-teams.md) | `agent-teams.py` | 270 |
-| 06 | [06-compact/](./06-compact/) | [上下文压缩](./06-compact/agent-compact.md) | `agent-compact.py` | 169 |
-| 07 | [07-safety/](./07-safety/) | [三道安全防线](./07-safety/agent-safe.md) | `agent-safe.py` | 219 |
+| 01 | [01-essence/](./agent/01-essence/) | [底层原理，只有 100 行](./agent/01-essence/agent-essence.md) | `agent-essence.py` | 103 |
+| 02 | [02-memory/](./agent/02-memory/) | [记忆与规划](./agent/02-memory/agent-memory.md) | `agent-memory.py` | 206 |
+| 03 | [03-skills-mcp/](./agent/03-skills-mcp/) | [Rules、Skills 与 MCP](./agent/03-skills-mcp/agent-skills-mcp.md) | `agent-skills-mcp.py` | 282 |
+| 04 | [04-subagent/](./agent/04-subagent/) | [SubAgent 子智能体](./agent/04-subagent/agent-subagent.md) | `agent-subagent.py` | 192 |
+| 05 | [05-teams/](./agent/05-teams/) | [多智能体团队协作](./agent/05-teams/agent-teams.md) | `agent-teams.py` | 270 |
+| 06 | [06-compact/](./agent/06-compact/) | [上下文压缩](./agent/06-compact/agent-compact.md) | `agent-compact.py` | 169 |
+| 07 | [07-safety/](./agent/07-safety/) | [三道安全防线](./agent/07-safety/agent-safe.md) | `agent-safe.py` | 219 |
 
 → [系列导读与目录](./README.md)
 

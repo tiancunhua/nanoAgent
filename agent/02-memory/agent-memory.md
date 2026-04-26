@@ -14,7 +14,7 @@
 
 如果你用过 OpenClaw 或 Claude Code，你会发现它们可以在一个长对话中持续记住之前的操作，面对复杂需求时也会先制定计划再逐步执行。这些能力不是"魔法"，而是可以用很少的代码实现的架构设计。
 
-今天我们看 nanoAgent 的第二个版本 [agent-memory.py](https://github.com/GitHubxsy/nanoAgent/blob/main/02-memory/agent-memory.py)（182 行），它只多了 67 行代码，却解决了两个根本问题：**让 Agent 记住过去**，**让 Agent 规划未来**。
+今天我们看 nanoAgent 的第二个版本 [agent-memory.py](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/02-memory/agent-memory.py)（182 行），它只多了 67 行代码，却解决了两个根本问题：**让 Agent 记住过去**，**让 Agent 规划未来**。
 
 ---
 
@@ -245,7 +245,7 @@ save_memory(task, final_result)
 
 ## 五、完整运行时序示例
 
-以 `python 02-memory/agent-memory.py --plan "找到所有 TODO 并整理到 todo.md"` 为例：
+以 `python agent/02-memory/agent-memory.py --plan "找到所有 TODO 并整理到 todo.md"` 为例：
 
 ```
 [Planning] Breaking down task...

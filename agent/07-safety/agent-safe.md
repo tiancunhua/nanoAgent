@@ -221,7 +221,7 @@ def execute_bash(command):
 ## 七、实际运行效果
 
 ```bash
-$ python 07-safety/agent-safe.py "清理 /tmp 下的所有文件"
+$ python agent/07-safety/agent-safe.py "清理 /tmp 下的所有文件"
 ```
 
 ```
@@ -350,4 +350,4 @@ def execute_tool(name, args):
 
 ---
 
-*本文基于 agent-safe.py（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/07-safety/agent-safe.py)）分析。完整系列：[第一篇](../01-essence/agent-essence.md) → [第二篇](../02-memory/agent-memory.md) → [第三篇](../03-skills-mcp/agent-skills-mcp.md) → [第四篇](../04-subagent/agent-subagent.md) → [第五篇](../05-teams/agent-teams.md) → [第六篇](../06-compact/agent-compact.md) → 第七篇（本文）*
+*本文基于 agent-safe.py（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/07-safety/agent-safe.py)）分析。完整系列：[第一篇](../01-essence/agent-essence.md) → [第二篇](../02-memory/agent-memory.md) → [第三篇](../03-skills-mcp/agent-skills-mcp.md) → [第四篇](../04-subagent/agent-subagent.md) → [第五篇](../05-teams/agent-teams.md) → [第六篇](../06-compact/agent-compact.md) → 第七篇（本文）*

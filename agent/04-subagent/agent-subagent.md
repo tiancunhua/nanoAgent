@@ -237,7 +237,7 @@ sub_tools = [t for t in tools if t["function"]["name"] != "subagent"]
 假设用户输入：
 
 ```bash
-python 04-subagent/agent-subagent.py "创建一个简单的 TODO 应用，包含 Python 后端和 HTML 前端"
+python agent/04-subagent/agent-subagent.py "创建一个简单的 TODO 应用，包含 Python 后端和 HTML 前端"
 ```
 
 终端输出大致如下：
@@ -327,7 +327,7 @@ SubAgent 和 Plan 最大的区别：
 | 三 | agent-skills-mcp.py (265行) | Rules + Skills + MCP | 空间维度——扩展知识与工具 |
 | 四 | agent-subagent.py (192行) ⭐新 | SubAgent | 协作维度——给 Agent 找帮手 |
 
-> 注：前三个文件来自 [nanoAgent 原始仓库](https://github.com/GitHubxsy/nanoAgent)。第四个文件是本文新开发的（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/04-subagent/agent-subagent.py)），为了聚焦 SubAgent 核心逻辑，刻意去掉了 Plan 功能，因此行数反而比第三篇少。这不是倒退，而是做减法——**用最干净的代码展示最核心的概念**。
+> 注：前三个文件来自 [nanoAgent 原始仓库](https://github.com/GitHubxsy/nanoAgent)。第四个文件是本文新开发的（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/04-subagent/agent-subagent.py)），为了聚焦 SubAgent 核心逻辑，刻意去掉了 Plan 功能，因此行数反而比第三篇少。这不是倒退，而是做减法——**用最干净的代码展示最核心的概念**。
 
 四个维度叠加，就构成了 OpenClaw、Claude Code、Cursor Agent、Devin 等产品的完整架构。
 

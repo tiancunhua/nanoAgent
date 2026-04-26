@@ -318,4 +318,4 @@ bob.chat("创建前端页面")  # bob 已经知道了 API 接口格式
 
 ---
 
-*本文基于 agent-teams.py（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/05-teams/agent-teams.py)）分析。完整系列：[第一篇](../01-essence/agent-essence.md) → [第二篇](../02-memory/agent-memory.md) → [第三篇](../03-skills-mcp/agent-skills-mcp.md) → [第四篇](../04-subagent/agent-subagent.md) → 第五篇（本文） → [第六篇](../06-compact/agent-compact.md)*
+*本文基于 agent-teams.py（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/05-teams/agent-teams.py)）分析。完整系列：[第一篇](../01-essence/agent-essence.md) → [第二篇](../02-memory/agent-memory.md) → [第三篇](../03-skills-mcp/agent-skills-mcp.md) → [第四篇](../04-subagent/agent-subagent.md) → 第五篇（本文） → [第六篇](../06-compact/agent-compact.md)*

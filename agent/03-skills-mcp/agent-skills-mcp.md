@@ -14,7 +14,7 @@
 
 但在第二篇结尾，我们留下了三个未解之谜：工具是硬编码的，没有行为约束，规划是被动触发的。
 
-今天我们继续进化—— [agent-skills-mcp.py](https://github.com/GitHubxsy/nanoAgent/blob/main/03-skills-mcp/agent-skills-mcp.py)（265 行）。如果你用过 OpenClaw 或 Claude Code，你对 `CLAUDE.md` 规则文件、`.agent/skills/` 技能目录、MCP 工具配置一定不陌生——这些概念正是本篇要拆解的核心。agent-skills-mcp.py 在前两个版本的基础上，引入了四个新概念来回答那三个问题：
+今天我们继续进化—— [agent-skills-mcp.py](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/03-skills-mcp/agent-skills-mcp.py)（265 行）。如果你用过 OpenClaw 或 Claude Code，你对 `CLAUDE.md` 规则文件、`.agent/skills/` 技能目录、MCP 工具配置一定不陌生——这些概念正是本篇要拆解的核心。agent-skills-mcp.py 在前两个版本的基础上，引入了四个新概念来回答那三个问题：
 
 | 未解问题 | 解决方案 | 新概念 |
 |---------|---------|--------|

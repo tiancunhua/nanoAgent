@@ -256,4 +256,4 @@ python3 scripts/wespy_cli.py "https://mp.weixin.qq.com/mp/appmsgalbum?..." --max
 
 -----
 
-*「从零开始写好 Skill」系列是「从零开始理解 Agent」系列的姊妹篇。如果你还没有读过 Agent 系列，建议先从 [第一篇：Agent 的底层原理](../01-essence/nanoAgent-01-essence.md) 开始，理解 Agent 的基础架构后再来学 Skill，效果更好。*
+*「从零开始写好 Skill」系列是「从零开始理解 Agent」系列的姊妹篇。如果你还没有读过 Agent 系列，建议先从 [第一篇：Agent 的底层原理](../agent/01-essence/agent-essence.md) 开始，理解 Agent 的基础架构后再来学 Skill，效果更好。*

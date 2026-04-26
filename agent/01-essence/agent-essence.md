@@ -203,7 +203,7 @@ def run_agent(user_message, max_iterations=5):
 以一个具体例子来说明。假设用户运行：
 
 ```bash
-python 01-essence/agent-essence.py "统计当前目录下有多少个 Python 文件，并把结果写入 count.txt"
+python agent/01-essence/agent-essence.py "统计当前目录下有多少个 Python 文件，并把结果写入 count.txt"
 ```
 
 Agent 的执行过程如下：
@@ -380,7 +380,7 @@ export OPENAI_API_KEY="your-key"
 export OPENAI_BASE_URL="https://api.openai.com/v1"  # 或 DeepSeek/Qwen 等
 
 # 运行
-python 01-essence/agent-essence.py "帮我创建一个 hello.py 文件，内容是打印当前时间"
+python agent/01-essence/agent-essence.py "帮我创建一个 hello.py 文件，内容是打印当前时间"
 ```
 
 然后观察终端输出的 `[Tool]` 日志，你就能清晰地看到 Agent 的每一步决策和行动。
