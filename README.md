@@ -67,7 +67,7 @@
 
 ## 第三部：从零开始写好 Skill
 
-理解 Skill 是什么、一个好 Skill 如何组织、如何从零写第一个 Skill、如何用 skill-creator 辅助创作，以及多个 Skill 如何组合完成复杂任务。
+理解 Skill 是什么、一个好 Skill 如何组织、如何从零写第一个 Skill、如何用 skill-creator 辅助创作、多个 Skill 如何组合完成复杂任务，以及 Skill 在 Agent 工作流中的位置。
 
 系列导读：[skill/README.md](./skill/README.md)
 
@@ -78,6 +78,7 @@
 | 03 | 手把手写你的第一个 Skill | [skill/03-first-skill/](./skill/03-first-skill/) |
 | 04 | 写 Skill 太费劲？让 skill-creator 来帮你 | [skill/04-skill-creator/](./skill/04-skill-creator/) |
 | 05 | 拆开写，串起用：Skill 的组合之道 | [skill/05-composition/](./skill/05-composition/) |
+| 06 | 从 Skill 到 Agent 工作流：全局视角 | [skill/06-agent-workflow/](./skill/06-agent-workflow/) |
 
 ## License
 

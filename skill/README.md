@@ -17,6 +17,7 @@
 - 如何从零写出第一个可用 Skill
 - 如何用 `skill-creator` 提高编写和迭代效率
 - 多个 Skill 如何组合完成更复杂的任务
+- Skill 在 Agent 完整工作流中的位置与边界
 
 ---
 
@@ -29,6 +30,7 @@
 | 03 | [03-first-skill/](./03-first-skill/) | [手把手写你的第一个 Skill](./03-first-skill/nano-skill-03-first-skill.md) | 从零编写与迭代 |
 | 04 | [04-skill-creator/](./04-skill-creator/) | [写 Skill 太费劲？让 skill-creator 来帮你](./04-skill-creator/nano-skill-04-skill-creator.md) | 用元技能辅助创作 |
 | 05 | [05-composition/](./05-composition/) | [拆开写，串起用——Skill 的组合之道](./05-composition/nano-skill-05-composition.md) | 多 Skill 协作与组合 |
+| 06 | [06-agent-workflow/](./06-agent-workflow/) | [从 Skill 到 Agent 工作流——全局视角](./06-agent-workflow/nano-skill-06-agent-workflow.md) | Skill 与 Rules、Memory、MCP 的边界 |
 
 ---
 
@@ -37,7 +39,7 @@
 第一次阅读建议按编号顺序：
 
 ```text
-01-what-is-skill → 02-anatomy-of-skill → 03-first-skill → 04-skill-creator → 05-composition
+01-what-is-skill → 02-anatomy-of-skill → 03-first-skill → 04-skill-creator → 05-composition → 06-agent-workflow
 ```
 
 如果已经知道 Skill 是什么，可以直接从第二篇开始，把 `SKILL.md` 的结构和写法先建立起来。
