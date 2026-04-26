@@ -2,8 +2,8 @@
 
 这个仓库按三套系列文章组织，像一本从底层原理到工程实践的小书，拆解大模型、Agent 与 Skill 的核心概念。
 
-- **从零开始理解大模型**：理解 LLM 的底层机制
-- **从零开始理解 Agent**：理解模型如何调用工具、记忆、规划和协作
+- **[从零开始理解大模型](./llm/README.md)**：理解 LLM 的底层机制
+- **[从零开始理解 Agent](./agent/README.md)**：理解模型如何调用工具、记忆、规划和协作
 - **[从零开始写好 Skill](./skill/README.md)**：理解如何给 Agent 编写可复用的工作手册
 
 建议阅读顺序：先读 **大模型** 建立底层直觉，再读 **Agent** 理解模型如何长出手脚，最后读 **Skill** 学会把经验沉淀为可复用能力。
@@ -13,6 +13,8 @@
 ## 第一部：从零开始理解大模型
 
 从“预测下一个 token”开始，逐步理解 Token、Embedding、Attention、Transformer、训练、推理、上下文窗口、Scaling Law，再扩展到 Agent、多模态、GPU、计费、思考模式、MoE 与算子。
+
+系列导读：[llm/README.md](./llm/README.md)
 
 | 章 | 标题 | 目录 |
 |---|------|------|
@@ -39,6 +41,8 @@
 
 从一个极简 Agent 出发，逐步加入记忆、规划、Rules、Skills、MCP、SubAgent、多 Agent 团队、上下文压缩与安全防线，再补充文件系统、Token、工具选择、流式输出、Command、可观测性、评估、Agent 创建模式和真实 MCP 接入。
 
+系列导读：[agent/README.md](./agent/README.md)
+
 | 章 | 标题 | 目录 |
 |---|------|------|
 | 01 | 底层原理：只有 100 行 | [agent/01-essence/](./agent/01-essence/) |
@@ -64,6 +68,8 @@
 ## 第三部：从零开始写好 Skill
 
 理解 Skill 是什么、一个好 Skill 如何组织、如何从零写第一个 Skill、如何用 skill-creator 辅助创作，以及多个 Skill 如何组合完成复杂任务。
+
+系列导读：[skill/README.md](./skill/README.md)
 
 | 章 | 标题 | 目录 |
 |---|------|------|
