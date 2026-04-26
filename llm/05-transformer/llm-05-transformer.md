@@ -2,10 +2,10 @@
 
 > **「从零开始理解大模型」系列** —— 十篇文章，从"下一个词预测"到完整的大模型心智模型。每篇配可运行代码。
 >
-> - [第一篇：一切从"猜下一个词"开始](./llm-01-next-token.md)
-> - [第二篇：Token——大模型眼中的"字"长什么样](./llm-02-token.md)
-> - [第三篇：向量与 Embedding——把文字变成数学](./llm-03-embedding.md)
-> - [第四篇：Attention——大模型的"阅读理解"机制](./llm-04-attention.md)
+> - [第一篇：一切从"猜下一个词"开始](../01-next-token/llm-01-next-token.md)
+> - [第二篇：Token——大模型眼中的"字"长什么样](../02-token/llm-02-token.md)
+> - [第三篇：向量与 Embedding——把文字变成数学](../03-embedding/llm-03-embedding.md)
+> - [第四篇：Attention——大模型的"阅读理解"机制](../04-attention/llm-04-attention.md)
 > - **第五篇：Transformer 全景——积木怎么搭成大厦**（本文）
 > - 第六篇：训练——70 亿个参数是怎么"学"出来的
 > - 第七篇：推理——你按下回车后的这一秒发生了什么

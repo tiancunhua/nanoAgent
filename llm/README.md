@@ -12,25 +12,25 @@
 
 ### 正篇
 
-1. [从零开始理解大模型（一）：一切从"猜下一个词"开始](./llm-01-next-token/llm-01-next-token.md)
-2. [从零开始理解大模型（二）：Token——大模型眼中的"字"长什么样](./llm-02-token/llm-02-token.md)
-3. [从零开始理解大模型（三）：向量与 Embedding——把文字变成数学](./llm-03-embedding/llm-03-embedding.md)
-4. [从零开始理解大模型（四）：Attention——大模型的"阅读理解"机制](./llm-04-attention/llm-04-attention.md)
-5. [从零开始理解大模型（五）：Transformer 全景——积木怎么搭成大厦](./llm-05-transformer/llm-05-transformer.md)
-6. [从零开始理解大模型（六）：训练——70 亿个参数是怎么"学"出来的](./llm-06-training/llm-06-training.md)
-7. [从零开始理解大模型（七）：推理——你按下回车后的这一秒发生了什么](./llm-07-inference/llm-07-inference.md)
-8. [从零开始理解大模型（八）：上下文窗口——大模型的"工作记忆"到底有多大？](./llm-08-context-window/llm-08-context-window.md)
-9. [从零开始理解大模型（九）：Scaling Law——为什么“大力出奇迹”有效](./llm-09-scaling-law/llm-09-scaling-law.md)
-10. [从零开始理解大模型（十）：从大模型到 Agent——下一个词预测如何长出手脚](./llm-10-agent/llm-10-agent.md)
+1. [从零开始理解大模型（一）：一切从"猜下一个词"开始](./01-next-token/llm-01-next-token.md)
+2. [从零开始理解大模型（二）：Token——大模型眼中的"字"长什么样](./02-token/llm-02-token.md)
+3. [从零开始理解大模型（三）：向量与 Embedding——把文字变成数学](./03-embedding/llm-03-embedding.md)
+4. [从零开始理解大模型（四）：Attention——大模型的"阅读理解"机制](./04-attention/llm-04-attention.md)
+5. [从零开始理解大模型（五）：Transformer 全景——积木怎么搭成大厦](./05-transformer/llm-05-transformer.md)
+6. [从零开始理解大模型（六）：训练——70 亿个参数是怎么"学"出来的](./06-training/llm-06-training.md)
+7. [从零开始理解大模型（七）：推理——你按下回车后的这一秒发生了什么](./07-inference/llm-07-inference.md)
+8. [从零开始理解大模型（八）：上下文窗口——大模型的"工作记忆"到底有多大？](./08-context-window/llm-08-context-window.md)
+9. [从零开始理解大模型（九）：Scaling Law——为什么“大力出奇迹”有效](./09-scaling-law/llm-09-scaling-law.md)
+10. [从零开始理解大模型（十）：从大模型到 Agent——下一个词预测如何长出手脚](./10-agent/llm-10-agent.md)
 
 ### 番外篇
 
-11. [从零开始理解大模型（番外篇）：多模态——大模型是怎么“看懂”图片的](./llm-11-multimodal/llm-11-multimodal.md)
-12. [从零开始理解大模型（番外篇二）：为什么大模型离不开 GPU](./llm-12-gpu/llm-12-gpu.md)
-13. [从零开始理解大模型（番外篇三）：为什么用 Token 计费？为什么输出比输入贵？](./llm-13-token-pricing/llm-13-token-pricing.md)
-14. [从零开始理解大模型（番外篇四）：思考模式和非思考模式到底有什么区别？](./llm-14-thinking-mode.md)
-15. [从零开始理解大模型（番外篇五）：DeepSeek V4 Pro 总参数 1.6T，激活参数 49B——这到底是什么意思？](./llm-15-moe.md)
-16. [从零开始理解大模型（番外篇六）：什么是算子？大模型里的“最小施工单位”](./llm-16-operators.md)
+11. [从零开始理解大模型（番外篇）：多模态——大模型是怎么“看懂”图片的](./11-multimodal/llm-11-multimodal.md)
+12. [从零开始理解大模型（番外篇二）：为什么大模型离不开 GPU](./12-gpu/llm-12-gpu.md)
+13. [从零开始理解大模型（番外篇三）：为什么用 Token 计费？为什么输出比输入贵？](./13-token-pricing/llm-13-token-pricing.md)
+14. [从零开始理解大模型（番外篇四）：思考模式和非思考模式到底有什么区别？](./14-thinking-mode/llm-14-thinking-mode.md)
+15. [从零开始理解大模型（番外篇五）：DeepSeek V4 Pro 总参数 1.6T，激活参数 49B——这到底是什么意思？](./15-moe/llm-15-moe.md)
+16. [从零开始理解大模型（番外篇六）：什么是算子？大模型里的“最小施工单位”](./16-operators/llm-16-operators.md)
 
 ## 建议阅读顺序
 
@@ -45,15 +45,15 @@
 
 本目录按「一个章节一个目录」组织，文章和配套代码放在同一目录中，例如：
 
-- `llm-01-next-token/predict.py`
-- `llm-01-next-token/generate.py`
-- `llm-02-token/tokenizer_demo.py`
-- `llm-02-token/bpe_demo.py`
-- `llm-03-embedding/embedding.py`
-- `llm-04-attention/attention.py`
-- `llm-04-attention/multi_head.py`
-- `llm-06-training/train_tiny.py`
-- `llm-07-inference/inference.py`
-- `llm-10-agent/tiny_agent.py`
+- `01-next-token/predict.py`
+- `01-next-token/generate.py`
+- `02-token/tokenizer_demo.py`
+- `02-token/bpe_demo.py`
+- `03-embedding/embedding.py`
+- `04-attention/attention.py`
+- `04-attention/multi_head.py`
+- `06-training/train_tiny.py`
+- `07-inference/inference.py`
+- `10-agent/tiny_agent.py`
 
 可按各篇文章中的说明分别运行。
