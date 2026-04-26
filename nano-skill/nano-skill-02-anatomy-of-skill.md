@@ -2,7 +2,7 @@
 
 > **「从零开始写好 Skill」系列** —— 上一个系列我们用 7 篇文章拆解了 Agent 的骨架，这个系列教你给 Agent 写"工作手册"。
 >
-> - 第一篇：[Skill 是什么？为什么你应该关心它](./skill-01-what-is-skill.md)
+> - 第一篇：[Skill 是什么？为什么你应该关心它](./nano-skill-01-what-is-skill.md)
 > - **第二篇：一个好 Skill 长什么样（本文）**
 > - 第三篇：手把手写你的第一个 Skill（即将更新）
 
