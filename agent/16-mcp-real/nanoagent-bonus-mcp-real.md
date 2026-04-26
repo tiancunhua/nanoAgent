@@ -284,11 +284,11 @@ Agent 调用 `tools/list` 从 server 拿到工具列表，转换成 OpenAI 的 t
 
 ```bash
 # 终端 1：启动 MCP Server
-python nano_mcp_http_server.py
+python agent/16-mcp-real/nano_mcp_http_server.py
 # 输出: MCP Server running on http://127.0.0.1:8766/mcp
 
 # 终端 2：运行 Agent
-python nano_mcp_http_agent.py "What is 3 + 5?"
+python agent/16-mcp-real/nano_mcp_http_agent.py "What is 3 + 5?"
 # 输出:
 # [MCP] add({"a": 3, "b": 5})
 #   → 8
@@ -301,7 +301,7 @@ Server 是独立运行的 HTTP 服务。这意味着它可以跑在任何机器�
 
 ```bash
 export MCP_SERVER_URL="https://your-remote-server.com/mcp"
-python nano_mcp_http_agent.py "What's the weather in Beijing?"
+python agent/16-mcp-real/nano_mcp_http_agent.py "What's the weather in Beijing?"
 ```
 
 -----

@@ -4,7 +4,7 @@ nano_mcp_http_agent.py - 第一篇的 run_agent 接入 MCP Server
 就是第一篇 agent.py 的循环，工具来源从本地硬编码换成了 MCP Server。
 没有什么"MCP Client"——就是 run_agent，换了工具来源。
 
-用法: python nano_mcp_http_agent.py "What is 3 + 5?"
+用法: python agent/16-mcp-real/nano_mcp_http_agent.py "What is 3 + 5?"
 """
 import os, sys, json, requests
 from openai import OpenAI

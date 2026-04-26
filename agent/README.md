@@ -36,6 +36,20 @@
 | 07 | [07-safety/](./07-safety/) | [Agent 执行 rm -rf / 怎么办？三道安全防线](./07-safety/agent-safe.md) | [`agent-safe.py`](./07-safety/agent-safe.py) | 219 行 | 命令黑名单、人工确认、输出截断 |
 | — | [full/](./full/) | [七篇合一](./full/agent-full.md) | [`agent-full.py`](./full/agent-full.py) | 507 行 | 完整集成版，包含所有能力 |
 
+### 番外篇
+
+| # | 目录 | 文章 | 配套代码 |
+|---|------|------|----------|
+| 08 | [08-filesystem/](./08-filesystem/) | [为什么 Agent 需要一个文件系统？](./08-filesystem/nanoAgent-bonus-filesystem.md) | — |
+| 09 | [09-token/](./09-token/) | [Token 都花在哪了？](./09-token/nanoAgent-bonus-token.md) | — |
+| 10 | [10-tool-selection/](./10-tool-selection/) | [LLM 是怎么从一堆工具里挑出正确的那个的？](./10-tool-selection/nanoAgent-bonus-tool-selection.md) | — |
+| 11 | [11-streaming/](./11-streaming/) | [Agent 思考时，用户在干等](./11-streaming/nanoAgent-bonus-streaming.md) | [`agent-stream.py`](./11-streaming/agent-stream.py) |
+| 12 | [12-command/](./12-command/) | [Command——不是所有操作都要过大脑](./12-command/nanoAgent-bonus-command.md) | [`agent-command.py`](./12-command/agent-command.py) |
+| 13 | [13-observable/](./13-observable/) | [Agent 出了问题怎么排查？](./13-observable/nanoAgent-bonus-observable.md) | [`agent-observable.py`](./13-observable/agent-observable.py) |
+| 14 | [14-eval/](./14-eval/) | [Agent 怎么知道自己做完了？](./14-eval/nanoAgent-bonus-eval.md) | — |
+| 15 | [15-agent-creation-modes/](./15-agent-creation-modes/) | [谁来创建 Agent？](./15-agent-creation-modes/nanoagent-bonus-agent-creation-modes.md) | [`agent-preset.py`](./15-agent-creation-modes/agent-preset.py) |
+| 16 | [16-mcp-real/](./16-mcp-real/) | [真正的 MCP 长什么样？](./16-mcp-real/nanoagent-bonus-mcp-real.md) | [`nano_mcp_http_server.py`](./16-mcp-real/nano_mcp_http_server.py)、[`nano_mcp_http_agent.py`](./16-mcp-real/nano_mcp_http_agent.py) |
+
 ---
 
 ## 推荐阅读路径

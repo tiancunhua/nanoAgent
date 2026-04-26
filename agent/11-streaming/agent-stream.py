@@ -9,7 +9,7 @@ agent-stream.py - 流式输出版 Agent
   5. 状态反馈 —— 每个阶段都有可见的提示
 
 用法:
-  python agent-stream.py "列出当前目录的文件"
+  python agent/11-streaming/agent-stream.py "列出当前目录的文件"
 """
 
 import os
@@ -290,7 +290,7 @@ def run_agent(user_message, max_iterations=10):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python agent-stream.py 'your task here'")
+        print("Usage: python agent/11-streaming/agent-stream.py 'your task here'")
         sys.exit(1)
 
     task = " ".join(sys.argv[1:])

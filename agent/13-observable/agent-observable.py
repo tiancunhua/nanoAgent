@@ -10,7 +10,7 @@ agent-observable.py - 可观测版 Agent
 
 # 正常运行（自动生成日志文件）
 
-python agent-observable.py "列出当前目录的文件"
+python agent/13-observable/agent-observable.py "列出当前目录的文件"
 
 # 查看日志
 
@@ -18,8 +18,8 @@ cat agent.log.jsonl | python -m json.tool --no-ensure-ascii
 
 # 复现某一轮（详细模式，保存 messages 快照）
 
-python agent-observable.py --verbose "你的任务"
-python agent-observable.py --replay agent.trace.json --round 3
+python agent/13-observable/agent-observable.py --verbose "你的任务"
+python agent/13-observable/agent-observable.py --replay agent.trace.json --round 3
 """
 
 import os
@@ -403,9 +403,9 @@ def run_agent(user_message, max_iterations=10, verbose=False):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("用法:")
-        print("  python agent-observable.py '你的任务'")
-        print("  python agent-observable.py --verbose '你的任务'    # 保存完整 messages 用于 replay")
-        print("  python agent-observable.py --replay agent.trace.json --round 3  # 重放第 3 轮")
+        print("  python agent/13-observable/agent-observable.py '你的任务'")
+        print("  python agent/13-observable/agent-observable.py --verbose '你的任务'    # 保存完整 messages 用于 replay")
+        print("  python agent/13-observable/agent-observable.py --replay agent.trace.json --round 3  # 重放第 3 轮")
         sys.exit(1)
 
     # 解析参数

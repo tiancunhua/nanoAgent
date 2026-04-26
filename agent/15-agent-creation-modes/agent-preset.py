@@ -6,9 +6,9 @@ agent-preset.py — 用户预设 Agent + 主 Agent 委派
 记得之前的对话。
 
 用法:
-python agent-preset.py "帮 TODO 应用加一个截止日期功能"
-python agent-preset.py "帮我测试一下 TODO 应用"
-python agent-preset.py   # 默认演示
+python agent/15-agent-creation-modes/agent-preset.py "帮 TODO 应用加一个截止日期功能"
+python agent/15-agent-creation-modes/agent-preset.py "帮我测试一下 TODO 应用"
+python agent/15-agent-creation-modes/agent-preset.py   # 默认演示
 
 环境变量:
 OPENAI_API_KEY   (必须)

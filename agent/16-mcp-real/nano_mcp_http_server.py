@@ -2,7 +2,7 @@
 nano_mcp_http_server.py - 最小 MCP Server（Streamable HTTP 版）
 一个 HTTP 端点处理所有 JSON-RPC 请求
 
-用法: python nano_mcp_http_server.py
+用法: python agent/16-mcp-real/nano_mcp_http_server.py
 """
 import json
 from http.server import HTTPServer, BaseHTTPRequestHandler

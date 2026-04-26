@@ -4,7 +4,7 @@ agent-command.py — nanoAgent 番外篇：Command
 匹配 / 开头的命令直接本地执行，不经过 LLM。
 
 用法：
-  python agent-command.py
+  python agent/12-command/agent-command.py
 
 命令：
   /help    - 显示帮助
