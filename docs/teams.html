@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>05. 多智能体团队协作 | 从零开始理解 Agent</title>
-  <meta name="description" content="把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。">
+  <title>05. 多智能体团队协作｜1 小时实战分享课</title>
+  <meta name="description" content="SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/teams.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="05. 多智能体团队协作 | 从零开始理解 Agent">
-  <meta property="og:description" content="把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。">
+  <meta property="og:title" content="05. 多智能体团队协作｜1 小时实战分享课">
+  <meta property="og:description" content="SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/teams.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="05. 多智能体团队协作 | 从零开始理解 Agent">
-  <meta name="twitter:description" content="把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。">
+  <meta name="twitter:title" content="05. 多智能体团队协作｜1 小时实战分享课">
+  <meta name="twitter:description" content="SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -29,9 +29,8 @@
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
-        <a href="index.html#path">学习路径</a>
-        <a href="index.html#map">能力地图</a>
-        <a href="index.html#chapters">全部章节</a>
+        <a href="index.html#agenda">课程流程</a>
+        <a href="index.html#lessons">七讲讲义</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
@@ -39,13 +38,13 @@
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 05 讲</p>
+          <p class="eyebrow">第 05 讲 · 让角色长期存在</p>
           <h2 class="lesson-title">多智能体团队协作</h2>
-          <p>把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。</p>
+          <p>SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。</p>
           <div class="chip-row">
-            <span class="chip">进阶</span>
-            <span class="chip">16 分钟</span>
+            <span class="chip">9 分钟</span>
             <span class="chip">362 行代码</span>
+            <span class="chip">持久 Agent + 通信通道</span>
           </div>
         </div>
 
@@ -55,74 +54,52 @@
             <a class="chapter-rail-link" href="essence.html">
               <span class="course-step">第 01 讲</span>
               <strong>底层原理，只有 100 行</strong>
-              <small>本质 · Agent = LLM + 工具 + 循环</small>
+              <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
             
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
-              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+              <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
             
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
-              <small>扩展 · 行为约束 + 外部能力接入</small>
+              <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
             
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
-              <small>分工 · 委派 + 上下文隔离</small>
+              <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
             
             <a class="chapter-rail-link is-current" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
-              <small>协作 · 角色化协作 + 生命周期管理</small>
+              <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
             
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
-              <small>压缩 · Summary + Recent Window</small>
+              <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
             
             <a class="chapter-rail-link" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
-              <small>安全 · 风险隔离 + 人机边界</small>
+              <small>上线边界 · 黑名单 + 人工确认 + 输出截断</small>
             </a>
             </div>
         </div>
 
         <div class="sidebar-card">
-          <h2>本章焦点</h2>
-          <p class="focus-line">角色化协作 + 生命周期管理</p>
-          <p>上一篇我们实现了 SubAgent——主 Agent 可以临时派出一个&quot;专家&quot;来干活。但我们也明确定义了 SubAgent 的本质：**一次性临时工，生成 → 干活 → 返回摘要 → 消亡，没有身份，没有记忆。**</p>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-2" href="#一临时工-vs-正式员工差什么">一、临时工 vs 正式员工：差什么？</a>
-<a class="toc-link level-2" href="#二核心实现两个类搞定一切">二、核心实现：两个类搞定一切</a>
-<a class="toc-link level-3" href="#21-agent-类有状态的持久智能体">2.1 Agent 类：有状态的持久智能体</a>
-<a class="toc-link level-3" href="#22-chat-方法带收件箱的-agent-循环">2.2 chat() 方法：带收件箱的 Agent 循环</a>
-<a class="toc-link level-3" href="#23-receive-方法通信通道">2.3 receive() 方法：通信通道</a>
-<a class="toc-link level-2" href="#三team-类生命周期管理与通信编排">三、Team 类：生命周期管理与通信编排</a>
-<a class="toc-link level-2" href="#四完整协作流程">四、完整协作流程</a>
-<a class="toc-link level-2" href="#五三大核心能力的代码对照">五、三大核心能力的代码对照</a>
-<a class="toc-link level-3" href="#能力-1能跨多轮对话存活的持久智能体">能力 1：能跨多轮对话存活的持久智能体</a>
-<a class="toc-link level-3" href="#能力-2身份与生命周期管理">能力 2：身份与生命周期管理</a>
-<a class="toc-link level-3" href="#能力-3智能体之间的通信通道">能力 3：智能体之间的通信通道</a>
-<a class="toc-link level-2" href="#六subagent-vs-teams什么时候用哪个">六、SubAgent vs Teams：什么时候用哪个？</a>
-<a class="toc-link level-2" href="#七系列总结">七、系列总结</a></nav>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>源码入口</h2>
-          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">查看 GitHub 原始文章</a>
-          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py">查看 GitHub 示例代码</a>
+          <h2>课堂目录</h2>
+          <nav class="toc">
+            <a class="toc-link" href="#goals">这节课学生要拿走什么</a><a class="toc-link" href="#demo">现场演示</a><a class="toc-link" href="#practice">课堂练习</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#talk">讲课只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易踩坑</a><a class="toc-link" href="#extend">课后延伸</a>
+          </nav>
         </div>
       </aside>
 
@@ -131,358 +108,207 @@
           <div class="breadcrumbs">
             <a href="index.html">课程首页</a>
             <span>/</span>
-            <a href="index.html#chapters">章节目录</a>
+            <a href="index.html#lessons">课堂版讲义</a>
             <span>/</span>
             <span>第 05 讲</span>
           </div>
-          <p class="eyebrow">Agent Tutorial</p>
+          <p class="eyebrow">1 小时实战分享课</p>
           <h1>05. 多智能体团队协作</h1>
-          <p class="lead">把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。</p>
-          <div class="tag-row"><span class="tag">Multi-Agent</span><span class="tag">Team</span><span class="tag">Orchestration</span></div>
+          <p class="lead">SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。</p>
+          <div class="tag-row"><span class="tag">Team</span><span class="tag">Inbox</span><span class="tag">Lifecycle</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="compact.html">继续第 06 讲</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">查看 GitHub 原文</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">完整原文</a>
           </div>
         </section>
 
-        <section class="content-card markdown-body">
-          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><strong>第五篇：多智能体协作与编排</strong>（本文）—— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
-<p>上一篇我们实现了 SubAgent——主 Agent 可以临时派出一个&quot;专家&quot;来干活。但我们也明确定义了 SubAgent 的本质：<strong>一次性临时工，生成 → 干活 → 返回摘要 → 消亡，没有身份，没有记忆。</strong></p>
-<p>这在很多场景下够用了。但想想现实中的软件开发团队：后端工程师写完 API 后，前端工程师需要知道接口长什么样；测试工程师发现 bug 后，需要告诉开发去修；开发修完后，测试还得再验一遍——<strong>同一个人，被多次找到，而且他还记得上次做了什么。</strong></p>
-<p>SubAgent 做不到这些。每次调用都是一个全新的、失忆的临时工。</p>
-<p>那怎么办？答案是：<strong>从临时工升级为正式团队。</strong></p>
-<hr>
-<h2 id="一临时工-vs-正式员工差什么">一、临时工 vs 正式员工：差什么？</h2>
-<div class="table-wrap"><table>
-<thead><tr>
-<th></th>
-<th>SubAgent（临时工）</th>
-<th>Teams Agent（正式员工）</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>有名字吗？</td>
-<td>❌ 只有一个临时角色描述</td>
-<td>✅ 有名字（alice）、有固定角色</td>
-</tr>
-<tr>
-<td>记得上次做了什么吗？</td>
-<td>❌ 每次调用都失忆</td>
-<td>✅ 多次交互之间记忆持续累积</td>
-</tr>
-<tr>
-<td>能收到同事消息吗？</td>
-<td>❌ 互相看不到</td>
-<td>✅ 有收件箱，能收消息</td>
-</tr>
-<tr>
-<td>什么时候消失？</td>
-<td>函数返回就没了</td>
-<td>团队解散才消失</td>
-</tr>
-</tbody>
-</table></div>
-<p>要从临时工升级为正式团队，需要补齐三样东西：</p>
-<p><strong>1. 能跨多轮对话存活的持久智能体</strong> —— Agent 有记忆，被多次 <code>chat()</code> 调用时记得之前做过什么，不会像 SubAgent 那样每次都失忆</p>
-<p><strong>2. 身份与生命周期管理</strong> —— Agent 有名字、有角色，被创建（入职）、持续存活（干活）、最终解散（离职），而不是用完即弃</p>
-<p><strong>3. 智能体之间的通信通道</strong> —— Agent 之间可以互相发消息（点对点或广播），而不是彼此隔离、互相看不到</p>
-<p>接下来看代码怎么实现。</p>
-<hr>
-<h2 id="二核心实现两个类搞定一切">二、核心实现：两个类搞定一切</h2>
-<p>整个 <code>agent-teams.py</code> 只有 270 行，核心新增是两个类：<code>Agent</code> 和 <code>Team</code>。工具层（read/write/edit/bash）和 Agent 循环完全复用前几篇的代码。</p>
-<h3 id="21-agent-类有状态的持久智能体">2.1 Agent 类：有状态的持久智能体</h3>
-<p>先回忆 SubAgent 的实现——一个函数：</p>
-<pre class="code-block"><code class="language-python"># SubAgent（第四篇）—— 一个函数，用完就没
-def subagent(role, task):
-    sub_messages = [...]  # 局部变量，函数返回即消亡
-    for _ in range(10):
-        ...
-    return result  # 返回后 sub_messages 被垃圾回收，一切归零</code></pre>
-<p>现在看 Teams 中的 Agent——一个类：</p>
-<pre class="code-block"><code class="language-python">class Agent:
-    def __init__(self, name, role):
-        self.name = name                # 身份：有名字
-        self.role = role                # 身份：有角色
-        self.inbox = []                 # 通信：收件箱
-        self.messages = [               # 记忆：持久保持
-            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: f&quot;You are {name}, a {role}. Be concise and focused.&quot;}
-        ]</code></pre>
-<p>区别只有一个，但意义巨大：<strong><code>messages</code> 从函数的局部变量变成了对象的实例属性</strong>。</p>
-<p>局部变量在函数返回后就被垃圾回收。实例属性只要对象还活着，就一直在。这意味着你可以对同一个 Agent 多次调用 <code>chat()</code>，每次的对话历史都会累积在 <code>self.messages</code> 中——<strong>Agent 记得之前做过什么</strong>。</p>
-<h3 id="22-chat-方法带收件箱的-agent-循环">2.2 chat() 方法：带收件箱的 Agent 循环</h3>
-<pre class="code-block"><code class="language-python">def chat(self, task):
-    # 第 1 步：如果 inbox 有新消息，先读取并消化
-    if self.inbox:
-        mail = &quot;\n&quot;.join(f&quot;[来自 {m[&#x27;from&#x27;]}]: {m[&#x27;content&#x27;]}&quot; for m in self.inbox)
-        self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;你收到了团队成员的消息:\n{mail}&quot;})
-        resp = client.chat.completions.create(model=MODEL, messages=self.messages)
-        self.messages.append(resp.choices[0].message)
-        self.inbox.clear()
+        <section class="lesson-section" id="goals">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Goal</p>
+            <h2>这节课学生要拿走什么</h2>
+          </div>
+          <ul class="lesson-list"><li>明白 Team 比 SubAgent 多出来的是持久身份与通信。</li><li>能用 `inbox` 这种极简单模型解释 Agent 间消息传递。</li><li>知道为什么 reviewer 是课堂里最好展示团队价值的角色。</li></ul>
+        </section>
 
-    # 第 2 步：执行本次任务（和之前的 Agent 循环一样）
-    self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
-    for _ in range(10):
-        response = client.chat.completions.create(model=MODEL, messages=self.messages, tools=tools)
-        message = response.choices[0].message
-        self.messages.append(message)
-        if not message.tool_calls:
-            return message.content
-        for tc in message.tool_calls:
-            # ... 执行工具，追加结果（和第一篇完全一样）</code></pre>
-<p>关键在第 1 步：每次 <code>chat()</code> 开始前，Agent 会先检查收件箱。如果有其他 Agent 发来的消息，就先读取、消化（让 LLM 处理一下），然后清空收件箱。这样 Agent 在执行任务时，已经知道了队友们的最新进展。</p>
-<h3 id="23-receive-方法通信通道">2.3 receive() 方法：通信通道</h3>
-<pre class="code-block"><code class="language-python">def receive(self, sender, message):
-    self.inbox.append({&quot;from&quot;: sender, &quot;content&quot;: message})</code></pre>
-<p>就这一行。往收件箱里追加一条消息。简单到不需要解释。</p>
-<hr>
-<h2 id="三team-类生命周期管理与通信编排">三、Team 类：生命周期管理与通信编排</h2>
-<pre class="code-block"><code class="language-python">class Team:
-    def __init__(self):
-        self.agents = {}  # name → Agent
+        <section class="lesson-section" id="demo">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Live Demo</p>
+            <h2>现场演示</h2>
+            <p>把“团队协作”讲成一种可落地的软件结构，而不是抽象概念。</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">演示命令</p>
+            <pre class="demo-command"><code>python agent/05-teams/agent-teams.py &quot;创建一个 TODO 应用，包含 Python 后端和 HTML 前端&quot;</code></pre>
+            <ul class="lesson-list"><li>启动后会先由 `plan_team()` 拆出成员与分工。</li><li>每个 Agent 都保留自己的 `messages` 和记忆，不会执行一次就消失。</li><li>成员完成后通过 `broadcast()` 把信息发给队友，最后 reviewer 再做检查。</li></ul>
+          </div>
+        </section>
 
-    def hire(self, name, role):
-        &quot;&quot;&quot;招募：创建一个持久 Agent&quot;&quot;&quot;
-        agent = Agent(name, role)
-        self.agents[name] = agent
-        return agent
+        <section class="lesson-section" id="practice">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Practice</p>
+            <h2>课堂练习</h2>
+            <p>讲 1 小时时，把多智能体团队讲成“带 reviewer 的协作流水线”最容易让听众记住。</p>
+          </div>
+          <ol class="lesson-steps"><li>把 `plan_team()` 固定成两开发一审查的三人团队。</li><li>在执行中手动插入一次 `send()`，演示点对点消息和广播的区别。</li><li>让 reviewer 再执行一次 `chat()`，体会持久记忆如何带来二次审查。</li></ol>
+        </section>
 
-    def send(self, from_name, to_name, message):
-        &quot;&quot;&quot;点对点通信&quot;&quot;&quot;
-        self.agents[to_name].receive(from_name, message)
+        <section class="lesson-section" id="code">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Code Focus</p>
+            <h2>关键代码</h2>
+          </div>
+          <div class="code-group">
+            
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
+                  <p class="lesson-index">持久化的 Agent 对象</p>
+                  <h3>这段代码解释了为什么团队成员会“记得队友之前说过什么”。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L150-L210">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python"> 150 class Agent:
+ 151     def __init__(self, name, role):
+ 152         self.name = name
+ 153         self.role = role
+ 154         self.inbox = []  # 通信通道：其他 Agent 发来的消息
+ 155         self.messages = [  # 持久记忆：跨多次 chat() 保持
+ 156             {
+ 157                 &quot;role&quot;: &quot;system&quot;,
+ 158                 &quot;content&quot;: f&quot;You are {name}, a {role}. Be concise and focused.&quot;,
+ 159             }
+ 160         ]
+ 161         print(f&quot;  [创建] {name} ({role})&quot;)
+ 162 
+ 163     def receive(self, sender, message):
+ 164         &quot;&quot;&quot;核心 3: 通信通道 —— 接收来自其他 Agent 的消息&quot;&quot;&quot;
+ 165         self.inbox.append({&quot;from&quot;: sender, &quot;content&quot;: message})
+ 166 
+ 167     def chat(self, task):
+ 168         &quot;&quot;&quot;
+ 169         核心 1: 持久记忆 —— 每次 chat() 的对话都累积在 self.messages 中
+ 170         第二次 chat() 时，Agent 还记得第一次做了什么
+ 171         &quot;&quot;&quot;
+ 172         # 如果 inbox 有新消息，先注入
+ 173         if self.inbox:
+ 174             mail = &quot;\n&quot;.join(f&quot;[来自 {m[&#x27;from&#x27;]}]: {m[&#x27;content&#x27;]}&quot; for m in self.inbox)
+ 175             self.messages.append(
+ 176                 {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;你收到了团队成员的消息:\n{mail}&quot;}
+ 177             )
+ 178             # 让 Agent 先消化这些消息
+ 179             resp = client.chat.completions.create(model=MODEL, messages=self.messages)
+ 180             self.messages.append(resp.choices[0].message)
+ 181             self.inbox.clear()
+ 182 
+ 183         # 执行本次任务
+ 184         self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
+ 185 
+ 186         for _ in range(10):
+ 187             response = client.chat.completions.create(
+ 188                 model=MODEL, messages=self.messages, tools=tools
+ 189             )
+ 190             message = response.choices[0].message
+ 191             self.messages.append(message)
+ 192 
+ 193             if not message.tool_calls:
+ 194                 print(f&quot;  [{self.name}] → {message.content[:100]}...&quot;)
+ 195                 return message.content
+ 196 
+ 197             for tc in message.tool_calls:
+ 198                 fn = tc.function.name
+ 199                 args = json.loads(tc.function.arguments)
+ 200                 print(
+ 201                     f&quot;  [{self.name}] {fn}({json.dumps(args, ensure_ascii=False)[:60]})&quot;
+ 202                 )
+ 203                 result = available_functions.get(fn, lambda **_: &quot;Tool not found&quot;)(
+ 204                     **args
+ 205                 )
+ 206                 self.messages.append(
+ 207                     {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
+ 208                 )
+ 209 
+ 210         return &quot;Max iterations reached&quot;</code></pre>
+            </article>
+            
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
+                  <p class="lesson-index">Team 管理生命周期与通信</p>
+                  <h3>招募、广播、解散，这里就是多智能体协作最小骨架。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L219-L247">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python"> 219 class Team:
+ 220     def __init__(self):
+ 221         self.agents = {}  # name → Agent
+ 222 
+ 223     def hire(self, name, role):
+ 224         &quot;&quot;&quot;招募：创建一个持久 Agent&quot;&quot;&quot;
+ 225         agent = Agent(name, role)
+ 226         self.agents[name] = agent
+ 227         return agent
+ 228 
+ 229     def send(self, from_name, to_name, message):
+ 230         &quot;&quot;&quot;核心 3: Agent 之间的通信通道&quot;&quot;&quot;
+ 231         if to_name not in self.agents:
+ 232             return f&quot;Error: {to_name} not found&quot;
+ 233         self.agents[to_name].receive(from_name, message)
+ 234         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)
+ 235 
+ 236     def broadcast(self, from_name, message):
+ 237         &quot;&quot;&quot;广播：给团队所有其他人发消息&quot;&quot;&quot;
+ 238         for name, agent in self.agents.items():
+ 239             if name != from_name:
+ 240                 agent.receive(from_name, message)
+ 241         print(f&quot;  [广播] {from_name} → 全体: {message[:60]}...&quot;)
+ 242 
+ 243     def disband(self):
+ 244         &quot;&quot;&quot;解散：所有 Agent 生命周期结束&quot;&quot;&quot;
+ 245         names = list(self.agents.keys())
+ 246         self.agents.clear()
+ 247         print(f&quot;  [解散] 团队已解散 ({&#x27;, &#x27;.join(names)})&quot;)</code></pre>
+            </article>
+            
+          </div>
+        </section>
 
-    def broadcast(self, from_name, message):
-        &quot;&quot;&quot;广播：给团队所有其他人发消息&quot;&quot;&quot;
-        for name, agent in self.agents.items():
-            if name != from_name:
-                agent.receive(from_name, message)
+        <section class="lesson-section" id="talk">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Talk Track</p>
+            <h2>讲课只讲这 3 件事</h2>
+          </div>
+          <ul class="lesson-list"><li>多智能体最重要的不是人数，而是角色和生命周期。</li><li>Agent 的 `inbox` 足够简单，却已经能支持很多协作场景。</li><li>团队越大不一定越好，真正有价值的是信息流变清晰。</li></ul>
+        </section>
 
-    def disband(self):
-        &quot;&quot;&quot;解散：所有 Agent 生命周期结束&quot;&quot;&quot;
-        self.agents.clear()</code></pre>
-<p>四个方法，对应团队协作的四个动作：</p>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>方法</th>
-<th>作用</th>
-<th>类比</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>hire()</code></td>
-<td>创建 Agent，加入团队</td>
-<td>招人入职</td>
-</tr>
-<tr>
-<td><code>send()</code></td>
-<td>A 给 B 发消息</td>
-<td>工作群里 @ 某人</td>
-</tr>
-<tr>
-<td><code>broadcast()</code></td>
-<td>A 给所有人发消息</td>
-<td>群发公告</td>
-</tr>
-<tr>
-<td><code>disband()</code></td>
-<td>解散团队，所有 Agent 消亡</td>
-<td>项目结束，团队解散</td>
-</tr>
-</tbody>
-</table></div>
-<hr>
-<h2 id="四完整协作流程">四、完整协作流程</h2>
-<pre class="code-block"><code class="language-python">def run_team(task):
-    team = Team()
+        <section class="lesson-section" id="pitfalls">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Pitfalls</p>
+            <h2>容易踩坑</h2>
+          </div>
+          <ul class="lesson-list"><li>如果每个角色都很泛，最后只是多个普通助手轮流说话。</li><li>消息太多时又会重新触发上下文压力。</li><li>团队协作如果没有 reviewer，很难展示“协作带来的质量提升”。</li></ul>
+        </section>
 
-    # 第 1 阶段：组建团队
-    members = plan_team(task)  # LLM 自动拆分角色
-    for m in members:
-        team.hire(m[&quot;name&quot;], m[&quot;role&quot;])
-
-    # 第 2 阶段：逐个执行，每人干完广播成果
-    for m in members:
-        agent = team.agents[m[&quot;name&quot;]]
-        result = agent.chat(m[&quot;task&quot;])
-        team.broadcast(m[&quot;name&quot;], f&quot;我完成了任务。摘要: {result[:200]}&quot;)
-
-    # 第 3 阶段：最后一个成员做二次审查
-    reviewer = team.agents[members[-1][&quot;name&quot;]]
-    review = reviewer.chat(&quot;请根据团队成果做最终审查&quot;)
-
-    # 第 4 阶段：解散
-    team.disband()</code></pre>
-<p>用一个具体例子来说明。假设输入 &quot;创建一个 TODO 应用，包含 Python 后端和 HTML 前端&quot;：</p>
-<pre class="code-block"><code class="language-text">[PM] 分析任务，组建团队...
-[团队] 3 人:
-  1. alice — backend developer → 用 FastAPI 创建 TODO 后端 API
-  2. bob — frontend developer → 创建 HTML 前端页面
-  3. carol — test engineer → 验证前后端能正常工作
-
-============================================================
-  第 1 阶段: 招募团队
-============================================================
-  [创建] alice (backend developer)
-  [创建] bob (frontend developer)
-  [创建] carol (test engineer)
-
-============================================================
-  第 2 阶段: 协作开发
-============================================================
-
-── [1/3] alice 开始工作 ──
-  [alice] write({&quot;path&quot;: &quot;app.py&quot;, ...})
-  [alice] → 已创建 app.py，包含 GET/POST/DELETE 三个接口...
-  [广播] alice → 全体: 我完成了任务。摘要: 已创建 app.py...
-
-── [2/3] bob 开始工作 ──
-  （bob 的 inbox 里有 alice 的广播，他知道后端接口长什么样）
-  [bob] write({&quot;path&quot;: &quot;index.html&quot;, ...})
-  [bob] → 已创建 index.html，调用了 alice 定义的 API 接口...
-  [广播] bob → 全体: 我完成了任务。摘要: 已创建 index.html...
-
-── [3/3] carol 开始工作 ──
-  （carol 的 inbox 里有 alice 和 bob 的广播）
-  [carol] read({&quot;path&quot;: &quot;app.py&quot;})
-  [carol] read({&quot;path&quot;: &quot;index.html&quot;})
-  [carol] bash({&quot;command&quot;: &quot;python -c &#x27;import app; print(\&quot;OK\&quot;)&#x27;&quot;})
-  [carol] → 后端代码语法正确，前端页面已创建，接口调用地址匹配...
-  [广播] carol → 全体: 我完成了任务。摘要: 验证通过...
-
-============================================================
-  第 3 阶段: carol 做最终审查
-============================================================
-  （carol 被第二次调用 chat()，她还记得第一次测试的结果）
-  [carol] → 最终审查：后端 app.py 包含 3 个接口（GET/POST/DELETE），
-            前端 index.html 已正确引用后端地址，代码验证通过，可以交付。</code></pre>
-<p>注意 <strong>carol 被调用了两次 <code>chat()</code></strong> ：第一次做测试，第二次做审查。第二次时她还记得第一次做了什么——这就是&quot;持久记忆&quot;的价值。SubAgent 做不到这一点，因为每次调用都是一个全新的、失忆的函数。</p>
-<hr>
-<h2 id="五三大核心能力的代码对照">五、三大核心能力的代码对照</h2>
-<p>回到开头提出的三个要求，逐一对照：</p>
-<h3 id="能力-1能跨多轮对话存活的持久智能体">能力 1：能跨多轮对话存活的持久智能体</h3>
-<pre class="code-block"><code class="language-python"># SubAgent：局部变量，函数返回即消亡
-def subagent(role, task):
-    sub_messages = [...]  # 🔴 生命周期 = 这个函数调用
-    ...
-    return result         # sub_messages 被回收
-
-# Teams Agent：实例属性，对象存活就一直在
-class Agent:
-    def __init__(self, ...):
-        self.messages = [...]  # 🟢 生命周期 = Agent 对象的生命周期
-
-    def chat(self, task):
-        self.messages.append(...)  # 每次调用都往同一个列表里追加
-        ...
-        # 第 1 次 chat()：messages = [system, user1, assistant1]
-        # 第 2 次 chat()：messages = [system, user1, assistant1, user2, assistant2]
-        # Agent 在第 2 次时能看到第 1 次的全部历史</code></pre>
-<h3 id="能力-2身份与生命周期管理">能力 2：身份与生命周期管理</h3>
-<pre class="code-block"><code class="language-python">team = Team()
-
-# 入职：Agent 被创建，开始存活
-alice = team.hire(&quot;alice&quot;, &quot;backend developer&quot;)
-bob   = team.hire(&quot;bob&quot;,   &quot;frontend developer&quot;)
-
-# 存活期间：可以多次交互
-alice.chat(&quot;创建后端 API&quot;)
-alice.chat(&quot;添加认证中间件&quot;)   # alice 记得第一次创建的 API
-
-# 解散：所有 Agent 生命周期结束
-team.disband()                 # alice、bob 都消亡了</code></pre>
-<h3 id="能力-3智能体之间的通信通道">能力 3：智能体之间的通信通道</h3>
-<pre class="code-block"><code class="language-python"># 点对点：alice 告诉 bob 接口格式
-team.send(&quot;alice&quot;, &quot;bob&quot;, &quot;API 接口: GET /todos, POST /todos&quot;)
-
-# 广播：alice 告诉所有人
-team.broadcast(&quot;alice&quot;, &quot;后端已完成，接口文档见 API.md&quot;)
-
-# bob 下次 chat() 时，会先读 inbox 中的消息
-bob.chat(&quot;创建前端页面&quot;)  # bob 已经知道了 API 接口格式</code></pre>
-<hr>
-<h2 id="六subagent-vs-teams什么时候用哪个">六、SubAgent vs Teams：什么时候用哪个？</h2>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>场景</th>
-<th>选 SubAgent</th>
-<th>选 Teams</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>子任务之间完全独立</td>
-<td>✅ 互不干扰，简单直接</td>
-<td>没必要，杀鸡用牛刀</td>
-</tr>
-<tr>
-<td>后续任务依赖前面的结果</td>
-<td>❌ 看不到别人做了什么</td>
-<td>✅ 通过通信通道传递信息</td>
-</tr>
-<tr>
-<td>需要同一个人多次返工</td>
-<td>❌ 每次都是新人，不记得</td>
-<td>✅ 持久记忆，记得上次做了什么</td>
-</tr>
-<tr>
-<td>需要测试 → 修 bug → 再测试</td>
-<td>❌ 做不到</td>
-<td>✅ 测试人员和开发都能被多次调用</td>
-</tr>
-</tbody>
-</table></div>
-<p>一句话总结：<strong>任务简单、互不相关用 SubAgent；需要协作、需要记忆用 Teams。</strong></p>
-<hr>
-<h2 id="七系列总结">七、系列总结</h2>
-<p>五篇文章，从一个 100 行的极简 Agent 出发，逐层叠加能力：</p>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>篇</th>
-<th>核心新增</th>
-<th>一句话</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>一</td>
-<td>工具 + 循环</td>
-<td>Agent 的最小本质</td>
-</tr>
-<tr>
-<td>二</td>
-<td>记忆 + 规划</td>
-<td>记住过去，规划未来</td>
-</tr>
-<tr>
-<td>三</td>
-<td>Rules + Skills + MCP</td>
-<td>扩展知识与工具</td>
-</tr>
-<tr>
-<td>四</td>
-<td>SubAgent</td>
-<td>一次性临时工</td>
-</tr>
-<tr>
-<td><strong>五</strong></td>
-<td><strong>Agent 类 + Team 类</strong></td>
-<td><strong>有记忆、有身份、能通信的正式团队</strong></td>
-</tr>
-</tbody>
-</table></div>
-<p>从第四篇的 <code>subagent()</code> 函数到第五篇的 <code>Agent</code> 类，变化只有一个：<strong><code>messages</code> 从局部变量变成了实例属性</strong>。但这一个变化，让 Agent 从&quot;用完即弃的临时工&quot;进化为了&quot;有记忆、有身份、能协作的团队成员&quot;。</p>
-<p>这就是软件工程中最朴素的道理：<strong>数据放在哪里，决定了它的生命周期；生命周期决定了能力边界。</strong></p>
-<p>但能力越强，副作用也越大——Agent 干的活越多、协作越复杂，<code>messages</code> 就越长。长到撑爆 LLM 的 context window 怎么办？在 <a href="compact.html">第六篇：上下文压缩</a> 中，我们用一个 30 行的函数来解决这个&quot;自我窒息&quot;问题。</p>
-<hr>
-<p><em>本文基于 agent-teams.py（<a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/05-teams/agent-teams.py">GitHub 源码</a>）分析。完整系列：<a href="essence.html">第一篇</a> → <a href="memory.html">第二篇</a> → <a href="skills-mcp.html">第三篇</a> → <a href="subagent.html">第四篇</a> → 第五篇（本文） → <a href="compact.html">第六篇</a></em></p>
+        <section class="lesson-section" id="extend">
+          <div class="lesson-section-head">
+            <p class="eyebrow">After Class</p>
+            <h2>课后延伸</h2>
+            <p>课堂里不展示全文，课后再补完整文章和源码细节。</p>
+          </div>
+          <div class="deep-links">
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">读完整原文</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py">看完整代码</a>
+          </div>
         </section>
 
         <nav class="pager">
-          <a class="pager-link prev" href="subagent.html"><span>上一篇</span><strong>04. 分工</strong></a>
-          <a class="pager-link next" href="compact.html"><span>下一篇</span><strong>06. 压缩</strong></a>
+          <a class="pager-link" href="subagent.html"><span>上一篇</span><strong>04. 任务委派</strong></a>
+          <a class="pager-link" href="compact.html"><span>下一篇</span><strong>06. 长任务生存</strong></a>
         </nav>
       </article>
     </main>
     
     <footer class="site-footer">
-      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>

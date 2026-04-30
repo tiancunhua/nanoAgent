@@ -1,14 +1,12 @@
 :root {
   --bg: #f6f1e8;
-  --bg-strong: #f1e3c9;
-  --panel: rgba(255, 252, 246, 0.88);
-  --panel-strong: rgba(255, 248, 236, 0.97);
+  --panel: rgba(255, 252, 246, 0.9);
+  --panel-strong: rgba(255, 248, 236, 0.98);
   --ink: #1f2430;
   --muted: #5a6472;
   --accent: #b24c2a;
-  --accent-soft: #f1c7a9;
   --line: rgba(31, 36, 48, 0.12);
-  --line-strong: rgba(178, 76, 42, 0.2);
+  --line-strong: rgba(178, 76, 42, 0.22);
   --shadow: 0 22px 60px rgba(89, 57, 24, 0.12);
   --radius-xl: 30px;
   --radius-lg: 20px;
@@ -152,10 +150,10 @@ button:focus-visible {
 }
 
 .top-nav a:hover,
-.source-link:hover,
+.footer-links a:hover,
 .toc-link:hover,
 .chapter-rail-link:hover,
-.footer-links a:hover,
+.source-link:hover,
 .breadcrumbs a:hover {
   color: var(--accent);
 }
@@ -163,11 +161,11 @@ button:focus-visible {
 .hero-panel,
 .section-block,
 .sidebar-card,
-.content-card,
-.chapter-card,
-.timeline-card,
-.map-card,
-.overview-card {
+.lesson-card,
+.format-card,
+.agenda-item,
+.lesson-section,
+.code-card {
   background: var(--panel);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -176,7 +174,7 @@ button:focus-visible {
 
 .hero-panel {
   display: grid;
-  grid-template-columns: 1.2fr 0.9fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 28px;
   padding: 36px;
   border-radius: var(--radius-xl);
@@ -187,11 +185,30 @@ button:focus-visible {
 .hero-panel::after {
   content: "";
   position: absolute;
-  width: 260px;
-  height: 260px;
-  right: -60px;
-  bottom: -110px;
-  background: radial-gradient(circle, rgba(178, 76, 42, 0.25), transparent 68%);
+  width: 280px;
+  height: 280px;
+  right: -90px;
+  bottom: -120px;
+  background: radial-gradient(circle, rgba(178, 76, 42, 0.24), transparent 68%);
+}
+
+.hero-copy h1,
+.section-head h2,
+.article-hero h1,
+.lesson-title,
+.sidebar-card h2,
+.lesson-card h3,
+.agenda-content h3,
+.format-card h3,
+.code-card h3 {
+  margin: 0;
+  font-family: Georgia, "Songti SC", serif;
+  line-height: 1.15;
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  max-width: 12ch;
 }
 
 .eyebrow {
@@ -202,38 +219,37 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
-.hero-copy h1,
-.section-head h2,
-.article-hero h1,
-.sidebar-card h2,
-.lesson-title {
-  margin: 0;
-  font-family: Georgia, "Songti SC", serif;
-  line-height: 1.15;
-}
-
-.hero-copy h1 {
-  font-size: clamp(2.4rem, 5vw, 4.6rem);
-  max-width: 10ch;
-}
-
 .hero-lead,
-.lead {
+.lead,
+.section-head p,
+.lesson-card p,
+.format-card p,
+.agenda-content p,
+.article-hero p,
+.sidebar-card p,
+.lesson-section-head p {
   color: var(--muted);
-  font-size: 1.08rem;
-  max-width: 60ch;
+}
+
+.hero-actions,
+.deep-links,
+.footer-links,
+.chip-row,
+.tag-row,
+.lesson-tag-row,
+.lesson-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .primary-btn,
 .secondary-btn,
-.card-link {
+.lesson-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -244,7 +260,7 @@ button:focus-visible {
 }
 
 .primary-btn,
-.card-link {
+.lesson-link {
   background: #1f2430;
   color: #fff9f1;
 }
@@ -256,32 +272,63 @@ button:focus-visible {
 
 .primary-btn:hover,
 .secondary-btn:hover,
-.card-link:hover,
-.timeline-card:hover,
-.chapter-card:hover,
-.map-card:hover,
-.overview-card:hover,
+.lesson-link:hover,
+.lesson-card:hover,
+.agenda-item:hover,
+.format-card:hover,
+.code-card:hover,
 .pager-link:hover {
   transform: translateY(-2px);
 }
 
-.hero-card-stack {
+.hero-side,
+.fact-grid,
+.format-grid,
+.lesson-grid,
+.agenda-list,
+.chapter-rail,
+.toc,
+.code-group {
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 
-.formula-card,
-.metric-card {
+.fact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fact-card {
+  padding: 22px;
   border-radius: var(--radius-lg);
-  background: var(--panel-strong);
   border: 1px solid rgba(178, 76, 42, 0.12);
+  background: var(--panel-strong);
+}
+
+.fact-card strong {
+  display: block;
+  font-size: 1.8rem;
+  font-family: Georgia, "Songti SC", serif;
+}
+
+.format-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.format-card,
+.lesson-card,
+.agenda-item,
+.lesson-section,
+.sidebar-card,
+.code-card {
+  border-radius: var(--radius-lg);
   padding: 22px;
 }
 
-.formula-label,
-.timeline-label,
-.chapter-index,
-.map-index,
+.lesson-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lesson-index,
 .course-step {
   color: var(--accent);
   letter-spacing: 0.1em;
@@ -289,139 +336,24 @@ button:focus-visible {
   font-size: 0.82rem;
 }
 
-.formula-card strong {
-  display: block;
-  margin: 8px 0 12px;
-  font-size: 1.6rem;
-  font-family: "SFMono-Regular", "JetBrains Mono", monospace;
-}
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.metric-card strong {
-  display: block;
-  font-size: 1.8rem;
-  font-family: Georgia, "Songti SC", serif;
-}
-
-.section-block {
-  margin-top: 28px;
-  border-radius: var(--radius-xl);
-  padding: 30px;
-}
-
-.section-head {
-  margin-bottom: 22px;
-}
-
-.section-head h2 {
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
-}
-
-.section-head p {
-  max-width: 62ch;
-  color: var(--muted);
-}
-
-.overview-grid,
-.timeline-grid,
-.chapter-grid,
-.map-grid {
-  display: grid;
-  gap: 18px;
-}
-
-.overview-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.overview-card,
-.timeline-card,
-.chapter-card,
-.map-card {
-  border-radius: var(--radius-lg);
-  padding: 22px;
-}
-
-.overview-card h3,
-.map-card h3,
-.chapter-card h3,
-.timeline-card h3,
-.sidebar-card h2 {
-  margin: 8px 0 10px;
-  font-family: Georgia, "Songti SC", serif;
-}
-
-.timeline-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.timeline-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 18px;
-  align-items: start;
-}
-
-.timeline-step {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #1f2430, #394154);
-  color: #fff8f0;
-  font-weight: 700;
-}
-
-.map-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.map-card {
-  min-height: 220px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 248, 236, 0.92)),
-    linear-gradient(135deg, rgba(178, 76, 42, 0.08), transparent 55%);
-}
-
-.chapter-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.chapter-card {
+.lesson-card {
   position: relative;
 }
 
-.chapter-card p,
-.overview-card p {
-  color: var(--muted);
+.lesson-kicker {
+  margin: 14px 0 12px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
-.chapter-meta,
-.mini-tag-row,
-.chip-row,
-.tag-row,
-.footer-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.chapter-meta,
-.chip-row {
-  margin: 16px 0 14px;
+.lesson-meta {
+  margin: 14px 0 10px;
   color: var(--muted);
   font-size: 0.92rem;
 }
 
-.mini-tag,
-.chip,
-.tag {
+.tag,
+.chip {
   padding: 6px 10px;
   border-radius: 999px;
   border: 1px solid rgba(178, 76, 42, 0.18);
@@ -429,14 +361,23 @@ button:focus-visible {
   font-size: 0.84rem;
 }
 
-.card-link {
-  margin-top: 18px;
-  width: fit-content;
+.agenda-item {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.agenda-time {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
 }
 
 .article-layout {
   display: grid;
-  grid-template-columns: 330px minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 24px;
 }
 
@@ -448,35 +389,17 @@ button:focus-visible {
   gap: 16px;
 }
 
-.sidebar-card {
-  border-radius: var(--radius-lg);
-  padding: 20px;
-}
-
 .lesson-title {
-  font-size: 1.7rem;
-}
-
-.focus-line {
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.chapter-rail,
-.toc {
-  display: grid;
-  gap: 10px;
+  font-size: 1.65rem;
 }
 
 .chapter-rail-link,
 .toc-link {
+  display: block;
   color: var(--muted);
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid transparent;
-}
-
-.chapter-rail-link {
   background: rgba(255, 255, 255, 0.52);
 }
 
@@ -495,16 +418,6 @@ button:focus-visible {
   color: var(--accent);
   border-color: var(--line-strong);
   background: rgba(241, 199, 169, 0.18);
-}
-
-.toc-link.level-3 {
-  margin-left: 12px;
-}
-
-.source-link {
-  display: block;
-  color: var(--muted);
-  margin-top: 8px;
 }
 
 .article-main {
@@ -528,81 +441,33 @@ button:focus-visible {
   font-size: clamp(2rem, 4vw, 3.6rem);
 }
 
-.content-card {
-  border-radius: var(--radius-xl);
-  padding: 28px;
+.lesson-section + .lesson-section {
+  margin-top: 18px;
 }
 
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4 {
-  font-family: Georgia, "Songti SC", serif;
-  line-height: 1.25;
-  scroll-margin-top: 110px;
+.lesson-section-head {
+  margin-bottom: 14px;
 }
 
-.markdown-body h1 {
-  font-size: 2rem;
-}
-
-.markdown-body h2 {
-  margin-top: 2.2em;
-  font-size: 1.8rem;
-}
-
-.markdown-body h3 {
-  margin-top: 1.8em;
-  font-size: 1.35rem;
-}
-
-.markdown-body p,
-.markdown-body li,
-.markdown-body blockquote {
-  color: #2d3541;
-}
-
-.markdown-body a {
-  color: var(--accent);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
-}
-
-.markdown-body ul,
-.markdown-body ol {
-  padding-left: 1.4rem;
-}
-
-.markdown-body li + li {
-  margin-top: 0.42rem;
-}
-
-.markdown-body blockquote {
-  margin: 20px 0;
-  padding: 18px 20px;
-  border-left: 4px solid var(--accent);
-  background: rgba(255, 248, 236, 0.84);
-  border-radius: 0 16px 16px 0;
-}
-
-.markdown-body blockquote p {
+.lesson-list,
+.lesson-steps {
   margin: 0;
+  padding-left: 1.3rem;
 }
 
-.markdown-body blockquote p + p,
-.markdown-body blockquote p + ul,
-.markdown-body blockquote ul + p {
-  margin-top: 10px;
+.lesson-list li + li,
+.lesson-steps li + li {
+  margin-top: 0.5rem;
 }
 
-.markdown-body hr {
-  border: 0;
-  height: 1px;
-  margin: 28px 0;
-  background: linear-gradient(90deg, transparent, rgba(31, 36, 48, 0.18), transparent);
+.demo-box {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 248, 236, 0.72);
+  border: 1px solid rgba(178, 76, 42, 0.14);
 }
 
+.demo-command,
 .code-block {
   overflow-x: auto;
   padding: 18px;
@@ -613,46 +478,25 @@ button:focus-visible {
   line-height: 1.65;
 }
 
-.markdown-body code {
-  font-family: "SFMono-Regular", "JetBrains Mono", monospace;
+.demo-command {
+  margin: 12px 0 16px;
 }
 
-.markdown-body :not(pre) > code {
-  padding: 2px 7px;
-  border-radius: 8px;
-  background: rgba(31, 36, 48, 0.08);
-  color: #8d341b;
+.code-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
 }
 
-.table-wrap {
-  overflow-x: auto;
-  margin: 22px 0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 560px;
-  background: rgba(255, 255, 255, 0.58);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-th,
-td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-}
-
-th {
-  background: rgba(31, 36, 48, 0.05);
+.source-link {
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .pager {
   display: flex;
-  justify-content: space-between;
   gap: 16px;
   margin-top: 22px;
 }
@@ -703,11 +547,9 @@ th {
 
 @media (max-width: 1100px) {
   .hero-panel,
-  .article-layout,
-  .overview-grid,
-  .timeline-grid,
-  .chapter-grid,
-  .map-grid {
+  .format-grid,
+  .lesson-grid,
+  .article-layout {
     grid-template-columns: 1fr;
   }
 
@@ -733,12 +575,12 @@ th {
 
   .hero-panel,
   .section-block,
-  .content-card,
+  .format-card,
+  .lesson-card,
+  .agenda-item,
+  .lesson-section,
   .sidebar-card,
-  .timeline-card,
-  .chapter-card,
-  .map-card,
-  .overview-card {
+  .code-card {
     padding: 20px;
   }
 
@@ -748,17 +590,15 @@ th {
     max-width: none;
   }
 
-  .metric-grid {
+  .fact-grid {
     grid-template-columns: 1fr 1fr;
   }
 
-  .pager,
-  .site-footer {
+  .agenda-item,
+  .site-footer,
+  .pager {
+    grid-template-columns: 1fr;
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  table {
-    min-width: 480px;
   }
 }

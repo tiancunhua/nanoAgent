@@ -1,9 +1,8 @@
 import html
-import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List
 
 
 ROOT = Path(__file__).parent
@@ -13,117 +12,40 @@ ASSETS_DIR = DOCS_DIR / "assets"
 REPO_WEB_BASE = "https://github.com/GitHubxsy/nanoAgent"
 SITE_URL = "https://githubxsy.github.io/nanoAgent"
 SITE_TITLE = "从零开始理解 Agent"
-SITE_DESCRIPTION = "基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。"
+SITE_SUBTITLE = "1 小时实战分享课"
+SITE_DESCRIPTION = "把 nanoAgent 前七篇内容压缩成一门 1 小时实战分享课，只保留课堂最需要的任务、代码和练习。"
 
 
 @dataclass
-class Article:
+class Snippet:
+    title: str
+    start: int
+    end: int
+    focus: str
+
+
+@dataclass
+class Lesson:
     slug: str
     number: str
     title: str
-    md_path: Path
-    code_path: Path
     short_title: str
+    stage: str
+    lesson_minutes: str
     summary: str
     core: str
-    difficulty: str
-    time_cost: str
     tags: List[str]
-
-
-ARTICLES = [
-    Article(
-        slug="essence",
-        number="01",
-        title="底层原理，只有 100 行",
-        md_path=ROOT / "01-essence/agent-essence.md",
-        code_path=ROOT / "01-essence/agent-essence.py",
-        short_title="本质",
-        summary="先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。",
-        core="Agent = LLM + 工具 + 循环",
-        difficulty="入门",
-        time_cost="12 分钟",
-        tags=["工具调用", "Function Calling", "Agent Loop"],
-    ),
-    Article(
-        slug="memory",
-        number="02",
-        title="记忆与规划",
-        md_path=ROOT / "02-memory/agent-memory.md",
-        code_path=ROOT / "02-memory/agent-memory.py",
-        short_title="记忆",
-        summary="从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。",
-        core="持久记忆 + Plan-then-Execute",
-        difficulty="入门",
-        time_cost="14 分钟",
-        tags=["Memory", "Planning", "多步任务"],
-    ),
-    Article(
-        slug="skills-mcp",
-        number="03",
-        title="Rules、Skills 与 MCP",
-        md_path=ROOT / "03-skills-mcp/agent-skills-mcp.md",
-        code_path=ROOT / "03-skills-mcp/agent-skills-mcp.py",
-        short_title="扩展",
-        summary="解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。",
-        core="行为约束 + 外部能力接入",
-        difficulty="进阶",
-        time_cost="18 分钟",
-        tags=["Rules", "Skills", "MCP"],
-    ),
-    Article(
-        slug="subagent",
-        number="04",
-        title="SubAgent 子智能体",
-        md_path=ROOT / "04-subagent/agent-subagent.md",
-        code_path=ROOT / "04-subagent/agent-subagent.py",
-        short_title="分工",
-        summary="从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。",
-        core="委派 + 上下文隔离",
-        difficulty="进阶",
-        time_cost="15 分钟",
-        tags=["SubAgent", "Delegation", "Isolation"],
-    ),
-    Article(
-        slug="teams",
-        number="05",
-        title="多智能体团队协作",
-        md_path=ROOT / "05-teams/agent-teams.md",
-        code_path=ROOT / "05-teams/agent-teams.py",
-        short_title="协作",
-        summary="把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。",
-        core="角色化协作 + 生命周期管理",
-        difficulty="进阶",
-        time_cost="16 分钟",
-        tags=["Multi-Agent", "Team", "Orchestration"],
-    ),
-    Article(
-        slug="compact",
-        number="06",
-        title="上下文压缩",
-        md_path=ROOT / "06-compact/agent-compact.md",
-        code_path=ROOT / "06-compact/agent-compact.py",
-        short_title="压缩",
-        summary="专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。",
-        core="Summary + Recent Window",
-        difficulty="进阶",
-        time_cost="13 分钟",
-        tags=["Context Window", "Compaction", "Summarization"],
-    ),
-    Article(
-        slug="safety",
-        number="07",
-        title="三道安全防线",
-        md_path=ROOT / "07-safety/agent-safe.md",
-        code_path=ROOT / "07-safety/agent-safe.py",
-        short_title="安全",
-        summary="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。",
-        core="风险隔离 + 人机边界",
-        difficulty="关键",
-        time_cost="15 分钟",
-        tags=["Safety", "Permissions", "Guardrails"],
-    ),
-]
+    demo_command: str
+    demo_goal: str
+    demo_expected: List[str]
+    student_takeaways: List[str]
+    practice_steps: List[str]
+    talk_points: List[str]
+    pitfalls: List[str]
+    workshop_prompt: str
+    md_path: Path
+    code_path: Path
+    snippets: List[Snippet]
 
 
 def detect_source_branch() -> str:
@@ -144,16 +66,417 @@ def detect_source_branch() -> str:
 SOURCE_BRANCH = detect_source_branch()
 
 
-def slugify(text: str) -> str:
-    text = text.strip().lower()
-    text = re.sub(r"[^\w\u4e00-\u9fff\s-]", "", text)
-    text = re.sub(r"\s+", "-", text)
-    return text or "section"
+LESSONS = [
+    Lesson(
+        slug="essence",
+        number="01",
+        title="底层原理，只有 100 行",
+        short_title="最小闭环",
+        stage="起步演示",
+        lesson_minutes="8 分钟",
+        summary="先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。",
+        core="LLM + 工具 + 循环",
+        tags=["工具调用", "Agent Loop", "最小实现"],
+        demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
+        demo_goal="让学生当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。",
+        demo_expected=[
+            "终端先打印 `[Tool] write_file(...)`，说明模型选择了工具。",
+            "再次要求它读取 `hello.txt`，验证效果已经落到真实文件。",
+            "顺手指出 `messages` 会随着每一步持续增长。",
+        ],
+        student_takeaways=[
+            "能解释 Agent 与 Chat 的根本区别。",
+            "能看懂 `tools`、`functions`、`messages` 和循环的关系。",
+            "知道 Agent 的执行权仍然掌握在代码里，不在模型里。",
+        ],
+        practice_steps=[
+            "把 `max_iterations` 改成 2，观察复杂任务会如何提前中断。",
+            "让 Agent 连续执行“写文件 + 读文件”两个动作，体会循环的必要性。",
+            "给 `execute_bash` 加一句更清晰的描述，看看模型是否更容易选对工具。",
+        ],
+        talk_points=[
+            "LLM 输出的是结构化“调用意图”，不是直接执行系统命令。",
+            "`messages` 是 Agent 的短期工作区，每走一步都要回填现场结果。",
+            "循环次数就是 Agent 的行动预算，也是最早的工程约束。",
+        ],
+        pitfalls=[
+            "`execute_bash` 功能太强，后面必须加安全边界。",
+            "工具报错也要回填给模型，否则它无法自我修正。",
+            "只堆工具不设计循环，最后就会退化回普通问答。",
+        ],
+        workshop_prompt="把它当成一台会自己选工具的“任务执行机”，而不是聊天窗口。",
+        md_path=ROOT / "01-essence/agent-essence.md",
+        code_path=ROOT / "01-essence/agent-essence.py",
+        snippets=[
+            Snippet(
+                title="最小 Agent 循环",
+                start=73,
+                end=97,
+                focus="课堂只讲这 20 多行：发请求、拿工具调用、执行工具、把结果回填。",
+            )
+        ],
+    ),
+    Lesson(
+        slug="memory",
+        number="02",
+        title="记忆与规划",
+        short_title="多步任务",
+        stage="从单步到连续工作",
+        lesson_minutes="8 分钟",
+        summary="给最小 Agent 加上长期记忆和规划能力，让它不只是“做一步”，而是能拆任务、按顺序推进。",
+        core="持久记忆 + Plan-then-Execute",
+        tags=["Memory", "Planning", "Shared Messages"],
+        demo_command='python agent/02-memory/agent-memory.py --plan "分析当前项目结构并给出重构建议"',
+        demo_goal="演示 Agent 如何先拆步骤，再逐步执行，还能把结果写进记忆文件。",
+        demo_expected=[
+            "先看到 `[Planning]` 与拆解出的 3 到 5 个步骤。",
+            "再看到每个步骤共用同一个 `messages` 上下文继续推进。",
+            "最后检查 `agent_memory.md`，理解持久记忆最简单可以只是一个文件。",
+        ],
+        student_takeaways=[
+            "能区分短期上下文与长期记忆。",
+            "知道规划本身也是一次单独的模型调用。",
+            "理解多步任务为什么要共享 `messages`。",
+        ],
+        practice_steps=[
+            "先运行一次“创建 demo 文件”，再运行一次“读取刚才文件并补注释”，观察记忆是否生效。",
+            "把 `load_memory()` 的窗口裁剪改小，看看历史信息会如何衰减。",
+            "删掉 `--plan` 再跑同一任务，对比有规划和无规划的行为差异。",
+        ],
+        talk_points=[
+            "规划不是额外魔法，只是把任务拆解前置了一次。",
+            "跨步骤共享 `messages`，就是让 Agent 在执行链路里“不断记住自己刚做了什么”。",
+            "长期记忆最开始不用上复杂系统，先把写入和回放跑通。",
+        ],
+        pitfalls=[
+            "记忆窗口过大，后面会迅速碰到上下文爆炸。",
+            "规划失败时一定要有降级路径，不能卡死。",
+            "把所有历史都塞回 prompt，不等于真正的记忆系统。",
+        ],
+        workshop_prompt="让学生亲手跑两次连续任务，记住：记忆不是抽象概念，是可观察的文件与上下文。",
+        md_path=ROOT / "02-memory/agent-memory.md",
+        code_path=ROOT / "02-memory/agent-memory.py",
+        snippets=[
+            Snippet(
+                title="先规划，再执行",
+                start=131,
+                end=157,
+                focus="这段代码展示了规划是如何被建成一个普通函数调用的。",
+            ),
+            Snippet(
+                title="多步任务复用同一个 messages",
+                start=160,
+                end=220,
+                focus="真正的关键不是 `for step in steps`，而是步骤之间共用上下文。",
+            ),
+        ],
+    ),
+    Lesson(
+        slug="skills-mcp",
+        number="03",
+        title="Rules、Skills 与 MCP",
+        short_title="工程扩展",
+        stage="从脚本到框架",
+        lesson_minutes="10 分钟",
+        summary="这一讲只抓工程化里最值钱的三件事：规则约束、技能注入和工具外接，而不是把配置细节全部讲完。",
+        core="规则 + 技能 + 外部工具",
+        tags=["Rules", "Skills", "MCP"],
+        demo_command='python agent/03-skills-mcp/agent-skills-mcp.py --plan "扫描项目里所有 TODO 并生成修复顺序"',
+        demo_goal="展示一个 Agent 为什么会越来越像平台：它开始从文件系统和配置里吸收能力。",
+        demo_expected=[
+            "如果项目下放了 `.agent/rules` 或 `.agent/skills`，启动时能看到加载日志。",
+            "`plan` 不再只是外部函数，而是工具系统的一部分。",
+            "讲解时重点放在“分层职责”，而不是每个配置格式的细枝末节。",
+        ],
+        student_takeaways=[
+            "知道 Rule 负责约束行为，Skill 负责补充领域知识，MCP 负责扩展工具边界。",
+            "理解为什么 `plan` 变成工具后，主循环会更统一。",
+            "能自己给项目加一个最小规则文件并验证它会被注入。",
+        ],
+        practice_steps=[
+            "新建 `.agent/rules/code-style.md`，只写一条简单规范，再运行一次任务。",
+            "给 `.agent/skills/` 放一个最小 JSON 技能描述，观察加载输出。",
+            "把 `plan` 工具注释掉，对比 Agent 在复杂任务里的差异。",
+        ],
+        talk_points=[
+            "工程化 Agent 的重点不是“多炫”，而是上下文被组织得更可控。",
+            "Rules、Skills、MCP 是三层不同问题，不要混成一个“配置系统”。",
+            "当能力开始外置，Agent 才有项目感和团队协作价值。",
+        ],
+        pitfalls=[
+            "规则、技能太多时会互相打架，提示词冲突会更隐蔽。",
+            "`plan` 工具必须防递归，不然很容易自我套娃。",
+            "工具列表不断膨胀后，模型的工具选择准确率会下降。",
+        ],
+        workshop_prompt="课堂上只演示一个最小规则文件和一个最小技能定义，不展开完整配置宇宙。",
+        md_path=ROOT / "03-skills-mcp/agent-skills-mcp.md",
+        code_path=ROOT / "03-skills-mcp/agent-skills-mcp.py",
+        snippets=[
+            Snippet(
+                title="把计划注册成工具",
+                start=195,
+                end=230,
+                focus="这是课堂最值得讲的转折点：复杂能力也可以被包装进统一工具协议。",
+            ),
+            Snippet(
+                title="从文件系统加载 Rules / Skills / MCP",
+                start=266,
+                end=305,
+                focus="这段代码把“可配置能力”放进了项目目录，而不是继续硬编码在脚本里。",
+            ),
+        ],
+    ),
+    Lesson(
+        slug="subagent",
+        number="04",
+        title="SubAgent 子智能体",
+        short_title="任务委派",
+        stage="把活拆出去",
+        lesson_minutes="8 分钟",
+        summary="当一个 Agent 同时想架构、写后端、写前端时，就该把一部分任务委派给更聚焦的子代理。",
+        core="独立上下文 + 角色委派",
+        tags=["SubAgent", "Delegation", "Role Prompt"],
+        demo_command='python agent/04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
+        demo_goal="让学生看到“委派”不是神秘概念，本质上就是把另一个 Agent 也做成工具。",
+        demo_expected=[
+            "主 Agent 会调用 `subagent(...)`，并给它一个明确角色与任务。",
+            "子代理有自己的 `sub_messages`，不会把主代理上下文一股脑复制过去。",
+            "子代理返回的是结果摘要，而不是完整内部历史。",
+        ],
+        student_takeaways=[
+            "知道 SubAgent 最关键的是“独立上下文”，不是“多开一个模型”。",
+            "能解释为什么课堂上要禁止子代理继续派子代理。",
+            "能把一个复杂任务拆成主代理 + 子代理两个角色来演示。",
+        ],
+        practice_steps=[
+            "把一个“写 README”任务改成由文档子代理完成。",
+            "给子代理新增一个更具体的角色描述，观察输出是否更稳。",
+            "让主代理只保留协调职责，避免它同时写所有实现细节。",
+        ],
+        talk_points=[
+            "委派的收益来自上下文收敛，不只是并行化。",
+            "角色 prompt 越具体，子代理越像一个真正的“岗位”。",
+            "返回摘要而非全量历史，是后面控制上下文成本的关键习惯。",
+        ],
+        pitfalls=[
+            "任务边界不清时，主代理和子代理会重复劳动。",
+            "允许无限递归委派，成本和复杂度都会失控。",
+            "如果子代理的角色太泛，它只是换了个名字的主代理。",
+        ],
+        workshop_prompt="最好的课堂做法是只演一个前后端双角色案例，让委派的价值立刻可见。",
+        md_path=ROOT / "04-subagent/agent-subagent.md",
+        code_path=ROOT / "04-subagent/agent-subagent.py",
+        snippets=[
+            Snippet(
+                title="把 subagent 做成一个工具",
+                start=104,
+                end=142,
+                focus="独立 `sub_messages` + 禁止递归，是这段实现最值得讲的两点。",
+            )
+        ],
+    ),
+    Lesson(
+        slug="teams",
+        number="05",
+        title="多智能体团队协作",
+        short_title="团队编排",
+        stage="让角色长期存在",
+        lesson_minutes="9 分钟",
+        summary="SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。",
+        core="持久 Agent + 通信通道",
+        tags=["Team", "Inbox", "Lifecycle"],
+        demo_command='python agent/05-teams/agent-teams.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
+        demo_goal="把“团队协作”讲成一种可落地的软件结构，而不是抽象概念。",
+        demo_expected=[
+            "启动后会先由 `plan_team()` 拆出成员与分工。",
+            "每个 Agent 都保留自己的 `messages` 和记忆，不会执行一次就消失。",
+            "成员完成后通过 `broadcast()` 把信息发给队友，最后 reviewer 再做检查。",
+        ],
+        student_takeaways=[
+            "明白 Team 比 SubAgent 多出来的是持久身份与通信。",
+            "能用 `inbox` 这种极简单模型解释 Agent 间消息传递。",
+            "知道为什么 reviewer 是课堂里最好展示团队价值的角色。",
+        ],
+        practice_steps=[
+            "把 `plan_team()` 固定成两开发一审查的三人团队。",
+            "在执行中手动插入一次 `send()`，演示点对点消息和广播的区别。",
+            "让 reviewer 再执行一次 `chat()`，体会持久记忆如何带来二次审查。",
+        ],
+        talk_points=[
+            "多智能体最重要的不是人数，而是角色和生命周期。",
+            "Agent 的 `inbox` 足够简单，却已经能支持很多协作场景。",
+            "团队越大不一定越好，真正有价值的是信息流变清晰。",
+        ],
+        pitfalls=[
+            "如果每个角色都很泛，最后只是多个普通助手轮流说话。",
+            "消息太多时又会重新触发上下文压力。",
+            "团队协作如果没有 reviewer，很难展示“协作带来的质量提升”。",
+        ],
+        workshop_prompt="讲 1 小时时，把多智能体团队讲成“带 reviewer 的协作流水线”最容易让听众记住。",
+        md_path=ROOT / "05-teams/agent-teams.md",
+        code_path=ROOT / "05-teams/agent-teams.py",
+        snippets=[
+            Snippet(
+                title="持久化的 Agent 对象",
+                start=150,
+                end=210,
+                focus="这段代码解释了为什么团队成员会“记得队友之前说过什么”。",
+            ),
+            Snippet(
+                title="Team 管理生命周期与通信",
+                start=219,
+                end=247,
+                focus="招募、广播、解散，这里就是多智能体协作最小骨架。",
+            ),
+        ],
+    ),
+    Lesson(
+        slug="compact",
+        number="06",
+        title="上下文压缩",
+        short_title="长任务生存",
+        stage="防止自我窒息",
+        lesson_minutes="7 分钟",
+        summary="这一讲不讲理论史，只解决一个课堂上特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。",
+        core="摘要旧消息，保留最近窗口",
+        tags=["Context Window", "Compaction", "Summarization"],
+        demo_command='python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt"',
+        demo_goal="让学生看到压缩不是“加分项”，而是 Agent 长任务能不能活下来的生死线。",
+        demo_expected=[
+            "把阈值调小后，很容易在终端看到 `[Compact]` 日志。",
+            "压缩会保留 system prompt 与最近几条消息，只把旧消息折叠成摘要。",
+            "强调：压缩也是花 token 的，所以它是工程折中，不是白送能力。",
+        ],
+        student_takeaways=[
+            "知道为什么更大的 context window 不是根治方案。",
+            "能解释 `COMPACT_THRESHOLD` 与 `KEEP_RECENT` 的取舍。",
+            "理解“记住要点、忘掉细节”是 Agent 的必要能力。",
+        ],
+        practice_steps=[
+            "把 `COMPACT_THRESHOLD` 调到 8，制造一轮可见的压缩。",
+            "把 `KEEP_RECENT` 从 6 改成 4，比较当前任务衔接是否变差。",
+            "观察压缩前后 messages 的结构变化，不只看日志。",
+        ],
+        talk_points=[
+            "压缩不是为了优雅，是为了不在真实任务里死于上下文溢出。",
+            "最不能丢的是 system prompt 和当前工作现场。",
+            "旧消息摘要化，本质上是在用模型帮助自己整理历史。",
+        ],
+        pitfalls=[
+            "摘要过度会丢掉关键路径和文件名。",
+            "recent window 太短会让 Agent 瞬间断片。",
+            "只做截断不做压缩，依然扛不住复杂长任务。",
+        ],
+        workshop_prompt="课堂上把阈值调小，强制触发一次压缩，是最直观的讲法。",
+        md_path=ROOT / "06-compact/agent-compact.md",
+        code_path=ROOT / "06-compact/agent-compact.py",
+        snippets=[
+            Snippet(
+                title="上下文压缩函数",
+                start=129,
+                end=190,
+                focus="这就是课堂里最值钱的 60 行：把旧历史折叠成摘要，把当前现场留下来。",
+            )
+        ],
+    ),
+    Lesson(
+        slug="safety",
+        number="07",
+        title="三道安全防线",
+        short_title="上线边界",
+        stage="能力关进笼子",
+        lesson_minutes="8 分钟",
+        summary="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。",
+        core="黑名单 + 人工确认 + 输出截断",
+        tags=["Safety", "Approval", "Guardrails"],
+        demo_command='python agent/07-safety/agent-safe.py "列出当前目录的文件"',
+        demo_goal="让学生形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。",
+        demo_expected=[
+            "普通命令会先弹确认，再执行。",
+            "危险命令会在黑名单阶段直接被拦下。",
+            "超长输出会被截断，顺带呼应上一讲的上下文控制问题。",
+        ],
+        student_takeaways=[
+            "能说清三道防线分别解决什么问题。",
+            "知道为什么不能把“是否安全”完全外包给模型自己判断。",
+            "理解安全与上下文控制其实是同一件工程责任的两面。",
+        ],
+        practice_steps=[
+            "给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。",
+            "把 `read_file` 改成只允许读取项目目录，做一个最小白名单。",
+            "故意读取一个超长文件，观察截断提示如何返回给模型。",
+        ],
+        talk_points=[
+            "黑名单负责挡住已知高危动作，人工确认负责最后边界。",
+            "输出截断既是安全问题，也是稳定性问题。",
+            "真正可用的 Agent 一定要允许用户拒绝某一步。",
+        ],
+        pitfalls=[
+            "只靠黑名单是不够的，绕过方式永远存在。",
+            "所有动作都确认会严重伤体验，要做分级策略。",
+            "`--auto` 只能在你完全信任的隔离环境里用。",
+        ],
+        workshop_prompt="把安全讲成‘让 Agent 能上线’的最后门槛，听众会更容易记住。",
+        md_path=ROOT / "07-safety/agent-safe.md",
+        code_path=ROOT / "07-safety/agent-safe.py",
+        snippets=[
+            Snippet(
+                title="危险命令黑名单与确认机制",
+                start=49,
+                end=107,
+                focus="先让学生明白黑名单和确认框各拦哪一层风险。",
+            ),
+            Snippet(
+                title="安全版 execute_bash",
+                start=162,
+                end=186,
+                focus="三道防线是如何串起来的，这段函数最清楚。",
+            ),
+        ],
+    ),
+]
+
+
+SESSION_OUTCOMES = [
+    "能从零解释 Agent 的最小工作闭环，而不是只会使用现成产品。",
+    "能把一个单文件 Agent 逐步升级到有记忆、可委派、可扩展、可控的原型。",
+    "能现场带着学生跑 3 个最小 demo，并把关键代码讲清楚。",
+]
+
+
+SESSION_SETUP = [
+    "Python 环境可运行 `agent/*.py` 文件。",
+    "已设置 `OPENAI_API_KEY`，并准备一个可用模型。",
+    "课堂上优先用终端演示，不用展示全部原文文章。",
+]
+
+
+SESSION_FORMAT = [
+    "20% 概念：只解释最少必要的共识，不做长篇原理展开。",
+    "50% 现场演示：每一讲都对应一个可以复制的命令或任务。",
+    "30% 动手练习：让听众回去能自己再改一次代码。",
+]
+
+
+AGENDA = [
+    ("00 - 05", "开场：为什么今天不讲大而全", "先建立一个共识：这 1 小时只保留真正能拿去做 Demo 的内容。"),
+    ("05 - 13", "第 01 讲：最小闭环", "跑通最小 Agent，让听众看见工具调用、执行和结果回填。"),
+    ("13 - 21", "第 02 讲：记忆与规划", "演示 `--plan` 和 `agent_memory.md`，让 Agent 会连续工作。"),
+    ("21 - 31", "第 03 讲：Rules / Skills / MCP", "把 Agent 从脚本推到工程化外壳，但只讲配置分层和一个最小示例。"),
+    ("31 - 39", "第 04 讲：SubAgent", "用前后端双角色案例，解释为什么复杂任务要委派。"),
+    ("39 - 48", "第 05 讲：Teams", "把委派升级成长期协作团队，重点演示 reviewer 复盘。"),
+    ("48 - 55", "第 06 讲：上下文压缩", "现场把阈值调小，强制触发一次压缩。"),
+    ("55 - 60", "第 07 讲：安全防线 + 收尾", "用危险命令拦截与人工确认收束工程边界。"),
+]
 
 
 def github_blob_url(path: Path) -> str:
     relative = path.relative_to(REPO_ROOT).as_posix()
     return f"{REPO_WEB_BASE}/blob/{SOURCE_BRANCH}/{relative}"
+
+
+def github_lines_url(path: Path, start: int, end: int) -> str:
+    return f"{github_blob_url(path)}#L{start}-L{end}"
 
 
 def page_url(filename: str) -> str:
@@ -164,34 +487,73 @@ def page_url(filename: str) -> str:
 
 def build_head(title: str, description: str, filename: str, page_type: str) -> str:
     canonical = page_url(filename)
-    escaped_title = html.escape(title)
-    escaped_description = html.escape(description)
-    escaped_canonical = html.escape(canonical)
     return f"""
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{escaped_title}</title>
-  <meta name="description" content="{escaped_description}">
+  <title>{html.escape(title)}</title>
+  <meta name="description" content="{html.escape(description)}">
   <meta name="theme-color" content="#1f2430">
-  <link rel="canonical" href="{escaped_canonical}">
+  <link rel="canonical" href="{html.escape(canonical)}">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="{page_type}">
   <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
-  <meta property="og:title" content="{escaped_title}">
-  <meta property="og:description" content="{escaped_description}">
-  <meta property="og:url" content="{escaped_canonical}">
+  <meta property="og:title" content="{html.escape(title)}">
+  <meta property="og:description" content="{html.escape(description)}">
+  <meta property="og:url" content="{html.escape(canonical)}">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{escaped_title}">
-  <meta name="twitter:description" content="{escaped_description}">
+  <meta name="twitter:title" content="{html.escape(title)}">
+  <meta name="twitter:description" content="{html.escape(description)}">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 """.strip()
 
 
+def render_tags(tags: List[str], class_name: str) -> str:
+    return "".join(f'<span class="{class_name}">{html.escape(tag)}</span>' for tag in tags)
+
+
+def render_bullets(items: List[str], class_name: str = "lesson-list") -> str:
+    body = "".join(f"<li>{html.escape(item)}</li>" for item in items)
+    return f'<ul class="{class_name}">{body}</ul>'
+
+
+def render_steps(items: List[str]) -> str:
+    body = "".join(f"<li>{html.escape(item)}</li>" for item in items)
+    return f'<ol class="lesson-steps">{body}</ol>'
+
+
+def code_lines(path: Path) -> int:
+    return len(path.read_text(encoding="utf-8").splitlines())
+
+
+def excerpt_code(path: Path, start: int, end: int) -> str:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    selected = []
+    for number in range(start, min(end, len(lines)) + 1):
+        selected.append(f"{number:4d} {lines[number - 1]}")
+    return "\n".join(selected)
+
+
+def lesson_nav(current_slug: str) -> str:
+    items = []
+    for lesson in LESSONS:
+        current_class = " is-current" if lesson.slug == current_slug else ""
+        items.append(
+            f'''
+            <a class="chapter-rail-link{current_class}" href="{lesson.slug}.html">
+              <span class="course-step">第 {lesson.number} 讲</span>
+              <strong>{html.escape(lesson.title)}</strong>
+              <small>{html.escape(lesson.short_title)} · {html.escape(lesson.core)}</small>
+            </a>
+            '''
+        )
+    return "".join(items)
+
+
 def build_footer() -> str:
     return f"""
     <footer class="site-footer">
-      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
         <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
         <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
@@ -201,300 +563,191 @@ def build_footer() -> str:
     """
 
 
-def convert_links(target: str) -> str:
-    article_map = {article.md_path.name: f"{article.slug}.html" for article in ARTICLES}
-    article_map.update({str(article.md_path.relative_to(ROOT)): f"{article.slug}.html" for article in ARTICLES})
-    if target.startswith("http://") or target.startswith("https://"):
-        return target
-    normalized = target.replace("../", "").replace("./", "")
-    normalized = normalized.split("#", 1)[0]
-    if normalized in article_map:
-        return article_map[normalized]
-    return target
-
-
-def render_inline(text: str) -> str:
-    placeholders: List[str] = []
-
-    def store_code(match: re.Match[str]) -> str:
-        placeholders.append(f"<code>{html.escape(match.group(1))}</code>")
-        return f"@@CODE{len(placeholders) - 1}@@"
-
-    escaped = html.escape(text)
-    escaped = re.sub(r"`([^`]+)`", store_code, escaped)
-    escaped = re.sub(
-        r"\[([^\]]+)\]\(([^)]+)\)",
-        lambda m: f'<a href="{html.escape(convert_links(m.group(2)))}">{m.group(1)}</a>',
-        escaped,
-    )
-    escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
-    escaped = re.sub(r"\*([^*]+)\*", r"<em>\1</em>", escaped)
-    for idx, value in enumerate(placeholders):
-        escaped = escaped.replace(f"@@CODE{idx}@@", value)
-    return escaped
-
-
-def flush_paragraph(buffer: List[str], out: List[str]) -> None:
-    if not buffer:
-        return
-    paragraph = " ".join(line.strip() for line in buffer).strip()
-    if paragraph:
-        out.append(f"<p>{render_inline(paragraph)}</p>")
-    buffer.clear()
-
-
-def flush_list(items: List[Tuple[str, str]], out: List[str]) -> None:
-    if not items:
-        return
-    current_kind = items[0][0]
-    tag = "ol" if current_kind == "ol" else "ul"
-    out.append(f"<{tag}>")
-    for _, item in items:
-        out.append(f"<li>{render_inline(item)}</li>")
-    out.append(f"</{tag}>")
-    items.clear()
-
-
-def flush_blockquote(buffer: List[str], out: List[str]) -> None:
-    if not buffer:
-        return
-    parts: List[str] = []
-    paragraph_lines: List[str] = []
-    list_items: List[Tuple[str, str]] = []
-
-    def flush_quote_paragraph() -> None:
-        if not paragraph_lines:
-            return
-        paragraph = " ".join(line.strip() for line in paragraph_lines).strip()
-        if paragraph:
-            parts.append(f"<p>{render_inline(paragraph)}</p>")
-        paragraph_lines.clear()
-
-    def flush_quote_list() -> None:
-        if not list_items:
-            return
-        current_kind = list_items[0][0]
-        tag = "ol" if current_kind == "ol" else "ul"
-        parts.append(f"<{tag}>")
-        for _, item in list_items:
-            parts.append(f"<li>{render_inline(item)}</li>")
-        parts.append(f"</{tag}>")
-        list_items.clear()
-
-    for raw_line in buffer:
-        stripped = raw_line.strip()
-        ul_match = re.match(r"^[-*]\s+(.*)$", stripped)
-        ol_match = re.match(r"^\d+\.\s+(.*)$", stripped)
-        if ul_match or ol_match:
-            flush_quote_paragraph()
-            kind = "ul" if ul_match else "ol"
-            text = ul_match.group(1) if ul_match else ol_match.group(1)
-            if list_items and list_items[0][0] != kind:
-                flush_quote_list()
-            list_items.append((kind, text))
-        else:
-            flush_quote_list()
-            paragraph_lines.append(raw_line)
-
-    flush_quote_paragraph()
-    flush_quote_list()
-    out.append(f"<blockquote>{''.join(parts)}</blockquote>")
-    buffer.clear()
-
-
-def flush_table(rows: List[List[str]], out: List[str]) -> None:
-    if not rows:
-        return
-    header = rows[0]
-    body = rows[1:]
-    out.append("<div class=\"table-wrap\"><table>")
-    out.append("<thead><tr>")
-    for cell in header:
-        out.append(f"<th>{render_inline(cell.strip())}</th>")
-    out.append("</tr></thead>")
-    if body:
-        out.append("<tbody>")
-        for row in body:
-            out.append("<tr>")
-            for cell in row:
-                out.append(f"<td>{render_inline(cell.strip())}</td>")
-            out.append("</tr>")
-        out.append("</tbody>")
-    out.append("</table></div>")
-    rows.clear()
-
-
-def markdown_to_html(markdown: str) -> Tuple[str, List[Tuple[int, str, str]]]:
-    lines = markdown.splitlines()
-    out: List[str] = []
-    headings: List[Tuple[int, str, str]] = []
-    paragraph: List[str] = []
-    items: List[Tuple[str, str]] = []
-    quotes: List[str] = []
-    table_rows: List[List[str]] = []
-    in_code = False
-    code_lang = ""
-    code_buffer: List[str] = []
-    i = 0
-
-    def flush_non_code() -> None:
-        flush_paragraph(paragraph, out)
-        flush_list(items, out)
-        flush_blockquote(quotes, out)
-        flush_table(table_rows, out)
-
-    while i < len(lines):
-        line = lines[i]
-        stripped = line.strip()
-
-        if in_code:
-            if stripped.startswith("```"):
-                code = html.escape("\n".join(code_buffer))
-                out.append(
-                    f'<pre class="code-block"><code class="language-{html.escape(code_lang)}">{code}</code></pre>'
-                )
-                in_code = False
-                code_lang = ""
-                code_buffer.clear()
-            else:
-                code_buffer.append(line)
-            i += 1
-            continue
-
-        if stripped.startswith("```"):
-            flush_non_code()
-            in_code = True
-            code_lang = stripped[3:].strip() or "text"
-            i += 1
-            continue
-
-        if not stripped:
-            flush_non_code()
-            i += 1
-            continue
-
-        if stripped in {"---", "***"}:
-            flush_non_code()
-            out.append("<hr>")
-            i += 1
-            continue
-
-        heading_match = re.match(r"^(#{1,6})\s+(.*)$", stripped)
-        if heading_match:
-            flush_non_code()
-            level = len(heading_match.group(1))
-            text = heading_match.group(2).strip()
-            anchor = slugify(text)
-            headings.append((level, text, anchor))
-            out.append(f'<h{level} id="{anchor}">{render_inline(text)}</h{level}>')
-            i += 1
-            continue
-
-        if stripped.startswith(">"):
-            flush_paragraph(paragraph, out)
-            flush_list(items, out)
-            flush_table(table_rows, out)
-            quotes.append(stripped[1:].strip())
-            i += 1
-            continue
-
-        if "|" in stripped and i + 1 < len(lines):
-            next_line = lines[i + 1].strip()
-            if re.match(r"^\|?[\s:-]+\|[\s|:-]*$", next_line):
-                flush_non_code()
-                header = [cell.strip() for cell in stripped.strip("|").split("|")]
-                table_rows.append(header)
-                i += 2
-                while i < len(lines):
-                    table_line = lines[i].strip()
-                    if not table_line or "|" not in table_line:
-                        break
-                    table_rows.append([cell.strip() for cell in table_line.strip("|").split("|")])
-                    i += 1
-                flush_table(table_rows, out)
-                continue
-
-        ul_match = re.match(r"^[-*]\s+(.*)$", stripped)
-        ol_match = re.match(r"^\d+\.\s+(.*)$", stripped)
-        if ul_match or ol_match:
-            flush_paragraph(paragraph, out)
-            flush_blockquote(quotes, out)
-            kind = "ul" if ul_match else "ol"
-            text = ul_match.group(1) if ul_match else ol_match.group(1)
-            if items and items[0][0] != kind:
-                flush_list(items, out)
-            items.append((kind, text))
-            i += 1
-            continue
-
-        paragraph.append(line)
-        i += 1
-
-    flush_non_code()
-    return "\n".join(out), headings
-
-
-def extract_intro(markdown: str) -> str:
-    for raw_line in markdown.splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or line.startswith(">") or line.startswith("|") or line.startswith("```"):
-            continue
-        return line
-    return ""
-
-
-def strip_first_h1(article_html: str) -> str:
-    return re.sub(r'^<h1 id="[^"]+">.*?</h1>\s*', "", article_html, count=1, flags=re.S)
-
-
-def build_chapter_rail(current_slug: str) -> str:
-    items = []
-    for article in ARTICLES:
-        current_class = " is-current" if article.slug == current_slug else ""
-        items.append(
-            f'''
-            <a class="chapter-rail-link{current_class}" href="{article.slug}.html">
-              <span class="course-step">第 {article.number} 讲</span>
-              <strong>{html.escape(article.title)}</strong>
-              <small>{html.escape(article.short_title)} · {html.escape(article.core)}</small>
-            </a>
-            '''
+def build_home_page() -> str:
+    lesson_cards = []
+    for lesson in LESSONS:
+        lesson_cards.append(
+            f"""
+            <article class="lesson-card">
+              <p class="lesson-index">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
+              <h3>{html.escape(lesson.title)}</h3>
+              <p>{html.escape(lesson.summary)}</p>
+              <div class="lesson-meta">
+                <span>{html.escape(lesson.lesson_minutes)}</span>
+                <span>{code_lines(lesson.code_path)} 行代码</span>
+                <span>{html.escape(lesson.core)}</span>
+              </div>
+              <p class="lesson-kicker">实战重点：{html.escape(lesson.workshop_prompt)}</p>
+              <div class="lesson-tag-row">{render_tags(lesson.tags, "tag")}</div>
+              <a class="lesson-link" href="{lesson.slug}.html">看课堂版讲义</a>
+            </article>
+            """
         )
-    return "".join(items)
 
-
-def build_article_page(article: Article, article_html: str, headings: List[Tuple[int, str, str]], intro: str, prev_article: Optional[Article], next_article: Optional[Article], code_lines: int) -> str:
-    toc_items = []
-    body_html = strip_first_h1(article_html)
-    for level, text, anchor in headings:
-        if level == 1 or level > 3:
-            continue
-        toc_items.append(
-            f'<a class="toc-link level-{level}" href="#{anchor}">{html.escape(text)}</a>'
+    agenda_items = []
+    for time_range, title, note in AGENDA:
+        agenda_items.append(
+            f"""
+            <article class="agenda-item">
+              <p class="agenda-time">{html.escape(time_range)}</p>
+              <div class="agenda-content">
+                <h3>{html.escape(title)}</h3>
+                <p>{html.escape(note)}</p>
+              </div>
+            </article>
+            """
         )
-    toc = "\n".join(toc_items)
-    chapter_rail = build_chapter_rail(article.slug)
-    source_article_url = github_blob_url(article.md_path)
-    source_code_url = github_blob_url(article.code_path)
-    prev_link = (
-        f'<a class="pager-link prev" href="{prev_article.slug}.html"><span>上一篇</span><strong>{prev_article.number}. {prev_article.short_title}</strong></a>'
-        if prev_article
-        else ""
-    )
-    next_link = (
-        f'<a class="pager-link next" href="{next_article.slug}.html"><span>下一篇</span><strong>{next_article.number}. {next_article.short_title}</strong></a>'
-        if next_article
-        else ""
-    )
-    primary_action = (
-        f'<a class="primary-btn" href="{next_article.slug}.html">继续第 {next_article.number} 讲</a>'
-        if next_article
-        else '<a class="primary-btn" href="index.html#chapters">返回课程首页</a>'
-    )
+
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  {build_head(f"{article.number}. {article.title} | {SITE_TITLE}", article.summary, f"{article.slug}.html", "article")}
+  {build_head(f"{SITE_TITLE}｜{SITE_SUBTITLE}", SITE_DESCRIPTION, "index.html", "website")}
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">nanoAgent</span>
+        <span class="brand-text">{SITE_TITLE}</span>
+      </a>
+      <nav class="top-nav">
+        <a href="#agenda">课程流程</a>
+        <a href="#format">授课方式</a>
+        <a href="#lessons">七讲讲义</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">{SITE_SUBTITLE}</p>
+          <h1>不讲全量原文，只讲能当场跑起来的 Agent</h1>
+          <p class="hero-lead">这套站点把前七篇文章压成一门 1 小时的实战分享课。每一讲只保留课堂必须讲的概念、演示命令、练习步骤和关键代码，帮助你讲得短、讲得稳、讲完学生还能自己动手。</p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
+            <a class="secondary-btn" href="#agenda">先看 60 分钟流程</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="fact-grid">
+            <article class="fact-card">
+              <strong>60 分钟</strong>
+              <span>一小时完整分享</span>
+            </article>
+            <article class="fact-card">
+              <strong>7 讲</strong>
+              <span>全部压缩为课堂版讲义</span>
+            </article>
+            <article class="fact-card">
+              <strong>实战优先</strong>
+              <span>每讲都有演示命令与练习</span>
+            </article>
+            <article class="fact-card">
+              <strong>不贴全文</strong>
+              <span>完整文章改为课后延伸</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-head">
+          <p class="eyebrow">Course Outcome</p>
+          <h2>听众 1 小时后应该带走什么</h2>
+        </div>
+        <div class="format-grid">
+          <article class="format-card">
+            <h3>课程结果</h3>
+            {render_bullets(SESSION_OUTCOMES)}
+          </article>
+          <article class="format-card">
+            <h3>上课准备</h3>
+            {render_bullets(SESSION_SETUP)}
+          </article>
+          <article class="format-card">
+            <h3>授课节奏</h3>
+            {render_bullets(SESSION_FORMAT)}
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="agenda">
+        <div class="section-head">
+          <p class="eyebrow">Agenda</p>
+          <h2>60 分钟怎么分配</h2>
+          <p>核心原则：每一讲都用“一个演示 + 一段关键代码 + 一个练习”收束，不把学生淹没在全文里。</p>
+        </div>
+        <div class="agenda-list">
+          {"".join(agenda_items)}
+        </div>
+      </section>
+
+      <section class="section-block" id="lessons">
+        <div class="section-head">
+          <p class="eyebrow">Lesson Pack</p>
+          <h2>七讲课堂版讲义</h2>
+          <p>每个页面都已经改成适合课堂分享的结构：讲什么、演示什么、让学生做什么、看哪段代码。</p>
+        </div>
+        <div class="lesson-grid">
+          {"".join(lesson_cards)}
+        </div>
+      </section>
+    </main>
+    {build_footer()}
+  </div>
+</body>
+</html>
+"""
+
+
+def build_lesson_page(index: int, lesson: Lesson) -> str:
+    prev_lesson = LESSONS[index - 1] if index > 0 else None
+    next_lesson = LESSONS[index + 1] if index < len(LESSONS) - 1 else None
+
+    toc_links = [
+        ("goals", "这节课学生要拿走什么"),
+        ("demo", "现场演示"),
+        ("practice", "课堂练习"),
+        ("code", "关键代码"),
+        ("talk", "讲课只讲这 3 件事"),
+        ("pitfalls", "容易踩坑"),
+        ("extend", "课后延伸"),
+    ]
+
+    snippet_cards = []
+    for snippet in lesson.snippets:
+        snippet_cards.append(
+            f"""
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
+                  <p class="lesson-index">{html.escape(snippet.title)}</p>
+                  <h3>{html.escape(snippet.focus)}</h3>
+                </div>
+                <a class="source-link" href="{github_lines_url(lesson.code_path, snippet.start, snippet.end)}">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python">{html.escape(excerpt_code(lesson.code_path, snippet.start, snippet.end))}</code></pre>
+            </article>
+            """
+        )
+
+    prev_link = (
+        f'<a class="pager-link" href="{prev_lesson.slug}.html"><span>上一篇</span><strong>{prev_lesson.number}. {html.escape(prev_lesson.short_title)}</strong></a>'
+        if prev_lesson
+        else ""
+    )
+    next_link = (
+        f'<a class="pager-link" href="{next_lesson.slug}.html"><span>下一篇</span><strong>{next_lesson.number}. {html.escape(next_lesson.short_title)}</strong></a>'
+        if next_lesson
+        else ""
+    )
+
+    return f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  {build_head(f"{lesson.number}. {lesson.title}｜{SITE_SUBTITLE}", lesson.summary, f"{lesson.slug}.html", "article")}
 </head>
 <body class="article-body">
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -506,9 +759,8 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
         <span class="brand-text">{SITE_TITLE}</span>
       </a>
       <nav class="top-nav">
-        <a href="index.html#path">学习路径</a>
-        <a href="index.html#map">能力地图</a>
-        <a href="index.html#chapters">全部章节</a>
+        <a href="index.html#agenda">课程流程</a>
+        <a href="index.html#lessons">七讲讲义</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
     </header>
@@ -516,36 +768,26 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 {article.number} 讲</p>
-          <h2 class="lesson-title">{html.escape(article.title)}</h2>
-          <p>{html.escape(article.summary)}</p>
+          <p class="eyebrow">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
+          <h2 class="lesson-title">{html.escape(lesson.title)}</h2>
+          <p>{html.escape(lesson.summary)}</p>
           <div class="chip-row">
-            <span class="chip">{article.difficulty}</span>
-            <span class="chip">{article.time_cost}</span>
-            <span class="chip">{code_lines} 行代码</span>
+            <span class="chip">{html.escape(lesson.lesson_minutes)}</span>
+            <span class="chip">{code_lines(lesson.code_path)} 行代码</span>
+            <span class="chip">{html.escape(lesson.core)}</span>
           </div>
         </div>
 
         <div class="sidebar-card">
           <h2>课程导航</h2>
-          <div class="chapter-rail">{chapter_rail}</div>
+          <div class="chapter-rail">{lesson_nav(lesson.slug)}</div>
         </div>
 
         <div class="sidebar-card">
-          <h2>本章焦点</h2>
-          <p class="focus-line">{html.escape(article.core)}</p>
-          <p>{html.escape(intro)}</p>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>目录</h2>
-          <nav class="toc">{toc}</nav>
-        </div>
-
-        <div class="sidebar-card">
-          <h2>源码入口</h2>
-          <a class="source-link" href="{source_article_url}">查看 GitHub 原始文章</a>
-          <a class="source-link" href="{source_code_url}">查看 GitHub 示例代码</a>
+          <h2>课堂目录</h2>
+          <nav class="toc">
+            {"".join(f'<a class="toc-link" href="#{anchor}">{html.escape(label)}</a>' for anchor, label in toc_links)}
+          </nav>
         </div>
       </aside>
 
@@ -554,22 +796,86 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
           <div class="breadcrumbs">
             <a href="index.html">课程首页</a>
             <span>/</span>
-            <a href="index.html#chapters">章节目录</a>
+            <a href="index.html#lessons">课堂版讲义</a>
             <span>/</span>
-            <span>第 {article.number} 讲</span>
+            <span>第 {lesson.number} 讲</span>
           </div>
-          <p class="eyebrow">Agent Tutorial</p>
-          <h1>{article.number}. {html.escape(article.title)}</h1>
-          <p class="lead">{html.escape(article.summary)}</p>
-          <div class="tag-row">{"".join(f'<span class="tag">{html.escape(tag)}</span>' for tag in article.tags)}</div>
+          <p class="eyebrow">{SITE_SUBTITLE}</p>
+          <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
+          <p class="lead">{html.escape(lesson.summary)}</p>
+          <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
-            {primary_action}
-            <a class="secondary-btn" href="{source_article_url}">查看 GitHub 原文</a>
+            <a class="primary-btn" href="{next_lesson.slug + '.html' if next_lesson else 'index.html#lessons'}">{'继续第 ' + next_lesson.number + ' 讲' if next_lesson else '返回课程首页'}</a>
+            <a class="secondary-btn" href="{github_blob_url(lesson.md_path)}">完整原文</a>
           </div>
         </section>
 
-        <section class="content-card markdown-body">
-          {body_html}
+        <section class="lesson-section" id="goals">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Goal</p>
+            <h2>这节课学生要拿走什么</h2>
+          </div>
+          {render_bullets(lesson.student_takeaways)}
+        </section>
+
+        <section class="lesson-section" id="demo">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Live Demo</p>
+            <h2>现场演示</h2>
+            <p>{html.escape(lesson.demo_goal)}</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">演示命令</p>
+            <pre class="demo-command"><code>{html.escape(lesson.demo_command)}</code></pre>
+            {render_bullets(lesson.demo_expected, "lesson-list")}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="practice">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Practice</p>
+            <h2>课堂练习</h2>
+            <p>{html.escape(lesson.workshop_prompt)}</p>
+          </div>
+          {render_steps(lesson.practice_steps)}
+        </section>
+
+        <section class="lesson-section" id="code">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Code Focus</p>
+            <h2>关键代码</h2>
+          </div>
+          <div class="code-group">
+            {"".join(snippet_cards)}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="talk">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Talk Track</p>
+            <h2>讲课只讲这 3 件事</h2>
+          </div>
+          {render_bullets(lesson.talk_points)}
+        </section>
+
+        <section class="lesson-section" id="pitfalls">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Pitfalls</p>
+            <h2>容易踩坑</h2>
+          </div>
+          {render_bullets(lesson.pitfalls)}
+        </section>
+
+        <section class="lesson-section" id="extend">
+          <div class="lesson-section-head">
+            <p class="eyebrow">After Class</p>
+            <h2>课后延伸</h2>
+            <p>课堂里不展示全文，课后再补完整文章和源码细节。</p>
+          </div>
+          <div class="deep-links">
+            <a class="secondary-btn" href="{github_blob_url(lesson.md_path)}">读完整原文</a>
+            <a class="secondary-btn" href="{github_blob_url(lesson.code_path)}">看完整代码</a>
+          </div>
         </section>
 
         <nav class="pager">
@@ -585,165 +891,6 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
 """
 
 
-def build_index_page(cards: List[str]) -> str:
-    timeline = "\n".join(
-        f"""
-        <a class="timeline-card" href="{article.slug}.html">
-          <div class="timeline-step">{article.number}</div>
-          <div>
-            <p class="timeline-label">{html.escape(article.short_title)}</p>
-            <h3>{html.escape(article.title)}</h3>
-            <p>{html.escape(article.summary)}</p>
-          </div>
-        </a>
-        """
-        for article in ARTICLES
-    )
-    return f"""<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  {build_head(f"{SITE_TITLE} | nanoAgent 技术教学网站", SITE_DESCRIPTION, "index.html", "website")}
-</head>
-<body>
-  <a class="skip-link" href="#main-content">跳到正文</a>
-  <div class="site-shell">
-    <header class="site-header">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">{SITE_TITLE}</span>
-      </a>
-      <nav class="top-nav">
-        <a href="#path">学习路径</a>
-        <a href="#map">能力地图</a>
-        <a href="#chapters">章节阅读</a>
-        <a href="{REPO_WEB_BASE}">GitHub</a>
-      </nav>
-    </header>
-
-    <main id="main-content">
-      <section class="hero-panel">
-        <div class="hero-copy">
-          <p class="eyebrow">Agent Engineering Course</p>
-          <h1>把 Agent 从“会用”讲到“会搭”</h1>
-          <p class="hero-lead">这个网站把 nanoAgent 的前七篇文章重组成一条连续学习路径，用最小实现解释 OpenClaw、Claude Code、Cursor Agent 这类系统背后的关键架构。</p>
-          <div class="hero-actions">
-            <a class="primary-btn" href="essence.html">从第 1 讲开始</a>
-            <a class="secondary-btn" href="#chapters">直接选章节</a>
-          </div>
-        </div>
-        <div class="hero-card-stack">
-          <div class="formula-card">
-            <span class="formula-label">一句话公式</span>
-            <strong>Agent = LLM + 工具 + 循环</strong>
-            <p>之后的记忆、规划、技能、子代理、团队、安全，都是在这个循环外层不断加结构。</p>
-          </div>
-          <div class="metric-grid">
-            <div class="metric-card"><strong>7</strong><span>篇正篇</span></div>
-            <div class="metric-card"><strong>2.5k+</strong><span>行教学内容</span></div>
-            <div class="metric-card"><strong>100 → 282</strong><span>代码逐步进化</span></div>
-            <div class="metric-card"><strong>0</strong><span>前置门槛</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block overview-panel">
-        <div class="section-head">
-          <p class="eyebrow">Overview</p>
-          <h2>不是零散文章，而是一门有路径的 Agent 小课</h2>
-          <p>适合刚开始接触 Agent 的开发者，也适合已经在用 Claude Code / Cursor，但想把底层结构讲清楚的人。</p>
-        </div>
-        <div class="overview-grid">
-          <article class="overview-card">
-            <h3>先抓本质</h3>
-            <p>先建立共同底层，再逐步引入记忆、规划、工具扩展、子代理和安全约束。</p>
-          </article>
-          <article class="overview-card">
-            <h3>边读边看代码</h3>
-            <p>每篇都有源码入口，适合对照 Python 实现理解，不会停留在概念层。</p>
-          </article>
-          <article class="overview-card">
-            <h3>按工程化视角收束</h3>
-            <p>最后落到上下文压缩与安全防线，帮助你把 Agent 从 Demo 思维带到可落地思维。</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-block" id="path">
-        <div class="section-head">
-          <p class="eyebrow">Learning Path</p>
-          <h2>七步搭起 Agent 认知框架</h2>
-          <p>不是平铺文章列表，而是一条从单体循环到工程化系统的能力生长曲线。</p>
-        </div>
-        <div class="timeline-grid">
-          {timeline}
-        </div>
-      </section>
-
-      <section class="section-block map-panel" id="map">
-        <div class="section-head">
-          <p class="eyebrow">Capability Map</p>
-          <h2>先理解共性，再理解增强层</h2>
-        </div>
-        <div class="map-grid">
-          <div class="map-card">
-            <span class="map-index">01</span>
-            <h3>底座</h3>
-            <p>工具定义、函数调用、Agent Loop，是一切 Agent 的最小闭环。</p>
-          </div>
-          <div class="map-card">
-            <span class="map-index">02</span>
-            <h3>持续工作</h3>
-            <p>记忆与规划让 Agent 从“一次回答”变成“多步执行者”。</p>
-          </div>
-          <div class="map-card">
-            <span class="map-index">03-05</span>
-            <h3>扩展与分工</h3>
-            <p>Rules、Skills、MCP、SubAgent、Teams 共同解释可扩展的现代 Agent 产品形态。</p>
-          </div>
-          <div class="map-card">
-            <span class="map-index">06-07</span>
-            <h3>工程化约束</h3>
-            <p>上下文压缩解决可持续性，安全防线解决可上线性。</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section-block" id="chapters">
-        <div class="section-head">
-          <p class="eyebrow">Chapters</p>
-          <h2>选择一讲开始阅读</h2>
-          <p>每一页都附带主题摘要、目录导航、原文与代码入口，适合按顺序学，也适合跳读查阅。</p>
-        </div>
-        <div class="chapter-grid">
-          {"".join(cards)}
-        </div>
-      </section>
-    </main>
-    {build_footer()}
-  </div>
-</body>
-</html>
-"""
-
-
-def build_card(article: Article, code_lines: int) -> str:
-    tags = "".join(f'<span class="mini-tag">{html.escape(tag)}</span>' for tag in article.tags)
-    return f"""
-    <article class="chapter-card">
-      <p class="chapter-index">第 {article.number} 讲</p>
-      <h3>{html.escape(article.title)}</h3>
-      <p>{html.escape(article.summary)}</p>
-      <div class="chapter-meta">
-        <span>{article.difficulty}</span>
-        <span>{article.time_cost}</span>
-        <span>{code_lines} 行代码</span>
-      </div>
-      <div class="mini-tag-row">{tags}</div>
-      <a class="card-link" href="{article.slug}.html">开始阅读</a>
-    </article>
-    """
-
-
 def ensure_dirs() -> None:
     DOCS_DIR.mkdir(exist_ok=True)
     ASSETS_DIR.mkdir(exist_ok=True)
@@ -751,28 +898,10 @@ def ensure_dirs() -> None:
 
 def main() -> None:
     ensure_dirs()
-    cards: List[str] = []
-
-    for idx, article in enumerate(ARTICLES):
-        markdown = article.md_path.read_text(encoding="utf-8")
-        article_html, headings = markdown_to_html(markdown)
-        intro = extract_intro(markdown)
-        code_lines = len(article.code_path.read_text(encoding="utf-8").splitlines())
-        prev_article = ARTICLES[idx - 1] if idx > 0 else None
-        next_article = ARTICLES[idx + 1] if idx < len(ARTICLES) - 1 else None
-        page = build_article_page(
-            article=article,
-            article_html=article_html,
-            headings=headings,
-            intro=intro,
-            prev_article=prev_article,
-            next_article=next_article,
-            code_lines=code_lines,
-        )
-        (DOCS_DIR / f"{article.slug}.html").write_text(page, encoding="utf-8")
-        cards.append(build_card(article, code_lines))
-
-    (DOCS_DIR / "index.html").write_text(build_index_page(cards), encoding="utf-8")
+    (DOCS_DIR / "index.html").write_text(build_home_page(), encoding="utf-8")
+    for index, lesson in enumerate(LESSONS):
+        page = build_lesson_page(index, lesson)
+        (DOCS_DIR / f"{lesson.slug}.html").write_text(page, encoding="utf-8")
 
 
 if __name__ == "__main__":
