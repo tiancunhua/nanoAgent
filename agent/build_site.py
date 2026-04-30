@@ -1,5 +1,6 @@
 import html
 import re
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -9,6 +10,10 @@ ROOT = Path(__file__).parent
 REPO_ROOT = ROOT.parent
 DOCS_DIR = REPO_ROOT / "docs"
 ASSETS_DIR = DOCS_DIR / "assets"
+REPO_WEB_BASE = "https://github.com/GitHubxsy/nanoAgent"
+SITE_URL = "https://githubxsy.github.io/nanoAgent"
+SITE_TITLE = "从零开始理解 Agent"
+SITE_DESCRIPTION = "基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。"
 
 
 @dataclass
@@ -121,11 +126,79 @@ ARTICLES = [
 ]
 
 
+def detect_source_branch() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        branch = result.stdout.strip()
+        return branch or "main"
+    except Exception:
+        return "main"
+
+
+SOURCE_BRANCH = detect_source_branch()
+
+
 def slugify(text: str) -> str:
     text = text.strip().lower()
     text = re.sub(r"[^\w\u4e00-\u9fff\s-]", "", text)
     text = re.sub(r"\s+", "-", text)
     return text or "section"
+
+
+def github_blob_url(path: Path) -> str:
+    relative = path.relative_to(REPO_ROOT).as_posix()
+    return f"{REPO_WEB_BASE}/blob/{SOURCE_BRANCH}/{relative}"
+
+
+def page_url(filename: str) -> str:
+    if filename == "index.html":
+        return f"{SITE_URL}/"
+    return f"{SITE_URL}/{filename}"
+
+
+def build_head(title: str, description: str, filename: str, page_type: str) -> str:
+    canonical = page_url(filename)
+    escaped_title = html.escape(title)
+    escaped_description = html.escape(description)
+    escaped_canonical = html.escape(canonical)
+    return f"""
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{escaped_title}</title>
+  <meta name="description" content="{escaped_description}">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="{escaped_canonical}">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="{page_type}">
+  <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
+  <meta property="og:title" content="{escaped_title}">
+  <meta property="og:description" content="{escaped_description}">
+  <meta property="og:url" content="{escaped_canonical}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{escaped_title}">
+  <meta name="twitter:description" content="{escaped_description}">
+  <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
+""".strip()
+
+
+def build_footer() -> str:
+    return f"""
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
+        <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
+        <a href="{github_blob_url(ROOT / 'build_site.py')}">站点生成器</a>
+      </div>
+    </footer>
+    """
 
 
 def convert_links(target: str) -> str:
@@ -185,8 +258,47 @@ def flush_list(items: List[Tuple[str, str]], out: List[str]) -> None:
 def flush_blockquote(buffer: List[str], out: List[str]) -> None:
     if not buffer:
         return
-    body = "<br>".join(render_inline(line) for line in buffer if line.strip())
-    out.append(f"<blockquote>{body}</blockquote>")
+    parts: List[str] = []
+    paragraph_lines: List[str] = []
+    list_items: List[Tuple[str, str]] = []
+
+    def flush_quote_paragraph() -> None:
+        if not paragraph_lines:
+            return
+        paragraph = " ".join(line.strip() for line in paragraph_lines).strip()
+        if paragraph:
+            parts.append(f"<p>{render_inline(paragraph)}</p>")
+        paragraph_lines.clear()
+
+    def flush_quote_list() -> None:
+        if not list_items:
+            return
+        current_kind = list_items[0][0]
+        tag = "ol" if current_kind == "ol" else "ul"
+        parts.append(f"<{tag}>")
+        for _, item in list_items:
+            parts.append(f"<li>{render_inline(item)}</li>")
+        parts.append(f"</{tag}>")
+        list_items.clear()
+
+    for raw_line in buffer:
+        stripped = raw_line.strip()
+        ul_match = re.match(r"^[-*]\s+(.*)$", stripped)
+        ol_match = re.match(r"^\d+\.\s+(.*)$", stripped)
+        if ul_match or ol_match:
+            flush_quote_paragraph()
+            kind = "ul" if ul_match else "ol"
+            text = ul_match.group(1) if ul_match else ol_match.group(1)
+            if list_items and list_items[0][0] != kind:
+                flush_quote_list()
+            list_items.append((kind, text))
+        else:
+            flush_quote_list()
+            paragraph_lines.append(raw_line)
+
+    flush_quote_paragraph()
+    flush_quote_list()
+    out.append(f"<blockquote>{''.join(parts)}</blockquote>")
     buffer.clear()
 
 
@@ -331,15 +443,39 @@ def extract_intro(markdown: str) -> str:
     return ""
 
 
+def strip_first_h1(article_html: str) -> str:
+    return re.sub(r'^<h1 id="[^"]+">.*?</h1>\s*', "", article_html, count=1, flags=re.S)
+
+
+def build_chapter_rail(current_slug: str) -> str:
+    items = []
+    for article in ARTICLES:
+        current_class = " is-current" if article.slug == current_slug else ""
+        items.append(
+            f'''
+            <a class="chapter-rail-link{current_class}" href="{article.slug}.html">
+              <span class="course-step">第 {article.number} 讲</span>
+              <strong>{html.escape(article.title)}</strong>
+              <small>{html.escape(article.short_title)} · {html.escape(article.core)}</small>
+            </a>
+            '''
+        )
+    return "".join(items)
+
+
 def build_article_page(article: Article, article_html: str, headings: List[Tuple[int, str, str]], intro: str, prev_article: Optional[Article], next_article: Optional[Article], code_lines: int) -> str:
     toc_items = []
+    body_html = strip_first_h1(article_html)
     for level, text, anchor in headings:
-        if level > 3:
+        if level == 1 or level > 3:
             continue
         toc_items.append(
             f'<a class="toc-link level-{level}" href="#{anchor}">{html.escape(text)}</a>'
         )
     toc = "\n".join(toc_items)
+    chapter_rail = build_chapter_rail(article.slug)
+    source_article_url = github_blob_url(article.md_path)
+    source_code_url = github_blob_url(article.code_path)
     prev_link = (
         f'<a class="pager-link prev" href="{prev_article.slug}.html"><span>上一篇</span><strong>{prev_article.number}. {prev_article.short_title}</strong></a>'
         if prev_article
@@ -350,39 +486,49 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
         if next_article
         else ""
     )
+    primary_action = (
+        f'<a class="primary-btn" href="{next_article.slug}.html">继续第 {next_article.number} 讲</a>'
+        if next_article
+        else '<a class="primary-btn" href="index.html#chapters">返回课程首页</a>'
+    )
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{article.number}. {html.escape(article.title)} | 从零开始理解 Agent</title>
-  <link rel="stylesheet" href="assets/style.css">
+  {build_head(f"{article.number}. {article.title} | {SITE_TITLE}", article.summary, f"{article.slug}.html", "article")}
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">{SITE_TITLE}</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 {article.number} 讲</p>
-          <h1>{html.escape(article.title)}</h1>
+          <h2 class="lesson-title">{html.escape(article.title)}</h2>
           <p>{html.escape(article.summary)}</p>
           <div class="chip-row">
             <span class="chip">{article.difficulty}</span>
             <span class="chip">{article.time_cost}</span>
             <span class="chip">{code_lines} 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">{chapter_rail}</div>
         </div>
 
         <div class="sidebar-card">
@@ -398,21 +544,32 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../{article.md_path.relative_to(ROOT).as_posix()}">查看原始文章</a>
-          <a class="source-link" href="../{article.code_path.relative_to(ROOT).as_posix()}">查看示例代码</a>
+          <a class="source-link" href="{source_article_url}">查看 GitHub 原始文章</a>
+          <a class="source-link" href="{source_code_url}">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 {article.number} 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>{article.number}. {html.escape(article.title)}</h1>
           <p class="lead">{html.escape(article.summary)}</p>
           <div class="tag-row">{"".join(f'<span class="tag">{html.escape(tag)}</span>' for tag in article.tags)}</div>
+          <div class="hero-actions">
+            {primary_action}
+            <a class="secondary-btn" href="{source_article_url}">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          {article_html}
+          {body_html}
         </section>
 
         <nav class="pager">
@@ -421,6 +578,7 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
         </nav>
       </article>
     </main>
+    {build_footer()}
   </div>
 </body>
 </html>
@@ -430,41 +588,39 @@ def build_article_page(article: Article, article_html: str, headings: List[Tuple
 def build_index_page(cards: List[str]) -> str:
     timeline = "\n".join(
         f"""
-        <article class="timeline-card">
+        <a class="timeline-card" href="{article.slug}.html">
           <div class="timeline-step">{article.number}</div>
           <div>
             <p class="timeline-label">{html.escape(article.short_title)}</p>
             <h3>{html.escape(article.title)}</h3>
             <p>{html.escape(article.summary)}</p>
           </div>
-        </article>
+        </a>
         """
         for article in ARTICLES
     )
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>从零开始理解 Agent | nanoAgent 技术教学网站</title>
-  <meta name="description" content="基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。">
-  <link rel="stylesheet" href="assets/style.css">
+  {build_head(f"{SITE_TITLE} | nanoAgent 技术教学网站", SITE_DESCRIPTION, "index.html", "website")}
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">{SITE_TITLE}</span>
       </a>
       <nav class="top-nav">
         <a href="#path">学习路径</a>
         <a href="#map">能力地图</a>
         <a href="#chapters">章节阅读</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
     </header>
 
-    <main>
+    <main id="main-content">
       <section class="hero-panel">
         <div class="hero-copy">
           <p class="eyebrow">Agent Engineering Course</p>
@@ -487,6 +643,28 @@ def build_index_page(cards: List[str]) -> str:
             <div class="metric-card"><strong>100 → 282</strong><span>代码逐步进化</span></div>
             <div class="metric-card"><strong>0</strong><span>前置门槛</span></div>
           </div>
+        </div>
+      </section>
+
+      <section class="section-block overview-panel">
+        <div class="section-head">
+          <p class="eyebrow">Overview</p>
+          <h2>不是零散文章，而是一门有路径的 Agent 小课</h2>
+          <p>适合刚开始接触 Agent 的开发者，也适合已经在用 Claude Code / Cursor，但想把底层结构讲清楚的人。</p>
+        </div>
+        <div class="overview-grid">
+          <article class="overview-card">
+            <h3>先抓本质</h3>
+            <p>先建立共同底层，再逐步引入记忆、规划、工具扩展、子代理和安全约束。</p>
+          </article>
+          <article class="overview-card">
+            <h3>边读边看代码</h3>
+            <p>每篇都有源码入口，适合对照 Python 实现理解，不会停留在概念层。</p>
+          </article>
+          <article class="overview-card">
+            <h3>按工程化视角收束</h3>
+            <p>最后落到上下文压缩与安全防线，帮助你把 Agent 从 Demo 思维带到可落地思维。</p>
+          </article>
         </div>
       </section>
 
@@ -541,6 +719,7 @@ def build_index_page(cards: List[str]) -> str:
         </div>
       </section>
     </main>
+    {build_footer()}
   </div>
 </body>
 </html>

@@ -5,9 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>从零开始理解 Agent | nanoAgent 技术教学网站</title>
   <meta name="description" content="基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="从零开始理解 Agent | nanoAgent 技术教学网站">
+  <meta property="og:description" content="基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="从零开始理解 Agent | nanoAgent 技术教学网站">
+  <meta name="twitter:description" content="基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -18,10 +31,11 @@
         <a href="#path">学习路径</a>
         <a href="#map">能力地图</a>
         <a href="#chapters">章节阅读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main>
+    <main id="main-content">
       <section class="hero-panel">
         <div class="hero-copy">
           <p class="eyebrow">Agent Engineering Course</p>
@@ -47,6 +61,28 @@
         </div>
       </section>
 
+      <section class="section-block overview-panel">
+        <div class="section-head">
+          <p class="eyebrow">Overview</p>
+          <h2>不是零散文章，而是一门有路径的 Agent 小课</h2>
+          <p>适合刚开始接触 Agent 的开发者，也适合已经在用 Claude Code / Cursor，但想把底层结构讲清楚的人。</p>
+        </div>
+        <div class="overview-grid">
+          <article class="overview-card">
+            <h3>先抓本质</h3>
+            <p>先建立共同底层，再逐步引入记忆、规划、工具扩展、子代理和安全约束。</p>
+          </article>
+          <article class="overview-card">
+            <h3>边读边看代码</h3>
+            <p>每篇都有源码入口，适合对照 Python 实现理解，不会停留在概念层。</p>
+          </article>
+          <article class="overview-card">
+            <h3>按工程化视角收束</h3>
+            <p>最后落到上下文压缩与安全防线，帮助你把 Agent 从 Demo 思维带到可落地思维。</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section-block" id="path">
         <div class="section-head">
           <p class="eyebrow">Learning Path</p>
@@ -55,74 +91,74 @@
         </div>
         <div class="timeline-grid">
           
-        <article class="timeline-card">
+        <a class="timeline-card" href="essence.html">
           <div class="timeline-step">01</div>
           <div>
             <p class="timeline-label">本质</p>
             <h3>底层原理，只有 100 行</h3>
             <p>先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="memory.html">
           <div class="timeline-step">02</div>
           <div>
             <p class="timeline-label">记忆</p>
             <h3>记忆与规划</h3>
             <p>从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="skills-mcp.html">
           <div class="timeline-step">03</div>
           <div>
             <p class="timeline-label">扩展</p>
             <h3>Rules、Skills 与 MCP</h3>
             <p>解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="subagent.html">
           <div class="timeline-step">04</div>
           <div>
             <p class="timeline-label">分工</p>
             <h3>SubAgent 子智能体</h3>
             <p>从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="teams.html">
           <div class="timeline-step">05</div>
           <div>
             <p class="timeline-label">协作</p>
             <h3>多智能体团队协作</h3>
             <p>把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="compact.html">
           <div class="timeline-step">06</div>
           <div>
             <p class="timeline-label">压缩</p>
             <h3>上下文压缩</h3>
             <p>专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。</p>
           </div>
-        </article>
+        </a>
         
 
-        <article class="timeline-card">
+        <a class="timeline-card" href="safety.html">
           <div class="timeline-step">07</div>
           <div>
             <p class="timeline-label">安全</p>
             <h3>三道安全防线</h3>
             <p>最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
           </div>
-        </article>
+        </a>
         
         </div>
       </section>
@@ -258,6 +294,16 @@
         </div>
       </section>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

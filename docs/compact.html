@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>06. 上下文压缩 | 从零开始理解 Agent</title>
+  <meta name="description" content="专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/compact.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="06. 上下文压缩 | 从零开始理解 Agent">
+  <meta property="og:description" content="专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/compact.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="06. 上下文压缩 | 从零开始理解 Agent">
+  <meta name="twitter:description" content="专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 06 讲</p>
-          <h1>上下文压缩</h1>
+          <h2 class="lesson-title">上下文压缩</h2>
           <p>专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。</p>
           <div class="chip-row">
             <span class="chip">进阶</span>
             <span class="chip">13 分钟</span>
             <span class="chip">252 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link is-current" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent六agent-的一次断舍离上下文压缩">从零开始理解 Agent（六）：Agent 的一次断舍离——上下文压缩</a>
-<a class="toc-link level-2" href="#一先搞清楚问题为什么-messages-会爆">一、先搞清楚问题：为什么 messages 会爆？</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一先搞清楚问题为什么-messages-会爆">一、先搞清楚问题：为什么 messages 会爆？</a>
 <a class="toc-link level-2" href="#二能不能不压缩">二、能不能不压缩？</a>
 <a class="toc-link level-2" href="#三压缩的原理一张图看懂">三、压缩的原理：一张图看懂</a>
 <a class="toc-link level-2" href="#四代码实现只有一个函数">四、代码实现：只有一个函数</a>
@@ -57,22 +119,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../06-compact/agent-compact.md">查看原始文章</a>
-          <a class="source-link" href="../06-compact/agent-compact.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 06 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>06. 上下文压缩</h1>
           <p class="lead">专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。</p>
           <div class="tag-row"><span class="tag">Context Window</span><span class="tag">Compaction</span><span class="tag">Summarization</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="safety.html">继续第 07 讲</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent六agent-的一次断舍离上下文压缩">从零开始理解 Agent（六）：Agent 的一次断舍离——上下文压缩</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <a href="memory.html">第二篇：记忆与规划</a> —— 182 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <strong>第六篇：上下文压缩</strong>（本文）—— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><strong>第六篇：上下文压缩</strong>（本文）—— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
 <p>前五篇我们不断给 Agent 加能力：工具、记忆、规划、Rules、SubAgent、Teams……但有一个问题我们一直在回避：<strong>Agent 的对话历史会无限增长，直到撑爆 LLM 的 context window。</strong></p>
 <p>这不是&quot;将来可能遇到的问题&quot;，而是&quot;用 Agent 干稍微复杂点的活就一定会遇到的问题&quot;。</p>
 <p>今天我们回到 agent-essence.py 的极简基础上，只加一个函数（约 30 行），实现最简单的上下文压缩。</p>
@@ -85,7 +157,7 @@
 ...</code></pre>
 <p>假设一个任务需要 Agent 调用 15 次工具（对于&quot;找到所有 Python 文件、统计行数、排序、写入报告&quot;这样的任务完全正常），<code>messages</code> 就会累积到 30+ 条，其中每条工具返回结果可能包含几百行的命令输出。</p>
 <p>而<strong>任何 LLM 的 context window 都是有限的</strong>。不管是几万 tokens 还是几十万 tokens，只要 Agent 读几个大文件（每个几千行）、执行几次 grep 返回大量结果、再来几轮工具调用——窗口就会被迅速填满。尤其是本地部署的小模型，context window 往往只有几千 tokens，几轮循环就会触顶。</p>
-<blockquote>你可能会想：&quot;现在的模型 context window 越来越大了，还需要压缩吗？&quot;<br>需要。窗口变大只是推迟了问题，没有消除问题。而且更长的上下文意味着更高的 token 费用、更慢的响应速度、以及 LLM 在超长文本中&quot;迷失重点&quot;的风险（即 lost in the middle 问题）。</blockquote>
+<blockquote><p>你可能会想：&quot;现在的模型 context window 越来越大了，还需要压缩吗？&quot;  需要。窗口变大只是推迟了问题，没有消除问题。而且更长的上下文意味着更高的 token 费用、更慢的响应速度、以及 LLM 在超长文本中&quot;迷失重点&quot;的风险（即 lost in the middle 问题）。</p></blockquote>
 <p>当 messages 超过 context window，API 直接报错：<code>context_length_exceeded</code>。Agent 挂了，任务半途而废。</p>
 <hr>
 <h2 id="二能不能不压缩">二、能不能不压缩？</h2>
@@ -327,6 +399,16 @@ recent_messages = messages[-KEEP_RECENT:]   # 第三刀：切出最近消息（�
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

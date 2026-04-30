@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>03. Rules、Skills 与 MCP | 从零开始理解 Agent</title>
+  <meta name="description" content="解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="03. Rules、Skills 与 MCP | 从零开始理解 Agent">
+  <meta property="og:description" content="解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="03. Rules、Skills 与 MCP | 从零开始理解 Agent">
+  <meta name="twitter:description" content="解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 03 讲</p>
-          <h1>Rules、Skills 与 MCP</h1>
+          <h2 class="lesson-title">Rules、Skills 与 MCP</h2>
           <p>解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。</p>
           <div class="chip-row">
             <span class="chip">进阶</span>
             <span class="chip">18 分钟</span>
             <span class="chip">430 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link is-current" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent三openclaw-claude-code-的-rulesskills-与-mcp-机制">从零开始理解 Agent（三）：OpenClaw / Claude Code 的 Rules、Skills 与 MCP 机制</a>
-<a class="toc-link level-2" href="#一三个版本全景对比">一、三个版本全景对比</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一三个版本全景对比">一、三个版本全景对比</a>
 <a class="toc-link level-2" href="#二更精细的工具集从能用到好用">二、更精细的工具集：从&quot;能用&quot;到&quot;好用&quot;</a>
 <a class="toc-link level-3" href="#edit用约束引导-llm-行为">edit：用约束引导 LLM 行为</a>
 <a class="toc-link level-3" href="#read行号-分页">read：行号 + 分页</a>
@@ -69,22 +131,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../03-skills-mcp/agent-skills-mcp.md">查看原始文章</a>
-          <a class="source-link" href="../03-skills-mcp/agent-skills-mcp.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 03 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>03. Rules、Skills 与 MCP</h1>
           <p class="lead">解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。</p>
           <div class="tag-row"><span class="tag">Rules</span><span class="tag">Skills</span><span class="tag">MCP</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="subagent.html">继续第 04 讲</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent三openclaw-claude-code-的-rulesskills-与-mcp-机制">从零开始理解 Agent（三）：OpenClaw / Claude Code 的 Rules、Skills 与 MCP 机制</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <a href="memory.html">第二篇：记忆与规划</a> —— 182 行<br>- <strong>第三篇：Rules、Skills 与 MCP</strong>（本文）—— 265 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><strong>第三篇：Rules、Skills 与 MCP</strong>（本文）—— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
 <p>在前两篇中，我们一步步构建了 Agent 的核心能力：<a href="essence.html">第一篇</a>用 100 行代码搭好了&quot;工具 + 循环&quot;的地基；<a href="memory.html">第二篇</a>用 67 行增量代码装上了记忆和规划。</p>
 <p>但在第二篇结尾，我们留下了三个未解之谜：工具是硬编码的，没有行为约束，规划是被动触发的。</p>
 <p>今天我们继续进化—— <a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/03-skills-mcp/agent-skills-mcp.py">agent-skills-mcp.py</a>（265 行）。如果你用过 OpenClaw 或 Claude Code，你对 <code>CLAUDE.md</code> 规则文件、<code>.agent/skills/</code> 技能目录、MCP 工具配置一定不陌生——这些概念正是本篇要拆解的核心。agent-skills-mcp.py 在前两个版本的基础上，引入了四个新概念来回答那三个问题：</p>
@@ -195,7 +267,7 @@
         return f&quot;Error: {str(e)}&quot;</code></pre>
 <p>这个工具有一个精妙的约束：<strong><code>old_string</code> 必须在文件中恰好出现一次</strong>。出现零次说明目标不存在，出现多次则无法确定该替换哪一处。</p>
 <p>这个&quot;唯一性约束&quot;迫使 LLM 在调用 <code>edit</code> 之前先用 <code>read</code> 或 <code>grep</code> 确认上下文，大大降低了误编辑的概率。对比第一篇中 agent-essence.py 的 <code>write_file</code>（直接覆盖整个文件），<code>edit</code> 精确到了字符串级别——这正是 Claude Code 中 <code>str_replace</code> 工具的设计思路。</p>
-<blockquote><strong>设计启示</strong>：用工具的约束来引导 LLM 的行为，比在 prompt 中告诫&quot;小心编辑&quot;可靠得多。约束是硬性的，prompt 是软性的。</blockquote>
+<blockquote><p><strong>设计启示</strong>：用工具的约束来引导 LLM 的行为，比在 prompt 中告诫&quot;小心编辑&quot;可靠得多。约束是硬性的，prompt 是软性的。</p></blockquote>
 <h3 id="read行号-分页">read：行号 + 分页</h3>
 <pre class="code-block"><code class="language-python">def read(path, offset=None, limit=None):
     try:
@@ -272,7 +344,7 @@ def load_skills():
   &quot;description&quot;: &quot;Deploy application using Docker Compose. Steps: 1) Check Dockerfile exists, 2) Run docker-compose build, 3) Run docker-compose up -d, 4) Verify containers are running.&quot;,
   &quot;triggers&quot;: [&quot;deploy&quot;, &quot;docker&quot;, &quot;container&quot;]
 }</code></pre>
-<blockquote><strong>关于 Skill 的文件格式：</strong> 在 OpenClaw / Claude Code 的实际实现中，Skill 的标准格式是 <strong>Markdown</strong>（每个 Skill 目录下有一个 <code>SKILL.md</code>，里面详细描述执行步骤、最佳实践、示例代码等）。但 nanoAgent 原始仓库中采用的是 <strong>JSON</strong> 格式，所以代码里用 <code>json.load()</code> 来解析。这不影响理解核心思路——不管是 Markdown 还是 JSON，本质都是&quot;把技能描述加载出来注入到 system prompt&quot;。格式只是载体，思想是一样的。</blockquote>
+<blockquote><p><strong>关于 Skill 的文件格式：</strong> 在 OpenClaw / Claude Code 的实际实现中，Skill 的标准格式是 <strong>Markdown</strong>（每个 Skill 目录下有一个 <code>SKILL.md</code>，里面详细描述执行步骤、最佳实践、示例代码等）。但 nanoAgent 原始仓库中采用的是 <strong>JSON</strong> 格式，所以代码里用 <code>json.load()</code> 来解析。这不影响理解核心思路——不管是 Markdown 还是 JSON，本质都是&quot;把技能描述加载出来注入到 system prompt&quot;。格式只是载体，思想是一样的。</p></blockquote>
 <h3 id="42-skills-vs-rules">4.2 Skills vs Rules</h3>
 <div class="table-wrap"><table>
 <thead><tr>
@@ -613,7 +685,7 @@ plan() 返回 4 个步骤
 </table></div>
 <p>如果你跟着这三篇文章走了下来，你已经理解了 Agent 最核心的架构要素。但还有一个问题我们没有触及：当任务复杂到一个 Agent 忙不过来时怎么办？能不能让 Agent 自己找帮手？</p>
 <p>这就是多智能体协作——SubAgent 的领域。在 <a href="subagent.html">第四篇：SubAgent 子智能体</a> 中，我们将用不到 30 行新增代码，让主 Agent 学会&quot;分工派活&quot;。</p>
-<blockquote><em>&quot;The question is not what you look at, but what you see.&quot;</em> — Henry David Thoreau<br>nanoAgent README 的这句引言，放在这里再合适不过。看过这 265 行代码之后，当你再打开 OpenClaw、Claude Code、Cursor 或任何 Agent 产品时，你看到的不再是&quot;魔法&quot;，而是——一个循环、几个工具、一段记忆、一份规则。</blockquote>
+<blockquote><p><em>&quot;The question is not what you look at, but what you see.&quot;</em> — Henry David Thoreau  nanoAgent README 的这句引言，放在这里再合适不过。看过这 265 行代码之后，当你再打开 OpenClaw、Claude Code、Cursor 或任何 Agent 产品时，你看到的不再是&quot;魔法&quot;，而是——一个循环、几个工具、一段记忆、一份规则。</p></blockquote>
 <hr>
 <p><em>本文基于 <a href="https://github.com/GitHubxsy/nanoAgent">GitHubxsy/nanoAgent</a> 的 agent-skills-mcp.py 分析。完整系列：<a href="essence.html">第一篇：底层原理</a> → <a href="memory.html">第二篇：记忆与规划</a> → 第三篇：Rules、Skills 与 MCP（本文） → <a href="subagent.html">第四篇：SubAgent 子智能体</a></em></p>
         </section>
@@ -624,6 +696,16 @@ plan() 返回 4 个步骤
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

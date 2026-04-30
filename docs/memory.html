@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>02. 记忆与规划 | 从零开始理解 Agent</title>
+  <meta name="description" content="从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/memory.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="02. 记忆与规划 | 从零开始理解 Agent">
+  <meta property="og:description" content="从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/memory.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="02. 记忆与规划 | 从零开始理解 Agent">
+  <meta name="twitter:description" content="从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 02 讲</p>
-          <h1>记忆与规划</h1>
+          <h2 class="lesson-title">记忆与规划</h2>
           <p>从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
           <div class="chip-row">
             <span class="chip">入门</span>
             <span class="chip">14 分钟</span>
             <span class="chip">232 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link is-current" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent二openclaw-claude-code-如何实现记忆与规划">从零开始理解 Agent（二）：OpenClaw / Claude Code 如何实现记忆与规划</a>
-<a class="toc-link level-2" href="#一从-agent-essencepy-到-agent-memorypy多了什么">一、从 agent-essence.py 到 agent-memory.py：多了什么？</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一从-agent-essencepy-到-agent-memorypy多了什么">一、从 agent-essence.py 到 agent-memory.py：多了什么？</a>
 <a class="toc-link level-2" href="#二记忆系统最朴素但最本质的方案">二、记忆系统：最朴素但最本质的方案</a>
 <a class="toc-link level-3" href="#21-记忆的存储一个-markdown-文件">2.1 记忆的存储：一个 Markdown 文件</a>
 <a class="toc-link level-3" href="#22-记忆的加载滑动窗口">2.2 记忆的加载：滑动窗口</a>
@@ -63,22 +125,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../02-memory/agent-memory.md">查看原始文章</a>
-          <a class="source-link" href="../02-memory/agent-memory.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 02 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>02. 记忆与规划</h1>
           <p class="lead">从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
           <div class="tag-row"><span class="tag">Memory</span><span class="tag">Planning</span><span class="tag">多步任务</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="skills-mcp.html">继续第 03 讲</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent二openclaw-claude-code-如何实现记忆与规划">从零开始理解 Agent（二）：OpenClaw / Claude Code 如何实现记忆与规划</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <strong>第二篇：记忆与规划</strong>（本文）—— 182 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><strong>第二篇：记忆与规划</strong>（本文）—— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
 <p>上一篇我们用 100 行代码理解了 Agent 的核心公式：<strong>LLM + 工具 + 循环</strong>。但在结尾我们也指出了它的致命缺陷——没有记忆、不会规划。</p>
 <p>如果你用过 OpenClaw 或 Claude Code，你会发现它们可以在一个长对话中持续记住之前的操作，面对复杂需求时也会先制定计划再逐步执行。这些能力不是&quot;魔法&quot;，而是可以用很少的代码实现的架构设计。</p>
 <p>今天我们看 nanoAgent 的第二个版本 <a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/02-memory/agent-memory.py">agent-memory.py</a>（182 行），它只多了 67 行代码，却解决了两个根本问题：<strong>让 Agent 记住过去</strong>，<strong>让 Agent 规划未来</strong>。</p>
@@ -376,6 +448,16 @@ save_memory(task, final_result)</code></pre>
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

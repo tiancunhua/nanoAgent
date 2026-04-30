@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>01. 底层原理，只有 100 行 | 从零开始理解 Agent</title>
+  <meta name="description" content="先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/essence.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="01. 底层原理，只有 100 行 | 从零开始理解 Agent">
+  <meta property="og:description" content="先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/essence.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="01. 底层原理，只有 100 行 | 从零开始理解 Agent">
+  <meta name="twitter:description" content="先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 01 讲</p>
-          <h1>底层原理，只有 100 行</h1>
+          <h2 class="lesson-title">底层原理，只有 100 行</h2>
           <p>先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。</p>
           <div class="chip-row">
             <span class="chip">入门</span>
             <span class="chip">12 分钟</span>
             <span class="chip">103 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link is-current" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent一openclaw-claude-code-的底层原理只有-100-行">从零开始理解 Agent（一）：OpenClaw / Claude Code 的底层原理，只有 100 行</a>
-<a class="toc-link level-2" href="#一先说结论agent-和普通对话的核心区别">一、先说结论：Agent 和普通对话的核心区别</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一先说结论agent-和普通对话的核心区别">一、先说结论：Agent 和普通对话的核心区别</a>
 <a class="toc-link level-2" href="#二nanoagent-全局架构">二、nanoAgent 全局架构</a>
 <a class="toc-link level-2" href="#三逐层解读源码">三、逐层解读源码</a>
 <a class="toc-link level-3" href="#31-llm-客户端初始化">3.1 LLM 客户端初始化</a>
@@ -66,22 +128,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../01-essence/agent-essence.md">查看原始文章</a>
-          <a class="source-link" href="../01-essence/agent-essence.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 01 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>01. 底层原理，只有 100 行</h1>
           <p class="lead">先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。</p>
           <div class="tag-row"><span class="tag">工具调用</span><span class="tag">Function Calling</span><span class="tag">Agent Loop</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="memory.html">继续第 02 讲</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent一openclaw-claude-code-的底层原理只有-100-行">从零开始理解 Agent（一）：OpenClaw / Claude Code 的底层原理，只有 100 行</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <strong>第一篇：底层原理，只有 100 行</strong>（本文）—— 工具 + 循环<br>- <a href="memory.html">第二篇：记忆与规划</a> —— 206 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 282 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><strong>第一篇：底层原理，只有 100 行</strong>（本文）—— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 206 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 282 行</li><li><a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
 <p>很多人用过 ChatGPT、Claude 这样的对话式 AI，也听说过 AI Agent 这个概念。最近 OpenClaw、Claude Code 这类 Coding Agent 火遍了整个开发者圈子——它们能自主读代码、改代码、跑测试，完成以前需要人类手动操作的整个开发流程。</p>
 <p>但 Agent 到底和普通对话有什么区别？OpenClaw / Claude Code 这类工具的底层原理是什么？Agent 是怎么&quot;使用工具&quot;的？</p>
 <p>本文通过逐行解读一个仅 100 行的极简 Agent 实现—— <a href="https://github.com/GitHubxsy/nanoAgent">GitHubxsy/nanoAgent</a>，带你彻底搞懂这些问题。理解了这 100 行代码，你就理解了 OpenClaw、Claude Code、Cursor Agent 等一切 Coding Agent 的共同底座。</p>
@@ -195,7 +267,7 @@ client = OpenAI(
 </tr>
 </tbody>
 </table></div>
-<blockquote><strong>关键洞察</strong>：LLM 本身不会执行任何代码。它只是根据工具说明书，输出一段结构化的 JSON，表达&quot;我想调用 execute_bash，参数是 ls -la&quot;。<strong>真正的执行发生在我们的 Python 代码里</strong>。这个&quot;LLM 输出意图、代码执行动作&quot;的分工，是理解所有 Agent 系统的关键。</blockquote>
+<blockquote><p><strong>关键洞察</strong>：LLM 本身不会执行任何代码。它只是根据工具说明书，输出一段结构化的 JSON，表达&quot;我想调用 execute_bash，参数是 ls -la&quot;。<strong>真正的执行发生在我们的 Python 代码里</strong>。这个&quot;LLM 输出意图、代码执行动作&quot;的分工，是理解所有 Agent 系统的关键。</p></blockquote>
 <h3 id="33-工具实现把-llm-的意图变成行动">3.3 工具实现：把 LLM 的&quot;意图&quot;变成&quot;行动&quot;</h3>
 <pre class="code-block"><code class="language-python">def execute_bash(command):
     try:
@@ -388,6 +460,16 @@ python agent/01-essence/agent-essence.py &quot;帮我创建一个 hello.py 文�
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>

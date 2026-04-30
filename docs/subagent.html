@@ -4,9 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>04. SubAgent 子智能体 | 从零开始理解 Agent</title>
+  <meta name="description" content="从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。">
+  <meta name="theme-color" content="#1f2430">
+  <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/subagent.html">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:title" content="04. SubAgent 子智能体 | 从零开始理解 Agent">
+  <meta property="og:description" content="从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。">
+  <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/subagent.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="04. SubAgent 子智能体 | 从零开始理解 Agent">
+  <meta name="twitter:description" content="从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。">
   <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/site.js"></script>
 </head>
 <body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
   <div class="site-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
@@ -17,20 +32,68 @@
         <a href="index.html#path">学习路径</a>
         <a href="index.html#map">能力地图</a>
         <a href="index.html#chapters">全部章节</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
     </header>
 
-    <main class="article-layout">
+    <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 04 讲</p>
-          <h1>SubAgent 子智能体</h1>
+          <h2 class="lesson-title">SubAgent 子智能体</h2>
           <p>从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。</p>
           <div class="chip-row">
             <span class="chip">进阶</span>
             <span class="chip">15 分钟</span>
             <span class="chip">344 行代码</span>
           </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">
+            <a class="chapter-rail-link" href="essence.html">
+              <span class="course-step">第 01 讲</span>
+              <strong>底层原理，只有 100 行</strong>
+              <small>本质 · Agent = LLM + 工具 + 循环</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="memory.html">
+              <span class="course-step">第 02 讲</span>
+              <strong>记忆与规划</strong>
+              <small>记忆 · 持久记忆 + Plan-then-Execute</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Rules、Skills 与 MCP</strong>
+              <small>扩展 · 行为约束 + 外部能力接入</small>
+            </a>
+            
+            <a class="chapter-rail-link is-current" href="subagent.html">
+              <span class="course-step">第 04 讲</span>
+              <strong>SubAgent 子智能体</strong>
+              <small>分工 · 委派 + 上下文隔离</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="teams.html">
+              <span class="course-step">第 05 讲</span>
+              <strong>多智能体团队协作</strong>
+              <small>协作 · 角色化协作 + 生命周期管理</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="compact.html">
+              <span class="course-step">第 06 讲</span>
+              <strong>上下文压缩</strong>
+              <small>压缩 · Summary + Recent Window</small>
+            </a>
+            
+            <a class="chapter-rail-link" href="safety.html">
+              <span class="course-step">第 07 讲</span>
+              <strong>三道安全防线</strong>
+              <small>安全 · 风险隔离 + 人机边界</small>
+            </a>
+            </div>
         </div>
 
         <div class="sidebar-card">
@@ -41,8 +104,7 @@
 
         <div class="sidebar-card">
           <h2>目录</h2>
-          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent四给-agent-找个帮手最简-subagent-实现">从零开始理解 Agent（四）：给 Agent 找个帮手——最简 SubAgent 实现</a>
-<a class="toc-link level-2" href="#一一个生活类比秒懂-subagent">一、一个生活类比秒懂 SubAgent</a>
+          <nav class="toc"><a class="toc-link level-2" href="#一一个生活类比秒懂-subagent">一、一个生活类比秒懂 SubAgent</a>
 <a class="toc-link level-2" href="#二在代码里怎么实现">二、在代码里怎么实现？</a>
 <a class="toc-link level-3" href="#21-新增一个工具定义">2.1 新增一个工具定义</a>
 <a class="toc-link level-3" href="#22-实现-subagent-函数">2.2 实现 subagent 函数</a>
@@ -59,22 +121,32 @@
 
         <div class="sidebar-card">
           <h2>源码入口</h2>
-          <a class="source-link" href="../04-subagent/agent-subagent.md">查看原始文章</a>
-          <a class="source-link" href="../04-subagent/agent-subagent.py">查看示例代码</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.md">查看 GitHub 原始文章</a>
+          <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.py">查看 GitHub 示例代码</a>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">课程首页</a>
+            <span>/</span>
+            <a href="index.html#chapters">章节目录</a>
+            <span>/</span>
+            <span>第 04 讲</span>
+          </div>
           <p class="eyebrow">Agent Tutorial</p>
           <h1>04. SubAgent 子智能体</h1>
           <p class="lead">从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。</p>
           <div class="tag-row"><span class="tag">SubAgent</span><span class="tag">Delegation</span><span class="tag">Isolation</span></div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="teams.html">继续第 05 讲</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.md">查看 GitHub 原文</a>
+          </div>
         </section>
 
         <section class="content-card markdown-body">
-          <h1 id="从零开始理解-agent四给-agent-找个帮手最简-subagent-实现">从零开始理解 Agent（四）：给 Agent 找个帮手——最简 SubAgent 实现</h1>
-<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <a href="memory.html">第二篇：记忆与规划</a> —— 182 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行<br>- <strong>第四篇：最简 SubAgent 实现</strong>（本文）—— 新开发，192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+          <blockquote><p><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。</p><ul><li><a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环</li><li><a href="memory.html">第二篇：记忆与规划</a> —— 182 行</li><li><a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行</li><li><strong>第四篇：最简 SubAgent 实现</strong>（本文）—— 新开发，192 行</li><li><a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行</li><li><a href="compact.html">第六篇：上下文压缩</a> —— 169 行</li><li><a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</li></ul></blockquote>
 <p>前三篇，我们一路把 Agent 从&quot;会用工具&quot;进化到了&quot;有记忆、会规划、能扩展&quot;。但到目前为止，所有版本都有一个共同特点：<strong>永远只有一个 Agent 在干活</strong>。</p>
 <p>想象一下这个场景：你让 Agent &quot;搭建一个博客系统，前端用 React，后端用 FastAPI，数据库用 SQLite&quot;。一个 Agent 要同时精通前端、后端、数据库——它可以做到，但很容易顾此失彼，上下文越来越长，后面写前端的时候把前面后端的细节忘了。</p>
 <p>现实中我们怎么解决这类问题？<strong>找帮手，分工合作。</strong></p>
@@ -110,7 +182,7 @@
 <p>（由于我们去掉了 Plan 功能来保持代码简洁，整个 <code>agent-subagent.py</code> 只有 192 行，核心循环干净到只有 12 行——这让 SubAgent 的逻辑完全没有噪音干扰。）</p>
 <h3 id="21-新增一个工具定义">2.1 新增一个工具定义</h3>
 <p>还记得第一篇中的核心洞察吗？</p>
-<blockquote>LLM 本身不会执行任何代码。它只是根据工具说明书，输出一段结构化的 JSON。真正的执行发生在我们的 Python 代码里。</blockquote>
+<blockquote><p>LLM 本身不会执行任何代码。它只是根据工具说明书，输出一段结构化的 JSON。真正的执行发生在我们的 Python 代码里。</p></blockquote>
 <p>SubAgent 也不例外。我们要做的第一步，就是写一份&quot;工具说明书&quot;告诉 LLM：&quot;你有一个叫 subagent 的工具，可以指定角色和任务来委派子任务&quot;：</p>
 <pre class="code-block"><code class="language-python">{
     &quot;name&quot;: &quot;subagent&quot;,
@@ -382,7 +454,7 @@ f&quot;You are a {role}. Be concise and focused. Only do what is asked.&quot;</c
 </tr>
 </tbody>
 </table></div>
-<blockquote>注：前三个文件来自 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent 原始仓库</a>。第四个文件是本文新开发的（<a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/04-subagent/agent-subagent.py">GitHub 源码</a>），为了聚焦 SubAgent 核心逻辑，刻意去掉了 Plan 功能，因此行数反而比第三篇少。这不是倒退，而是做减法——<strong>用最干净的代码展示最核心的概念</strong>。</blockquote>
+<blockquote><p>注：前三个文件来自 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent 原始仓库</a>。第四个文件是本文新开发的（<a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/04-subagent/agent-subagent.py">GitHub 源码</a>），为了聚焦 SubAgent 核心逻辑，刻意去掉了 Plan 功能，因此行数反而比第三篇少。这不是倒退，而是做减法——<strong>用最干净的代码展示最核心的概念</strong>。</p></blockquote>
 <p>四个维度叠加，就构成了 OpenClaw、Claude Code、Cursor Agent、Devin 等产品的完整架构。</p>
 <p>而贯穿整个系列的核心设计思想只有一个：<strong>一切能力都是&quot;工具&quot;。</strong> 读文件是工具，写文件是工具，搜索是工具，规划是工具（第三篇），甚至<strong>派出一个子智能体也是工具</strong>（本文）。LLM 通过统一的 Function Calling 协议按需调用它们，代码通过统一的路由表（<code>available_functions</code>）执行它们。</p>
 <p>但 SubAgent 的&quot;一次性&quot;本质也带来了局限：它们之间无法通信，不记得上次做了什么，无法被多次调用。当任务需要真正的团队协作——你写完我来接、测出 bug 你去改、改完我再测——就需要把临时工升级为正式员工。</p>
@@ -397,6 +469,16 @@ f&quot;You are a {role}. Be concise and focused. Only do what is asked.&quot;</c
         </nav>
       </article>
     </main>
+    
+    <footer class="site-footer">
+      <p>内容基于 nanoAgent 的前七篇文章重组，适配为课程型教学网站。</p>
+      <div class="footer-links">
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
+      </div>
+    </footer>
+    
   </div>
 </body>
 </html>
