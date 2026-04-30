@@ -6,7 +6,8 @@ from typing import List, Optional, Tuple
 
 
 ROOT = Path(__file__).parent
-DOCS_DIR = ROOT / "docs"
+REPO_ROOT = ROOT.parent
+DOCS_DIR = REPO_ROOT / "docs"
 ASSETS_DIR = DOCS_DIR / "assets"
 
 
