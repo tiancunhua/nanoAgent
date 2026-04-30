@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02. 记忆与规划 | 从零开始理解 Agent</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="article-body">
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">nanoAgent</span>
+        <span class="brand-text">从零开始理解 Agent</span>
+      </a>
+      <nav class="top-nav">
+        <a href="index.html#path">学习路径</a>
+        <a href="index.html#map">能力地图</a>
+        <a href="index.html#chapters">全部章节</a>
+      </nav>
+    </header>
+
+    <main class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-card">
+          <p class="eyebrow">第 02 讲</p>
+          <h1>记忆与规划</h1>
+          <p>从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
+          <div class="chip-row">
+            <span class="chip">入门</span>
+            <span class="chip">14 分钟</span>
+            <span class="chip">232 行代码</span>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>本章焦点</h2>
+          <p class="focus-line">持久记忆 + Plan-then-Execute</p>
+          <p>上一篇我们用 100 行代码理解了 Agent 的核心公式：**LLM + 工具 + 循环**。但在结尾我们也指出了它的致命缺陷——没有记忆、不会规划。</p>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>目录</h2>
+          <nav class="toc"><a class="toc-link level-1" href="#从零开始理解-agent二openclaw-claude-code-如何实现记忆与规划">从零开始理解 Agent（二）：OpenClaw / Claude Code 如何实现记忆与规划</a>
+<a class="toc-link level-2" href="#一从-agent-essencepy-到-agent-memorypy多了什么">一、从 agent-essence.py 到 agent-memory.py：多了什么？</a>
+<a class="toc-link level-2" href="#二记忆系统最朴素但最本质的方案">二、记忆系统：最朴素但最本质的方案</a>
+<a class="toc-link level-3" href="#21-记忆的存储一个-markdown-文件">2.1 记忆的存储：一个 Markdown 文件</a>
+<a class="toc-link level-3" href="#22-记忆的加载滑动窗口">2.2 记忆的加载：滑动窗口</a>
+<a class="toc-link level-3" href="#23-记忆的注入塞进-system-prompt">2.3 记忆的注入：塞进 System Prompt</a>
+<a class="toc-link level-3" href="#24-记忆流程全景">2.4 记忆流程全景</a>
+<a class="toc-link level-3" href="#25-记忆的本质">2.5 记忆的本质</a>
+<a class="toc-link level-2" href="#三规划系统让-agent-学会先想再做">三、规划系统：让 Agent 学会&quot;先想再做&quot;</a>
+<a class="toc-link level-3" href="#31-为什么需要规划">3.1 为什么需要规划？</a>
+<a class="toc-link level-3" href="#32-规划的设计细节">3.2 规划的设计细节</a>
+<a class="toc-link level-3" href="#33-两种执行范式的对比">3.3 两种执行范式的对比</a>
+<a class="toc-link level-2" href="#四多步执行步骤之间的上下文传递">四、多步执行：步骤之间的上下文传递</a>
+<a class="toc-link level-3" href="#41-从-run_agent-到-run_agent_step-的关键变化">4.1 从 `run_agent` 到 `run_agent_step` 的关键变化</a>
+<a class="toc-link level-3" href="#42-编排层把步骤串起来">4.2 编排层：把步骤串起来</a>
+<a class="toc-link level-2" href="#五完整运行时序示例">五、完整运行时序示例</a>
+<a class="toc-link level-2" href="#六记忆方案的局限与进化方向">六、记忆方案的局限与进化方向</a>
+<a class="toc-link level-2" href="#七总结与下一篇预告">七、总结与下一篇预告</a></nav>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>源码入口</h2>
+          <a class="source-link" href="../02-memory/agent-memory.md">查看原始文章</a>
+          <a class="source-link" href="../02-memory/agent-memory.py">查看示例代码</a>
+        </div>
+      </aside>
+
+      <article class="article-main">
+        <section class="article-hero">
+          <p class="eyebrow">Agent Tutorial</p>
+          <h1>02. 记忆与规划</h1>
+          <p class="lead">从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
+          <div class="tag-row"><span class="tag">Memory</span><span class="tag">Planning</span><span class="tag">多步任务</span></div>
+        </section>
+
+        <section class="content-card markdown-body">
+          <h1 id="从零开始理解-agent二openclaw-claude-code-如何实现记忆与规划">从零开始理解 Agent（二）：OpenClaw / Claude Code 如何实现记忆与规划</h1>
+<blockquote><strong>「从零开始理解 Agent」系列</strong> —— 通过一个不到 300 行的开源项目 <a href="https://github.com/GitHubxsy/nanoAgent">nanoAgent</a>，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。<br>- <a href="essence.html">第一篇：底层原理，只有 100 行</a> —— 工具 + 循环<br>- <strong>第二篇：记忆与规划</strong>（本文）—— 182 行<br>- <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> —— 265 行<br>- <a href="subagent.html">第四篇：SubAgent 子智能体</a> —— 192 行<br>- <a href="teams.html">第五篇：多智能体协作与编排</a> —— 270 行<br>- <a href="compact.html">第六篇：上下文压缩</a> —— 169 行<br>- <a href="safety.html">第七篇：安全与权限控制</a> —— 219 行</blockquote>
+<p>上一篇我们用 100 行代码理解了 Agent 的核心公式：<strong>LLM + 工具 + 循环</strong>。但在结尾我们也指出了它的致命缺陷——没有记忆、不会规划。</p>
+<p>如果你用过 OpenClaw 或 Claude Code，你会发现它们可以在一个长对话中持续记住之前的操作，面对复杂需求时也会先制定计划再逐步执行。这些能力不是&quot;魔法&quot;，而是可以用很少的代码实现的架构设计。</p>
+<p>今天我们看 nanoAgent 的第二个版本 <a href="https://github.com/GitHubxsy/nanoAgent/blob/main/agent/02-memory/agent-memory.py">agent-memory.py</a>（182 行），它只多了 67 行代码，却解决了两个根本问题：<strong>让 Agent 记住过去</strong>，<strong>让 Agent 规划未来</strong>。</p>
+<hr>
+<h2 id="一从-agent-essencepy-到-agent-memorypy多了什么">一、从 agent-essence.py 到 agent-memory.py：多了什么？</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>能力</th>
+<th>agent-essence.py (100 行)</th>
+<th>agent-memory.py (182 行)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>工具调用</td>
+<td>✅ 3 个工具</td>
+<td>✅ 3 个工具（不变）</td>
+</tr>
+<tr>
+<td>单任务执行</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>跨会话记忆</strong></td>
+<td>❌ 每次运行都失忆</td>
+<td>✅ <code>agent_memory.md</code> 文件持久化</td>
+</tr>
+<tr>
+<td><strong>任务规划</strong></td>
+<td>❌ 走一步看一步</td>
+<td>✅ <code>create_plan()</code> 先拆解再执行</td>
+</tr>
+<tr>
+<td><strong>多步串联</strong></td>
+<td>❌</td>
+<td>✅ 步骤间共享 <code>messages</code> 上下文</td>
+</tr>
+</tbody>
+</table></div>
+<p>工具层完全没变——新增的 67 行全部用来构建更高层的能力。这恰好印证了第一篇的结论：工具 + 循环只是地基，记忆和规划才是让 Agent 真正可用的关键。</p>
+<hr>
+<h2 id="二记忆系统最朴素但最本质的方案">二、记忆系统：最朴素但最本质的方案</h2>
+<h3 id="21-记忆的存储一个-markdown-文件">2.1 记忆的存储：一个 Markdown 文件</h3>
+<pre class="code-block"><code class="language-python">MEMORY_FILE = &quot;agent_memory.md&quot;
+
+def save_memory(task, result):
+    timestamp = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+    entry = f&quot;\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n&quot;
+    try:
+        with open(MEMORY_FILE, &#x27;a&#x27;) as f:
+            f.write(entry)
+    except:
+        pass</code></pre>
+<p>agent-memory.py 用了一种极其朴素的方案——把历史任务和结果追加写入一个 Markdown 文件。没有数据库，没有向量索引，就是纯文本。每次任务执行完毕，Agent 把&quot;什么时间、做了什么、得到什么结果&quot;追加到文件末尾：</p>
+<pre class="code-block"><code class="language-markdown">## 2026-03-12 14:30:00
+**Task:** 统计当前目录下的 Python 文件数量
+**Result:** 当前目录下共有 42 个 Python 文件。
+
+## 2026-03-12 15:00:00
+**Task:** 创建一个 hello.py
+**Result:** 已创建 hello.py，内容为打印 Hello World。</code></pre>
+<h3 id="22-记忆的加载滑动窗口">2.2 记忆的加载：滑动窗口</h3>
+<pre class="code-block"><code class="language-python">def load_memory():
+    if not os.path.exists(MEMORY_FILE):
+        return &quot;&quot;
+    try:
+        with open(MEMORY_FILE, &#x27;r&#x27;) as f:
+            content = f.read()
+        lines = content.split(&#x27;\n&#x27;)
+        return &#x27;\n&#x27;.join(lines[-50:]) if len(lines) &gt; 50 else content
+    except:
+        return &quot;&quot;</code></pre>
+<p>加载记忆时有一个关键细节：<strong>只取最后 50 行</strong>。这是一个简单的滑动窗口策略——记忆文件可能无限增长，但 LLM 的 context window 是有限的。必须截断。</p>
+<h3 id="23-记忆的注入塞进-system-prompt">2.3 记忆的注入：塞进 System Prompt</h3>
+<pre class="code-block"><code class="language-python">def run_agent_plus(task, use_plan=False):
+    memory = load_memory()
+    system_prompt = &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+    if memory:
+        system_prompt += f&quot;\n\nPrevious context:\n{memory}&quot;
+    messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_prompt}]</code></pre>
+<p>加载出来的记忆被拼接到 system prompt 末尾，以 &quot;Previous context&quot; 的形式注入。LLM 在处理新任务时能&quot;看到&quot;之前的历史。</p>
+<h3 id="24-记忆流程全景">2.4 记忆流程全景</h3>
+<pre class="code-block"><code class="language-text">第 1 次运行                          第 2 次运行
+───────────                        ───────────
+用户: &quot;创建 hello.py&quot;               用户: &quot;读取 hello.py 并加上注释&quot;
+        │                                  │
+        ▼                                  ▼
+  system prompt:                    system prompt:
+  &quot;You are a helpful               &quot;You are a helpful
+   assistant...&quot;                    assistant...
+                                    
+                                    Previous context:
+                                    ## 2026-03-12 14:30
+                                    Task: 创建 hello.py
+                                    Result: 已创建...&quot;
+        │                                  │
+        ▼                                  ▼
+  Agent 执行任务                     Agent 执行任务
+        │                           (知道之前创建过 hello.py)
+        ▼                                  │
+  save_memory() ──写入──▶ agent_memory.md ◀─── save_memory()</code></pre>
+<h3 id="25-记忆的本质">2.5 记忆的本质</h3>
+<p>这个方案虽然原始，但揭示了一个根本原理：<strong>LLM 本身没有持久记忆，所有&quot;记忆&quot;都是通过在 prompt 中注入历史信息来实现的。</strong></p>
+<p>无论是 Claude 的 Memory、ChatGPT 的记忆功能，还是更复杂的 RAG 系统，底层都遵循这个模式——只是在&quot;存在哪、怎么找、搬多少&quot;上做得更精细。我们会在文末讨论这些进化方向。</p>
+<hr>
+<h2 id="三规划系统让-agent-学会先想再做">三、规划系统：让 Agent 学会&quot;先想再做&quot;</h2>
+<h3 id="31-为什么需要规划">3.1 为什么需要规划？</h3>
+<p>回忆第一篇中 agent-essence.py 的工作方式：把整个任务丢给 LLM，让它在循环中自行摸索。简单任务没问题，但面对复杂任务（比如&quot;重构整个项目的目录结构&quot;），LLM 容易迷失在细节中，忘记全局目标。</p>
+<p>agent-memory.py 引入了一个可选的规划阶段：</p>
+<pre class="code-block"><code class="language-python">def create_plan(task):
+    print(&quot;[Planning] Breaking down task...&quot;)
+    response = client.chat.completions.create(
+        model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
+        messages=[
+            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Break down the task into 3-5 simple, actionable steps. Return as JSON array of strings.&quot;},
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Task: {task}&quot;}
+        ],
+        response_format={&quot;type&quot;: &quot;json_object&quot;}
+    )
+    try:
+        plan_data = json.loads(response.choices[0].message.content)
+        steps = plan_data.get(&quot;steps&quot;, [task])
+        print(f&quot;[Plan] {len(steps)} steps created&quot;)
+        for i, step in enumerate(steps, 1):
+            print(f&quot;  {i}. {step}&quot;)
+        return steps
+    except:
+        return [task]</code></pre>
+<h3 id="32-规划的设计细节">3.2 规划的设计细节</h3>
+<p>这段代码有几个值得细品的地方：</p>
+<p><strong>用 LLM 来做规划。</strong> 规划本身也是一次 LLM 调用，但不带任何工具——纯粹的&quot;思考&quot;。system prompt 要求 LLM 把任务拆解为 3-5 个可执行的步骤，以 JSON 格式返回。</p>
+<p><strong>结构化输出。</strong> 通过 <code>response_format={&amp;quot;type&amp;quot;: &amp;quot;json_object&amp;quot;}</code> 强制 LLM 返回 JSON，避免格式解析问题。</p>
+<p><strong>优雅降级。</strong> 如果 JSON 解析失败，<code>except</code> 分支回退到 <code>[task]</code>——即不拆解，整个任务当作一步执行。这种防御性编程在 Agent 开发中非常重要。</p>
+<h3 id="33-两种执行范式的对比">3.3 两种执行范式的对比</h3>
+<p>agent-essence.py 和 agent-memory.py 代表了 Agent 领域的两种经典范式：</p>
+<pre class="code-block"><code class="language-text">agent-essence.py (ReAct)                  agent-memory.py (Plan-then-Execute)
+
+思考 → 行动 → 观察                规划（全局思考）
+  ↑         │                         │
+  └─────────┘                      步骤1 → 步骤2 → 步骤3
+                                   (每步内部仍是 ReAct)</code></pre>
+<p>ReAct 灵活但容易迷失，Plan-then-Execute 有全局视角但规划可能不准确。agent-memory.py 通过 <code>--plan</code> 参数让用户自行选择——这种&quot;默认简单，按需复杂&quot;的设计在工程上很实用。</p>
+<hr>
+<h2 id="四多步执行步骤之间的上下文传递">四、多步执行：步骤之间的上下文传递</h2>
+<h3 id="41-从-run_agent-到-run_agent_step-的关键变化">4.1 从 <code>run_agent</code> 到 <code>run_agent_step</code> 的关键变化</h3>
+<p>对比第一篇中 agent-essence.py 的 <code>run_agent</code> 函数，agent-memory.py 的 <code>run_agent_step</code> 有两个关键变化：</p>
+<pre class="code-block"><code class="language-python">def run_agent_step(task, messages, max_iterations=5):
+    messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
+    actions = []
+
+    for _ in range(max_iterations):
+        response = client.chat.completions.create(
+            model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
+            messages=messages,
+            tools=tools
+        )
+        message = response.choices[0].message
+        messages.append(message)
+
+        if not message.tool_calls:
+            return message.content, actions, messages
+
+        for tool_call in message.tool_calls:
+            function_name = tool_call.function.name
+            function_args = json.loads(tool_call.function.arguments)
+            print(f&quot;[Tool] {function_name}({function_args})&quot;)
+            function_response = available_functions[function_name](**function_args)
+            actions.append({&quot;tool&quot;: function_name, &quot;args&quot;: function_args})
+            messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: function_response})
+
+    return &quot;Max iterations reached&quot;, actions, messages</code></pre>
+<p><strong>变化一：<code>messages</code> 从内部创建变为外部传入。</strong> 这意味着多个步骤可以共享同一个对话历史。步骤 1 执行 <code>grep</code> 搜索到的结果，在步骤 2 中仍然可见。</p>
+<p><strong>变化二：返回值包含 <code>messages</code>。</strong> 函数把更新后的消息列表返回给调用方，供下一步继续使用。</p>
+<h3 id="42-编排层把步骤串起来">4.2 编排层：把步骤串起来</h3>
+<pre class="code-block"><code class="language-python">all_results = []
+for i, step in enumerate(steps, 1):
+    if len(steps) &gt; 1:
+        print(f&quot;\n[Step {i}/{len(steps)}] {step}&quot;)
+    result, actions, messages = run_agent_step(step, messages)
+    all_results.append(result)
+
+final_result = &quot;\n&quot;.join(all_results)
+save_memory(task, final_result)</code></pre>
+<p><strong><code>messages</code> 变量在整个步骤循环中是同一个列表对象。</strong> 步骤 1 执行过程中产生的所有工具调用和结果，都会累积在这个列表中，步骤 2 的 LLM 调用能看到步骤 1 的完整执行轨迹。</p>
+<p>这引出了一个重要的概念区分——<strong>短期记忆与长期记忆</strong>：</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>记忆类型</th>
+<th>载体</th>
+<th>生命周期</th>
+<th>实现</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>短期记忆</td>
+<td><code>messages</code> 列表</td>
+<td>单次运行内</td>
+<td>步骤间共享的对话历史</td>
+</tr>
+<tr>
+<td>长期记忆</td>
+<td><code>agent_memory.md</code> 文件</td>
+<td>跨多次运行</td>
+<td>system prompt 中的 &quot;Previous context&quot;</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="五完整运行时序示例">五、完整运行时序示例</h2>
+<p>以 <code>python agent/02-memory/agent-memory.py --plan &amp;quot;找到所有 TODO 并整理到 todo.md&amp;quot;</code> 为例：</p>
+<pre class="code-block"><code class="language-text">[Planning] Breaking down task...
+[Plan] 3 steps created
+  1. 使用 grep 递归搜索所有 TODO 注释
+  2. 整理搜索结果为 Markdown 清单格式
+  3. 将清单写入 todo.md
+
+[Step 1/3] 使用 grep 递归搜索所有 TODO 注释
+[Tool] execute_bash({&quot;command&quot;: &quot;grep -rn &#x27;TODO&#x27; --include=&#x27;*.py&#x27; .&quot;})
+  → ./app.py:23: # TODO: add error handling
+  → ./utils.py:7: # TODO: refactor this function
+  → ./main.py:45: # TODO: add logging
+
+找到 3 处 TODO 注释。
+
+[Step 2/3] 整理搜索结果为 Markdown 清单格式
+（LLM 看到步骤 1 的 grep 结果，直接整理，无需再次搜索）
+
+已整理为以下清单：
+- app.py:23 - add error handling
+- utils.py:7 - refactor this function
+- main.py:45 - add logging
+
+[Step 3/3] 将清单写入 todo.md
+[Tool] write_file({&quot;path&quot;: &quot;todo.md&quot;, &quot;content&quot;: &quot;# TODO List\n\n...&quot;})
+
+已将 TODO 清单写入 todo.md。</code></pre>
+<p>注意步骤 2 没有调用任何工具——LLM 直接从 <code>messages</code> 中读取了步骤 1 的 grep 输出并整理。这就是上下文传递的威力。</p>
+<hr>
+<h2 id="六记忆方案的局限与进化方向">六、记忆方案的局限与进化方向</h2>
+<p>nanoAgent 的记忆方案堪称&quot;最小可行记忆&quot;，但它清晰地暴露了四个需要进化的方向：</p>
+<p><strong>记忆无差别截断</strong> → <strong>向量数据库 + 语义检索</strong>。只保留最后 50 行会丢失重要的早期信息。更好的方案是把记忆存入向量数据库（如 Chroma、Pinecone），每次只检索与当前任务语义相关的记忆。这就是 RAG 的核心思路。</p>
+<p><strong>无记忆压缩</strong> → <strong>记忆蒸馏</strong>。当记忆超过阈值时，用 LLM 自动压缩旧记忆——提取关键事实，丢弃细节。比如把&quot;执行了 grep -rn TODO，找到 app.py:23、utils.py:7、main.py:45 三处&quot;压缩为&quot;项目中有 3 处 TODO 待处理&quot;。</p>
+<p><strong>全量注入 prompt</strong> → <strong>记忆作为工具</strong>。不把记忆塞进 system prompt，而是提供一个 <code>search_memory</code> 工具让 Agent 按需查询。Agent 自己决定什么时候需要回忆、回忆什么。</p>
+<p><strong>单层记忆</strong> → <strong>分层记忆架构</strong>。参考人类记忆的工作方式：工作记忆（当前 messages）→ 短期记忆（最近几次对话摘要）→ 长期记忆（压缩后的关键事实）。每层的信息密度和保留时间不同。</p>
+<hr>
+<h2 id="七总结与下一篇预告">七、总结与下一篇预告</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th></th>
+<th>agent-essence.py</th>
+<th>agent-memory.py</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>类比</td>
+<td>金鱼——做完就忘</td>
+<td>带笔记本的实习生——会记录、会规划</td>
+</tr>
+<tr>
+<td>记忆</td>
+<td>无</td>
+<td>文件持久化 + prompt 注入</td>
+</tr>
+<tr>
+<td>规划</td>
+<td>无（走一步看一步）</td>
+<td>可选的 Plan-then-Execute</td>
+</tr>
+<tr>
+<td>执行</td>
+<td>单任务单循环</td>
+<td>多步串联，上下文共享</td>
+</tr>
+</tbody>
+</table></div>
+<p>三个核心启示：</p>
+<p><strong>1. 记忆的本质是&quot;信息搬运&quot;。</strong> LLM 没有真正的记忆，所有记忆都是把外部存储的信息搬运到 prompt 中。不同方案的区别只在于&quot;存在哪、怎么找、搬多少&quot;。</p>
+<p><strong>2. 规划让 Agent 有了全局视角。</strong> 没有规划的 Agent 像是蒙着眼走迷宫；有规划的 Agent 至少先看了一眼地图。虽然地图可能不准确，但总比没有强。</p>
+<p><strong>3. 上下文传递是多步执行的关键。</strong> <code>messages</code> 列表在步骤间的共享，让后续步骤能利用前面步骤的执行结果，避免重复工作。</p>
+<hr>
+<p>现在我们的 Agent 有了记忆和规划能力，但还有三个问题没解决：</p>
+<ul>
+<li><strong>工具是硬编码的</strong>——想接入 Slack、GitHub、数据库等外部服务怎么办？</li>
+<li><strong>没有行为约束</strong>——不同项目、不同团队对 Agent 的要求完全不同，怎么定制？</li>
+<li><strong>规划是被动触发的</strong>——用户必须手动加 <code>--plan</code> 参数，Agent 自己不知道什么时候该规划。</li>
+</ul>
+<p>这三个问题，引出了 Agent 架构中最后也是最精彩的三个概念：<strong>MCP（工具协议）</strong>、<strong>Rules（行为规则）</strong>、<strong>Skills（技能注册）</strong>。如果你用过 OpenClaw 或 Claude Code，你一定见过 <code>CLAUDE.md</code> 规则文件和 MCP 工具配置——它们正是这三个概念的工程化产物。在 <a href="skills-mcp.html">第三篇：Rules、Skills 与 MCP</a> 中，我们将看到 agent-skills-mcp.py 如何用 265 行代码，把 nanoAgent 进化为一个接近 OpenClaw / Claude Code 的完整 Agent 框架。</p>
+<hr>
+<p><em>本文基于 <a href="https://github.com/GitHubxsy/nanoAgent">GitHubxsy/nanoAgent</a> 的 agent-memory.py 分析。如果你还没有读过系列第一篇，建议先从 <a href="essence.html">底层原理，只有 100 行</a> 开始。</em></p>
+        </section>
+
+        <nav class="pager">
+          <a class="pager-link prev" href="essence.html"><span>上一篇</span><strong>01. 本质</strong></a>
+          <a class="pager-link next" href="skills-mcp.html"><span>下一篇</span><strong>03. 扩展</strong></a>
+        </nav>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

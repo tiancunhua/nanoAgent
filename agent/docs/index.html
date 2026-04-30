@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从零开始理解 Agent | nanoAgent 技术教学网站</title>
+  <meta name="description" content="基于 nanoAgent 前七篇文章制作的 Agent 技术教学网站，从底层原理到安全控制系统梳理现代 Agent。">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">nanoAgent</span>
+        <span class="brand-text">从零开始理解 Agent</span>
+      </a>
+      <nav class="top-nav">
+        <a href="#path">学习路径</a>
+        <a href="#map">能力地图</a>
+        <a href="#chapters">章节阅读</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Agent Engineering Course</p>
+          <h1>把 Agent 从“会用”讲到“会搭”</h1>
+          <p class="hero-lead">这个网站把 nanoAgent 的前七篇文章重组成一条连续学习路径，用最小实现解释 OpenClaw、Claude Code、Cursor Agent 这类系统背后的关键架构。</p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="essence.html">从第 1 讲开始</a>
+            <a class="secondary-btn" href="#chapters">直接选章节</a>
+          </div>
+        </div>
+        <div class="hero-card-stack">
+          <div class="formula-card">
+            <span class="formula-label">一句话公式</span>
+            <strong>Agent = LLM + 工具 + 循环</strong>
+            <p>之后的记忆、规划、技能、子代理、团队、安全，都是在这个循环外层不断加结构。</p>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card"><strong>7</strong><span>篇正篇</span></div>
+            <div class="metric-card"><strong>2.5k+</strong><span>行教学内容</span></div>
+            <div class="metric-card"><strong>100 → 282</strong><span>代码逐步进化</span></div>
+            <div class="metric-card"><strong>0</strong><span>前置门槛</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="path">
+        <div class="section-head">
+          <p class="eyebrow">Learning Path</p>
+          <h2>七步搭起 Agent 认知框架</h2>
+          <p>不是平铺文章列表，而是一条从单体循环到工程化系统的能力生长曲线。</p>
+        </div>
+        <div class="timeline-grid">
+          
+        <article class="timeline-card">
+          <div class="timeline-step">01</div>
+          <div>
+            <p class="timeline-label">本质</p>
+            <h3>底层原理，只有 100 行</h3>
+            <p>先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">02</div>
+          <div>
+            <p class="timeline-label">记忆</p>
+            <h3>记忆与规划</h3>
+            <p>从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">03</div>
+          <div>
+            <p class="timeline-label">扩展</p>
+            <h3>Rules、Skills 与 MCP</h3>
+            <p>解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">04</div>
+          <div>
+            <p class="timeline-label">分工</p>
+            <h3>SubAgent 子智能体</h3>
+            <p>从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">05</div>
+          <div>
+            <p class="timeline-label">协作</p>
+            <h3>多智能体团队协作</h3>
+            <p>把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">06</div>
+          <div>
+            <p class="timeline-label">压缩</p>
+            <h3>上下文压缩</h3>
+            <p>专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。</p>
+          </div>
+        </article>
+        
+
+        <article class="timeline-card">
+          <div class="timeline-step">07</div>
+          <div>
+            <p class="timeline-label">安全</p>
+            <h3>三道安全防线</h3>
+            <p>最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
+          </div>
+        </article>
+        
+        </div>
+      </section>
+
+      <section class="section-block map-panel" id="map">
+        <div class="section-head">
+          <p class="eyebrow">Capability Map</p>
+          <h2>先理解共性，再理解增强层</h2>
+        </div>
+        <div class="map-grid">
+          <div class="map-card">
+            <span class="map-index">01</span>
+            <h3>底座</h3>
+            <p>工具定义、函数调用、Agent Loop，是一切 Agent 的最小闭环。</p>
+          </div>
+          <div class="map-card">
+            <span class="map-index">02</span>
+            <h3>持续工作</h3>
+            <p>记忆与规划让 Agent 从“一次回答”变成“多步执行者”。</p>
+          </div>
+          <div class="map-card">
+            <span class="map-index">03-05</span>
+            <h3>扩展与分工</h3>
+            <p>Rules、Skills、MCP、SubAgent、Teams 共同解释可扩展的现代 Agent 产品形态。</p>
+          </div>
+          <div class="map-card">
+            <span class="map-index">06-07</span>
+            <h3>工程化约束</h3>
+            <p>上下文压缩解决可持续性，安全防线解决可上线性。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="chapters">
+        <div class="section-head">
+          <p class="eyebrow">Chapters</p>
+          <h2>选择一讲开始阅读</h2>
+          <p>每一页都附带主题摘要、目录导航、原文与代码入口，适合按顺序学，也适合跳读查阅。</p>
+        </div>
+        <div class="chapter-grid">
+          
+    <article class="chapter-card">
+      <p class="chapter-index">第 01 讲</p>
+      <h3>底层原理，只有 100 行</h3>
+      <p>先把 Agent 的共同底座讲清楚：为什么它不是聊天机器人，而是能自己完成任务的循环系统。</p>
+      <div class="chapter-meta">
+        <span>入门</span>
+        <span>12 分钟</span>
+        <span>103 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">工具调用</span><span class="mini-tag">Function Calling</span><span class="mini-tag">Agent Loop</span></div>
+      <a class="card-link" href="essence.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 02 讲</p>
+      <h3>记忆与规划</h3>
+      <p>从单轮执行走向连续工作，让 Agent 能记住过去、拆解任务、按步骤推进复杂目标。</p>
+      <div class="chapter-meta">
+        <span>入门</span>
+        <span>14 分钟</span>
+        <span>232 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">Memory</span><span class="mini-tag">Planning</span><span class="mini-tag">多步任务</span></div>
+      <a class="card-link" href="memory.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 03 讲</p>
+      <h3>Rules、Skills 与 MCP</h3>
+      <p>解释现代 Agent 为什么能像平台一样扩展能力，以及规则、技能、协议分别处在系统的哪一层。</p>
+      <div class="chapter-meta">
+        <span>进阶</span>
+        <span>18 分钟</span>
+        <span>430 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">Rules</span><span class="mini-tag">Skills</span><span class="mini-tag">MCP</span></div>
+      <a class="card-link" href="skills-mcp.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 04 讲</p>
+      <h3>SubAgent 子智能体</h3>
+      <p>从单 Agent 迈向任务委派，理解为什么复杂问题需要拆给更聚焦的子智能体处理。</p>
+      <div class="chapter-meta">
+        <span>进阶</span>
+        <span>15 分钟</span>
+        <span>344 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">SubAgent</span><span class="mini-tag">Delegation</span><span class="mini-tag">Isolation</span></div>
+      <a class="card-link" href="subagent.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 05 讲</p>
+      <h3>多智能体团队协作</h3>
+      <p>把多个 Agent 组织成团队，理解角色划分、通信、编排和最终审查这些工程化机制。</p>
+      <div class="chapter-meta">
+        <span>进阶</span>
+        <span>16 分钟</span>
+        <span>362 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">Multi-Agent</span><span class="mini-tag">Team</span><span class="mini-tag">Orchestration</span></div>
+      <a class="card-link" href="teams.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 06 讲</p>
+      <h3>上下文压缩</h3>
+      <p>专门解决长任务里的上下文爆炸问题，理解摘要、保留窗口和持续工作能力之间的关系。</p>
+      <div class="chapter-meta">
+        <span>进阶</span>
+        <span>13 分钟</span>
+        <span>252 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">Context Window</span><span class="mini-tag">Compaction</span><span class="mini-tag">Summarization</span></div>
+      <a class="card-link" href="compact.html">开始阅读</a>
+    </article>
+    
+    <article class="chapter-card">
+      <p class="chapter-index">第 07 讲</p>
+      <h3>三道安全防线</h3>
+      <p>最后收束到真实落地最不能跳过的一层：权限、确认、黑名单和风险控制。</p>
+      <div class="chapter-meta">
+        <span>关键</span>
+        <span>15 分钟</span>
+        <span>288 行代码</span>
+      </div>
+      <div class="mini-tag-row"><span class="mini-tag">Safety</span><span class="mini-tag">Permissions</span><span class="mini-tag">Guardrails</span></div>
+      <a class="card-link" href="safety.html">开始阅读</a>
+    </article>
+    
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
