@@ -91,7 +91,7 @@ LESSONS = [
         core="LLM + 工具 + 循环",
         tags=["工具调用", "Agent Loop", "最小实现"],
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
-        demo_goal="让学生当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。",
+        demo_goal="让大家当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。",
         demo_expected=[
             "终端先打印 `[Tool] write_file(...)`，说明模型选择了工具。",
             "再次要求它读取 `hello.txt`，验证效果已经落到真实文件。",
@@ -166,7 +166,7 @@ LESSONS = [
             "规划失败时一定要有降级路径，不能卡死。",
             "把所有历史都塞回 prompt，不等于真正的记忆系统。",
         ],
-        workshop_prompt="让学生亲手跑两次连续任务，记住：记忆不是抽象概念，是可观察的文件与上下文。",
+        workshop_prompt="让大家亲手跑两次连续任务，记住：记忆不是抽象概念，是可观察的文件与上下文。",
         md_path=ROOT / "02-memory/agent-memory.md",
         code_path=ROOT / "02-memory/agent-memory.py",
         snippets=[
@@ -250,7 +250,7 @@ LESSONS = [
         core="独立上下文 + 角色委派",
         tags=["SubAgent", "Delegation", "Role Prompt"],
         demo_command='python agent/04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
-        demo_goal="让学生看到“委派”不是神秘概念，本质上就是把另一个 Agent 也做成工具。",
+        demo_goal="让大家看到“委派”不是神秘概念，本质上就是把另一个 Agent 也做成工具。",
         demo_expected=[
             "主 Agent 会调用 `subagent(...)`，并给它一个明确角色与任务。",
             "子代理有自己的 `sub_messages`，不会把主代理上下文一股脑复制过去。",
@@ -325,7 +325,7 @@ LESSONS = [
             "消息太多时又会重新触发上下文压力。",
             "团队协作如果没有 reviewer，很难展示“协作带来的质量提升”。",
         ],
-        workshop_prompt="讲 1 小时时，把多智能体团队讲成“带 reviewer 的协作流水线”最容易让听众记住。",
+        workshop_prompt="讲 1 小时时，把多智能体团队讲成“带 reviewer 的协作流水线”最容易让大家记住。",
         md_path=ROOT / "05-teams/agent-teams.md",
         code_path=ROOT / "05-teams/agent-teams.py",
         snippets=[
@@ -354,7 +354,7 @@ LESSONS = [
         core="摘要旧消息，保留最近窗口",
         tags=["Context Window", "Compaction", "Summarization"],
         demo_command='python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt"',
-        demo_goal="让学生看到压缩不是“加分项”，而是 Agent 长任务能不能活下来的生死线。",
+        demo_goal="让大家看到压缩不是“加分项”，而是 Agent 长任务能不能活下来的生死线。",
         demo_expected=[
             "把阈值调小后，很容易在终端看到 `[Compact]` 日志。",
             "压缩会保留 system prompt 与最近几条消息，只把旧消息折叠成摘要。",
@@ -403,7 +403,7 @@ LESSONS = [
         core="黑名单 + 人工确认 + 输出截断",
         tags=["Safety", "Approval", "Guardrails"],
         demo_command='python agent/07-safety/agent-safe.py "列出当前目录的文件"',
-        demo_goal="让学生形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。",
+        demo_goal="让大家形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。",
         demo_expected=[
             "普通命令会先弹确认，再执行。",
             "危险命令会在黑名单阶段直接被拦下。",
@@ -429,7 +429,7 @@ LESSONS = [
             "所有动作都确认会严重伤体验，要做分级策略。",
             "`--auto` 只能在你完全信任的隔离环境里用。",
         ],
-        workshop_prompt="把安全讲成‘让 Agent 能上线’的最后门槛，听众会更容易记住。",
+        workshop_prompt="把安全讲成‘让 Agent 能上线’的最后门槛，大家会更容易记住。",
         md_path=ROOT / "07-safety/agent-safe.md",
         code_path=ROOT / "07-safety/agent-safe.py",
         snippets=[
@@ -437,7 +437,7 @@ LESSONS = [
                 title="危险命令黑名单与确认机制",
                 start=49,
                 end=107,
-                focus="先让学生明白黑名单和确认框各拦哪一层风险。",
+                focus="先让大家明白黑名单和确认框各拦哪一层风险。",
             ),
             Snippet(
                 title="安全版 execute_bash",
@@ -453,7 +453,7 @@ LESSONS = [
 SESSION_OUTCOMES = [
     "能从零解释 Agent 的最小工作闭环，而不是只会使用现成产品。",
     "能把一个单文件 Agent 逐步升级到有记忆、可委派、可扩展、可控的原型。",
-    "能现场带着学生跑 3 个最小 demo，并把关键代码讲清楚。",
+    "能现场带着大家跑 3 个最小 demo，并把关键代码讲清楚。",
 ]
 
 
@@ -467,13 +467,13 @@ SESSION_SETUP = [
 SESSION_FORMAT = [
     "20% 概念：只解释最少必要的共识，不做长篇原理展开。",
     "50% 现场演示：每一讲都对应一个可以复制的命令或任务。",
-    "30% 动手练习：让听众回去能自己再改一次代码。",
+    "30% 动手练习：让大家回去能自己再改一次代码。",
 ]
 
 
 AGENDA = [
     ("00 - 05", "开场：为什么今天不讲大而全", "先建立一个共识：这 1 小时只保留真正能拿去做 Demo 的内容。"),
-    ("05 - 13", "第 01 讲：最小闭环", "跑通最小 Agent，让听众看见工具调用、执行和结果回填。"),
+    ("05 - 13", "第 01 讲：最小闭环", "跑通最小 Agent，让大家看见工具调用、执行和结果回填。"),
     ("13 - 21", "第 02 讲：记忆与规划", "演示 `--plan` 和 `agent_memory.md`，让 Agent 会连续工作。"),
     ("21 - 31", "第 03 讲：Rules / Skills / MCP", "把 Agent 从脚本推到工程化外壳，但只讲配置分层和一个最小示例。"),
     ("31 - 39", "第 04 讲：SubAgent", "用前后端双角色案例，解释为什么复杂任务要委派。"),
@@ -659,8 +659,8 @@ def build_home_page() -> str:
     shared_format_cards = [
         ("一起看的主线", "每一讲只盯住主线、任务和关键代码，不展开全文。"),
         ("课堂推进方式", "先看现场演示，再跟着做课堂练习，最后验证结果。"),
-        ("投屏信息密度", "共享版会隐藏老师备注，让页面更适合边讲边看。"),
-        ("课程目标", "听完 60 分钟，学生要能自己改一轮最小 Agent。"),
+        ("投屏信息密度", "共享版会隐藏主讲备注，让页面更适合边讲边看。"),
+        ("课程目标", "听完 60 分钟，大家要能自己改一轮最小 Agent。"),
     ]
 
     return f"""<!DOCTYPE html>
@@ -692,9 +692,9 @@ def build_home_page() -> str:
         <div class="hero-copy">
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>不讲全量原文，只讲能当场跑起来的 Agent</h1>
-          <p class="hero-lead">这套站点把前七篇文章压成一门 1 小时的实战分享课。每一讲只保留课堂必须讲的概念、演示命令、练习步骤和关键代码，帮助你讲得短、讲得稳、讲完学生还能自己动手。</p>
-          <p class="mode-note teacher-only">教师版会显示授课提示、踩坑提醒和课后延伸，适合备课或边讲边控场。</p>
-          <p class="mode-note shared-only">共享版会隐藏老师备注，只保留学生一起看的节奏、重点和任务，适合投屏。</p>
+          <p class="hero-lead">这套站点把前七篇文章压成一门 1 小时的实战分享课。每一讲只保留课堂必须讲的概念、演示命令、练习步骤和关键代码，帮助你讲得短、讲得稳、讲完大家还能自己动手。</p>
+          <p class="mode-note teacher-only">教师版会显示主讲提示、踩坑提醒和课后延伸，适合备课或边讲边控场。</p>
+          <p class="mode-note shared-only">共享版会隐藏主讲备注，只保留共同观看时的节奏、重点和任务，适合投屏。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
             <a class="secondary-btn" href="#agenda">先看 60 分钟流程</a>
@@ -725,12 +725,12 @@ def build_home_page() -> str:
       <section class="section-block" id="format">
         <div class="section-head teacher-only">
           <p class="eyebrow">Course Outcome</p>
-          <h2>听众 1 小时后应该带走什么</h2>
+          <h2>参与者 1 小时后应该带走什么</h2>
         </div>
         <div class="section-head shared-only">
           <p class="eyebrow">Shared View</p>
           <h2>共享版怎么跟着这门课走</h2>
-          <p>学生共看版只保留当前主线、马上要做的任务和关键代码，避免投屏时信息过载。</p>
+          <p>共享版只保留当前主线、马上要做的任务和关键代码，避免投屏时信息过载。</p>
         </div>
         <div class="format-grid teacher-only">
           <article class="format-card">
@@ -763,8 +763,8 @@ def build_home_page() -> str:
         <div class="section-head">
           <p class="eyebrow">Agenda</p>
           <h2>60 分钟怎么分配</h2>
-          <p class="teacher-only">核心原则：每一讲都用“一个演示 + 一段关键代码 + 一个练习”收束，不把学生淹没在全文里。</p>
-          <p class="shared-only">共享版只保留时间线和当前讲次，老师口头补充细节即可。</p>
+          <p class="teacher-only">核心原则：每一讲都用“一个演示 + 一段关键代码 + 一个练习”收束，不把大家淹没在全文里。</p>
+          <p class="shared-only">共享版只保留时间线和当前讲次，现场口头补充细节即可。</p>
         </div>
         <div class="agenda-list teacher-only">
           {"".join(agenda_items)}
@@ -778,7 +778,7 @@ def build_home_page() -> str:
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
           <h2>七讲课堂版讲义</h2>
-          <p>每个页面都已经改成适合课堂分享的结构：讲什么、演示什么、让学生做什么、看哪段代码。</p>
+          <p>每个页面都已经改成适合课堂分享的结构：讲什么、演示什么、大家马上做什么、看哪段代码。</p>
         </div>
         <div class="lesson-grid">
           {"".join(lesson_cards)}
@@ -797,7 +797,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     next_lesson = LESSONS[index + 1] if index < len(LESSONS) - 1 else None
 
     toc_links = [
-        ("goals", "这节课学生要拿走什么"),
+        ("goals", "这节课要带走什么"),
         ("demo", "现场演示"),
         ("practice", "课堂练习"),
         ("code", "关键代码"),
@@ -896,8 +896,8 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
           <p class="lead">{html.escape(lesson.summary)}</p>
-          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
-          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <p class="mode-note teacher-only">教师版显示课堂目录、主讲提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏主讲备注，页面会放大重点信息，适合一起观看。</p>
           <div class="tag-row teacher-only">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
             <a class="primary-btn" href="{next_lesson.slug + '.html' if next_lesson else 'index.html#lessons'}">{'继续第 ' + next_lesson.number + ' 讲' if next_lesson else '返回课程首页'}</a>
@@ -916,7 +916,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         <section class="lesson-section" id="goals">
           <div class="lesson-section-head">
             <p class="eyebrow">Goal</p>
-            <h2>这节课学生要拿走什么</h2>
+            <h2>这节课要带走什么</h2>
           </div>
           {render_bullets(lesson.student_takeaways)}
         </section>
