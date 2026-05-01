@@ -581,8 +581,8 @@ def build_view_switch() -> str:
     return """
     <div class="view-switch" role="group" aria-label="页面视图切换">
       <span class="view-switch-label">视图</span>
-      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
-      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">主讲版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共看版</button>
     </div>
     """
 
@@ -659,7 +659,7 @@ def build_home_page() -> str:
     shared_format_cards = [
         ("一起看的主线", "每一讲只盯住主线、任务和关键代码，不展开全文。"),
         ("课堂推进方式", "先看现场演示，再跟着做课堂练习，最后验证结果。"),
-        ("投屏信息密度", "共享版会隐藏主讲备注，让页面更适合边讲边看。"),
+        ("投屏信息密度", "共看版会隐藏主讲备注，让页面更适合边讲边看。"),
         ("课程目标", "听完 60 分钟，大家要能自己改一轮最小 Agent。"),
     ]
 
@@ -693,8 +693,8 @@ def build_home_page() -> str:
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>不讲全量原文，只讲能当场跑起来的 Agent</h1>
           <p class="hero-lead">这套站点把前七篇文章压成一门 1 小时的实战分享课。每一讲只保留课堂必须讲的概念、演示命令、练习步骤和关键代码，帮助你讲得短、讲得稳、讲完大家还能自己动手。</p>
-          <p class="mode-note teacher-only">教师版会显示主讲提示、踩坑提醒和课后延伸，适合备课或边讲边控场。</p>
-          <p class="mode-note shared-only">共享版会隐藏主讲备注，只保留共同观看时的节奏、重点和任务，适合投屏。</p>
+          <p class="mode-note teacher-only">主讲版会显示主讲提示、踩坑提醒和课后延伸，适合备课或边讲边控场。</p>
+          <p class="mode-note shared-only">共看版会隐藏主讲备注，只保留共同观看时的节奏、重点和任务，适合投屏。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
             <a class="secondary-btn" href="#agenda">先看 60 分钟流程</a>
@@ -728,9 +728,9 @@ def build_home_page() -> str:
           <h2>参与者 1 小时后应该带走什么</h2>
         </div>
         <div class="section-head shared-only">
-          <p class="eyebrow">Shared View</p>
-          <h2>共享版怎么跟着这门课走</h2>
-          <p>共享版只保留当前主线、马上要做的任务和关键代码，避免投屏时信息过载。</p>
+          <p class="eyebrow">共看模式</p>
+          <h2>共看版怎么跟着这门课走</h2>
+          <p>共看版只保留当前主线、马上要做的任务和关键代码，避免投屏时信息过载。</p>
         </div>
         <div class="format-grid teacher-only">
           <article class="format-card">
@@ -764,7 +764,7 @@ def build_home_page() -> str:
           <p class="eyebrow">Agenda</p>
           <h2>60 分钟怎么分配</h2>
           <p class="teacher-only">核心原则：每一讲都用“一个演示 + 一段关键代码 + 一个练习”收束，不把大家淹没在全文里。</p>
-          <p class="shared-only">共享版只保留时间线和当前讲次，现场口头补充细节即可。</p>
+          <p class="shared-only">共看版只保留时间线和当前讲次，现场口头补充细节即可。</p>
         </div>
         <div class="agenda-list teacher-only">
           {"".join(agenda_items)}
@@ -896,8 +896,8 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
           <p class="lead">{html.escape(lesson.summary)}</p>
-          <p class="mode-note teacher-only">教师版显示课堂目录、主讲提示、踩坑和课后延伸，适合备课与授课控制。</p>
-          <p class="mode-note shared-only">共享版已隐藏主讲备注，页面会放大重点信息，适合一起观看。</p>
+          <p class="mode-note teacher-only">主讲版显示课堂目录、主讲提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共看版已隐藏主讲备注，页面会放大重点信息，适合一起观看。</p>
           <div class="tag-row teacher-only">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
             <a class="primary-btn" href="{next_lesson.slug + '.html' if next_lesson else 'index.html#lessons'}">{'继续第 ' + next_lesson.number + ' 讲' if next_lesson else '返回课程首页'}</a>
@@ -907,7 +907,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
         <section class="lesson-section shared-only">
           <div class="lesson-section-head">
-            <p class="eyebrow">Shared Focus</p>
+            <p class="eyebrow">共看焦点</p>
             <h2>投屏时只看这 4 件事</h2>
           </div>
           {build_shared_lesson_cards(lesson)}
