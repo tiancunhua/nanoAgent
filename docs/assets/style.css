@@ -149,45 +149,6 @@ button:focus-visible {
   color: var(--muted);
 }
 
-.header-tools {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.view-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.56);
-}
-
-.view-switch-label {
-  padding: 0 6px 0 8px;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.view-switch-btn {
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  padding: 8px 12px;
-  font: inherit;
-  cursor: pointer;
-}
-
-.view-switch-btn.is-active {
-  background: #1f2430;
-  color: #fff8f0;
-}
-
 .top-nav a:hover,
 .footer-links a:hover,
 .toc-link:hover,
@@ -282,14 +243,6 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
-.teacher-only {
-  display: block;
-}
-
-.shared-only {
-  display: none !important;
-}
-
 .mode-note {
   margin: 10px 0 0;
   padding: 12px 14px;
@@ -369,41 +322,6 @@ button:focus-visible {
 
 .format-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.shared-agenda-grid,
-.shared-card-grid {
-  display: grid;
-  gap: 16px;
-}
-
-.shared-agenda-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.shared-agenda-card,
-.shared-focus-card {
-  padding: 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(178, 76, 42, 0.14);
-  background: rgba(255, 248, 236, 0.76);
-}
-
-.shared-agenda-card span,
-.shared-focus-card p {
-  display: block;
-  margin: 0 0 8px;
-  color: var(--accent);
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.shared-agenda-card strong,
-.shared-focus-card strong {
-  display: block;
-  font-size: 1.15rem;
-  line-height: 1.35;
 }
 
 .format-card,
@@ -637,94 +555,12 @@ button:focus-visible {
   border-color: rgba(178, 76, 42, 0.35);
 }
 
-html[data-view-mode="shared"] .teacher-only,
-body[data-view-mode="shared"] .teacher-only {
-  display: none !important;
-}
-
-html[data-view-mode="shared"] .shared-only,
-body[data-view-mode="shared"] .shared-only {
-  display: block !important;
-}
-
-html[data-view-mode="shared"] .reading-progress,
-body[data-view-mode="shared"] .reading-progress {
-  display: none;
-}
-
-html[data-view-mode="shared"] .article-layout,
-body[data-view-mode="shared"] .article-layout {
-  grid-template-columns: 1fr;
-}
-
-html[data-view-mode="shared"] .article-main,
-body[data-view-mode="shared"] .article-main {
-  max-width: 1080px;
-  margin: 0 auto;
-}
-
-html[data-view-mode="shared"] .article-hero h1,
-body[data-view-mode="shared"] .article-hero h1 {
-  font-size: clamp(2.8rem, 6vw, 4.8rem);
-}
-
-html[data-view-mode="shared"] .lead,
-body[data-view-mode="shared"] .lead {
-  font-size: 1.24rem;
-  max-width: 48ch;
-}
-
-html[data-view-mode="shared"] .lesson-section,
-html[data-view-mode="shared"] .hero-panel,
-html[data-view-mode="shared"] .lesson-card,
-html[data-view-mode="shared"] .agenda-item,
-body[data-view-mode="shared"] .lesson-section,
-body[data-view-mode="shared"] .hero-panel,
-body[data-view-mode="shared"] .lesson-card,
-body[data-view-mode="shared"] .agenda-item {
-  padding: 28px;
-}
-
-html[data-view-mode="shared"] .lesson-section h2,
-html[data-view-mode="shared"] .section-head h2,
-body[data-view-mode="shared"] .lesson-section h2,
-body[data-view-mode="shared"] .section-head h2 {
-  font-size: clamp(2rem, 3.8vw, 3rem);
-}
-
-html[data-view-mode="shared"] .lesson-list li,
-html[data-view-mode="shared"] .lesson-steps li,
-html[data-view-mode="shared"] .demo-box,
-html[data-view-mode="shared"] .code-card h3,
-body[data-view-mode="shared"] .lesson-list li,
-body[data-view-mode="shared"] .lesson-steps li,
-body[data-view-mode="shared"] .demo-box,
-body[data-view-mode="shared"] .code-card h3 {
-  font-size: 1.08rem;
-}
-
-html[data-view-mode="shared"] .code-block,
-html[data-view-mode="shared"] .demo-command,
-body[data-view-mode="shared"] .code-block,
-body[data-view-mode="shared"] .demo-command {
-  font-size: 1rem;
-}
-
-html[data-view-mode="shared"] .lesson-grid,
-body[data-view-mode="shared"] .lesson-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 @media (max-width: 1100px) {
   .hero-panel,
   .format-grid,
   .lesson-grid,
   .article-layout {
     grid-template-columns: 1fr;
-  }
-
-  .shared-agenda-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .article-sidebar {
@@ -747,11 +583,6 @@ body[data-view-mode="shared"] .lesson-grid {
     padding: 14px 16px;
   }
 
-  .header-tools {
-    width: 100%;
-    align-items: flex-start;
-  }
-
   .hero-panel,
   .section-block,
   .format-card,
@@ -771,11 +602,6 @@ body[data-view-mode="shared"] .lesson-grid {
 
   .fact-grid {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .shared-agenda-grid,
-  .shared-card-grid {
-    grid-template-columns: 1fr;
   }
 
   .agenda-item,

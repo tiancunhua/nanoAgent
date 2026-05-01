@@ -3,30 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>07. 三道安全防线｜1 小时实战分享课</title>
+  <title>07. 三道安全防线｜1 小时技术分享讲义</title>
   <meta name="description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/safety.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="07. 三道安全防线｜1 小时实战分享课">
+  <meta property="og:title" content="07. 三道安全防线｜1 小时技术分享讲义">
   <meta property="og:description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/safety.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="07. 三道安全防线｜1 小时实战分享课">
+  <meta name="twitter:title" content="07. 三道安全防线｜1 小时技术分享讲义">
   <meta name="twitter:description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
-  <script>
-    (function () {
-      try {
-        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
-        var nextMode = savedMode === "shared" ? "shared" : "teacher";
-        document.documentElement.dataset.viewMode = nextMode;
-      } catch (error) {
-        document.documentElement.dataset.viewMode = "teacher";
-      }
-    })();
-  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -39,24 +28,15 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <div class="header-tools">
-
-    <div class="view-switch" role="group" aria-label="页面视图切换">
-      <span class="view-switch-label">视图</span>
-      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">主讲版</button>
-      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共看版</button>
-    </div>
-
-        <nav class="top-nav">
-          <a href="index.html#agenda">课程流程</a>
-          <a href="index.html#lessons">七讲讲义</a>
-          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-        </nav>
-      </div>
+      <nav class="top-nav">
+        <a href="index.html#agenda">分享流程</a>
+        <a href="index.html#lessons">七讲讲义</a>
+        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+      </nav>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar teacher-only">
+      <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 07 讲 · 能力关进笼子</p>
           <h2 class="lesson-title">三道安全防线</h2>
@@ -116,96 +96,38 @@
         </div>
 
         <div class="sidebar-card">
-          <h2>课堂目录</h2>
+          <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#goals">这节课要带走什么</a><a class="toc-link" href="#demo">现场演示</a><a class="toc-link" href="#practice">课堂练习</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#talk">讲课只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易踩坑</a><a class="toc-link" href="#extend">课后延伸</a>
+            <a class="toc-link" href="#code">先看关键代码</a><a class="toc-link" href="#demo">再看它怎么跑</a><a class="toc-link" href="#practice">自己试一轮</a><a class="toc-link" href="#goals">这一讲会看懂什么</a><a class="toc-link" href="#talk">分享只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易误解</a><a class="toc-link" href="#extend">继续深挖</a>
           </nav>
         </div>
       </aside>
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs teacher-only">
-            <a href="index.html">课程首页</a>
+          <div class="breadcrumbs">
+            <a href="index.html">分享首页</a>
             <span>/</span>
-            <a href="index.html#lessons">课堂版讲义</a>
+            <a href="index.html#lessons">分享讲义</a>
             <span>/</span>
             <span>第 07 讲</span>
           </div>
-          <p class="eyebrow">1 小时实战分享课</p>
+          <p class="eyebrow">1 小时技术分享讲义</p>
           <h1>07. 三道安全防线</h1>
           <p class="lead">最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
-          <p class="mode-note teacher-only">主讲版显示课堂目录、主讲提示、踩坑和课后延伸，适合备课与授课控制。</p>
-          <p class="mode-note shared-only">共看版已隐藏主讲备注，页面会放大重点信息，适合一起观看。</p>
-          <div class="tag-row teacher-only"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
+          <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
+          <div class="tag-row"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
           <div class="hero-actions">
-            <a class="primary-btn" href="index.html#lessons">返回课程首页</a>
-            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">完整原文</a>
+            <a class="primary-btn" href="#code">先看关键代码</a>
+            <a class="secondary-btn" href="#demo">再看现场演示</a>
           </div>
-        </section>
-
-        <section class="lesson-section shared-only">
-          <div class="lesson-section-head">
-            <p class="eyebrow">共看焦点</p>
-            <h2>投屏时只看这 4 件事</h2>
-          </div>
-          <div class="shared-card-grid">
-        <article class="shared-focus-card">
-          <p>本讲主线</p>
-          <strong>黑名单 + 人工确认 + 输出截断</strong>
-        </article>
-
-        <article class="shared-focus-card">
-          <p>现场任务</p>
-          <strong>让大家形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。</strong>
-        </article>
-
-        <article class="shared-focus-card">
-          <p>马上动手</p>
-          <strong>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</strong>
-        </article>
-
-        <article class="shared-focus-card">
-          <p>只看代码</p>
-          <strong>危险命令黑名单与确认机制 · L49-L107</strong>
-        </article>
-        </div>
-        </section>
-
-        <section class="lesson-section" id="goals">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Goal</p>
-            <h2>这节课要带走什么</h2>
-          </div>
-          <ul class="lesson-list"><li>能说清三道防线分别解决什么问题。</li><li>知道为什么不能把“是否安全”完全外包给模型自己判断。</li><li>理解安全与上下文控制其实是同一件工程责任的两面。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="demo">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Live Demo</p>
-            <h2>现场演示</h2>
-            <p>让大家形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。</p>
-          </div>
-          <div class="demo-box">
-            <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python agent/07-safety/agent-safe.py &quot;列出当前目录的文件&quot;</code></pre>
-            <ul class="lesson-list"><li>普通命令会先弹确认，再执行。</li><li>危险命令会在黑名单阶段直接被拦下。</li><li>超长输出会被截断，顺带呼应上一讲的上下文控制问题。</li></ul>
-          </div>
-        </section>
-
-        <section class="lesson-section" id="practice">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Practice</p>
-            <h2>课堂练习</h2>
-            <p>把安全讲成‘让 Agent 能上线’的最后门槛，大家会更容易记住。</p>
-          </div>
-          <ol class="lesson-steps"><li>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</li><li>把 `read_file` 改成只允许读取项目目录，做一个最小白名单。</li><li>故意读取一个超长文件，观察截断提示如何返回给模型。</li></ol>
         </section>
 
         <section class="lesson-section" id="code">
           <div class="lesson-section-head">
-            <p class="eyebrow">Code Focus</p>
-            <h2>关键代码</h2>
+            <p class="eyebrow">Code First</p>
+            <h2>先看关键代码</h2>
+            <p>先抓住决定行为的那段实现，再去看终端结果，会更容易把 Agent 的工作方式讲清楚。</p>
           </div>
           <div class="code-group">
 
@@ -316,27 +238,57 @@
           </div>
         </section>
 
-        <section class="lesson-section teacher-only" id="talk">
+        <section class="lesson-section" id="demo">
           <div class="lesson-section-head">
-            <p class="eyebrow">Talk Track</p>
-            <h2>讲课只讲这 3 件事</h2>
+            <p class="eyebrow">Live Demo</p>
+            <h2>再看它怎么跑</h2>
+            <p>让大家形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">演示命令</p>
+            <pre class="demo-command"><code>python agent/07-safety/agent-safe.py &quot;列出当前目录的文件&quot;</code></pre>
+            <ul class="lesson-list"><li>普通命令会先弹确认，再执行。</li><li>危险命令会在黑名单阶段直接被拦下。</li><li>超长输出会被截断，顺带呼应上一讲的上下文控制问题。</li></ul>
+          </div>
+        </section>
+
+        <section class="lesson-section" id="practice">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Try It</p>
+            <h2>自己试一轮</h2>
+            <p>把安全讲成‘让 Agent 能上线’的最后门槛，大家会更容易记住。</p>
+          </div>
+          <ol class="lesson-steps"><li>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</li><li>把 `read_file` 改成只允许读取项目目录，做一个最小白名单。</li><li>故意读取一个超长文件，观察截断提示如何返回给模型。</li></ol>
+        </section>
+
+        <section class="lesson-section" id="goals">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Takeaway</p>
+            <h2>这一讲会看懂什么</h2>
+          </div>
+          <ul class="lesson-list"><li>能说清三道防线分别解决什么问题。</li><li>知道为什么不能把“是否安全”完全外包给模型自己判断。</li><li>理解安全与上下文控制其实是同一件工程责任的两面。</li></ul>
+        </section>
+
+        <section class="lesson-section" id="talk">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Share Track</p>
+            <h2>分享只讲这 3 件事</h2>
           </div>
           <ul class="lesson-list"><li>黑名单负责挡住已知高危动作，人工确认负责最后边界。</li><li>输出截断既是安全问题，也是稳定性问题。</li><li>真正可用的 Agent 一定要允许用户拒绝某一步。</li></ul>
         </section>
 
-        <section class="lesson-section teacher-only" id="pitfalls">
+        <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Pitfalls</p>
-            <h2>容易踩坑</h2>
+            <p class="eyebrow">Misread</p>
+            <h2>容易误解</h2>
           </div>
           <ul class="lesson-list"><li>只靠黑名单是不够的，绕过方式永远存在。</li><li>所有动作都确认会严重伤体验，要做分级策略。</li><li>`--auto` 只能在你完全信任的隔离环境里用。</li></ul>
         </section>
 
-        <section class="lesson-section teacher-only" id="extend">
+        <section class="lesson-section" id="extend">
           <div class="lesson-section-head">
-            <p class="eyebrow">After Class</p>
-            <h2>课后延伸</h2>
-            <p>课堂里不展示全文，课后再补完整文章和源码细节。</p>
+            <p class="eyebrow">Extend</p>
+            <h2>继续深挖</h2>
+            <p>分享里不展开全文，这里保留完整文章和源码入口，方便继续顺着往下看。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">读完整原文</a>
@@ -352,7 +304,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
+      <p>这套分享讲义只保留 1 小时技术分享最需要的代码、演示与延伸线索，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>

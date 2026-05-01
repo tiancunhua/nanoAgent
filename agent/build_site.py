@@ -12,21 +12,8 @@ ASSETS_DIR = DOCS_DIR / "assets"
 REPO_WEB_BASE = "https://github.com/GitHubxsy/nanoAgent"
 SITE_URL = "https://githubxsy.github.io/nanoAgent"
 SITE_TITLE = "从零开始理解 Agent"
-SITE_SUBTITLE = "1 小时实战分享课"
-SITE_DESCRIPTION = "把 nanoAgent 前七篇内容压缩成一门 1 小时实战分享课，只保留课堂最需要的任务、代码和练习。"
-VIEW_MODE_BOOTSTRAP = """
-  <script>
-    (function () {
-      try {
-        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
-        var nextMode = savedMode === "shared" ? "shared" : "teacher";
-        document.documentElement.dataset.viewMode = nextMode;
-      } catch (error) {
-        document.documentElement.dataset.viewMode = "teacher";
-      }
-    })();
-  </script>
-""".strip()
+SITE_SUBTITLE = "1 小时技术分享讲义"
+SITE_DESCRIPTION = "把 nanoAgent 前七篇内容压缩成一套 1 小时技术分享讲义，只保留最适合科普分享的代码、演示和练习。"
 
 
 @dataclass
@@ -125,7 +112,7 @@ LESSONS = [
                 title="最小 Agent 循环",
                 start=73,
                 end=97,
-                focus="课堂只讲这 20 多行：发请求、拿工具调用、执行工具、把结果回填。",
+                focus="分享时只讲这 20 多行：发请求、拿工具调用、执行工具、把结果回填。",
             )
         ],
     ),
@@ -221,7 +208,7 @@ LESSONS = [
             "`plan` 工具必须防递归，不然很容易自我套娃。",
             "工具列表不断膨胀后，模型的工具选择准确率会下降。",
         ],
-        workshop_prompt="课堂上只演示一个最小规则文件和一个最小技能定义，不展开完整配置宇宙。",
+        workshop_prompt="分享时只演示一个最小规则文件和一个最小技能定义，不展开完整配置宇宙。",
         md_path=ROOT / "03-skills-mcp/agent-skills-mcp.md",
         code_path=ROOT / "03-skills-mcp/agent-skills-mcp.py",
         snippets=[
@@ -229,7 +216,7 @@ LESSONS = [
                 title="把计划注册成工具",
                 start=195,
                 end=230,
-                focus="这是课堂最值得讲的转折点：复杂能力也可以被包装进统一工具协议。",
+                focus="这是分享里最值得讲的转折点：复杂能力也可以被包装进统一工具协议。",
             ),
             Snippet(
                 title="从文件系统加载 Rules / Skills / MCP",
@@ -258,7 +245,7 @@ LESSONS = [
         ],
         student_takeaways=[
             "知道 SubAgent 最关键的是“独立上下文”，不是“多开一个模型”。",
-            "能解释为什么课堂上要禁止子代理继续派子代理。",
+            "能解释为什么分享里要禁止子代理继续派子代理。",
             "能把一个复杂任务拆成主代理 + 子代理两个角色来演示。",
         ],
         practice_steps=[
@@ -276,7 +263,7 @@ LESSONS = [
             "允许无限递归委派，成本和复杂度都会失控。",
             "如果子代理的角色太泛，它只是换了个名字的主代理。",
         ],
-        workshop_prompt="最好的课堂做法是只演一个前后端双角色案例，让委派的价值立刻可见。",
+        workshop_prompt="最好的分享方式是只演一个前后端双角色案例，让委派的价值立刻可见。",
         md_path=ROOT / "04-subagent/agent-subagent.md",
         code_path=ROOT / "04-subagent/agent-subagent.py",
         snippets=[
@@ -308,7 +295,7 @@ LESSONS = [
         student_takeaways=[
             "明白 Team 比 SubAgent 多出来的是持久身份与通信。",
             "能用 `inbox` 这种极简单模型解释 Agent 间消息传递。",
-            "知道为什么 reviewer 是课堂里最好展示团队价值的角色。",
+            "知道为什么 reviewer 是分享里最好展示团队价值的角色。",
         ],
         practice_steps=[
             "把 `plan_team()` 固定成两开发一审查的三人团队。",
@@ -350,7 +337,7 @@ LESSONS = [
         short_title="长任务生存",
         stage="防止自我窒息",
         lesson_minutes="7 分钟",
-        summary="这一讲不讲理论史，只解决一个课堂上特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。",
+        summary="这一讲不讲理论史，只解决一个分享里特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。",
         core="摘要旧消息，保留最近窗口",
         tags=["Context Window", "Compaction", "Summarization"],
         demo_command='python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt"',
@@ -380,7 +367,7 @@ LESSONS = [
             "recent window 太短会让 Agent 瞬间断片。",
             "只做截断不做压缩，依然扛不住复杂长任务。",
         ],
-        workshop_prompt="课堂上把阈值调小，强制触发一次压缩，是最直观的讲法。",
+        workshop_prompt="分享时把阈值调小，强制触发一次压缩，是最直观的讲法。",
         md_path=ROOT / "06-compact/agent-compact.md",
         code_path=ROOT / "06-compact/agent-compact.py",
         snippets=[
@@ -388,7 +375,7 @@ LESSONS = [
                 title="上下文压缩函数",
                 start=129,
                 end=190,
-                focus="这就是课堂里最值钱的 60 行：把旧历史折叠成摘要，把当前现场留下来。",
+                focus="这就是分享里最值钱的 60 行：把旧历史折叠成摘要，把当前现场留下来。",
             )
         ],
     ),
@@ -460,14 +447,14 @@ SESSION_OUTCOMES = [
 SESSION_SETUP = [
     "Python 环境可运行 `agent/*.py` 文件。",
     "已设置 `OPENAI_API_KEY`，并准备一个可用模型。",
-    "课堂上优先用终端演示，不用展示全部原文文章。",
+    "分享时优先用终端和代码窗口，不用展示全部原文文章。",
 ]
 
 
 SESSION_FORMAT = [
-    "20% 概念：只解释最少必要的共识，不做长篇原理展开。",
-    "50% 现场演示：每一讲都对应一个可以复制的命令或任务。",
-    "30% 动手练习：让大家回去能自己再改一次代码。",
+    "30% 关键代码：先抓住决定行为的那几行实现，不从概念空讲开始。",
+    "40% 现场演示：再用终端把行为跑出来，让代码和结果一一对应。",
+    "30% 动手延伸：最后留一个可自己复现的小改动，方便继续探索。",
 ]
 
 
@@ -516,7 +503,6 @@ def build_head(title: str, description: str, filename: str, page_type: str) -> s
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{html.escape(title)}">
   <meta name="twitter:description" content="{html.escape(description)}">
-  {VIEW_MODE_BOOTSTRAP}
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 """.strip()
@@ -567,7 +553,7 @@ def lesson_nav(current_slug: str) -> str:
 def build_footer() -> str:
     return f"""
     <footer class="site-footer">
-      <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
+      <p>这套分享讲义只保留 1 小时技术分享最需要的代码、演示与延伸线索，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
         <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
         <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
@@ -575,38 +561,6 @@ def build_footer() -> str:
       </div>
     </footer>
     """
-
-
-def build_view_switch() -> str:
-    return """
-    <div class="view-switch" role="group" aria-label="页面视图切换">
-      <span class="view-switch-label">视图</span>
-      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">主讲版</button>
-      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共看版</button>
-    </div>
-    """
-
-
-def build_shared_lesson_cards(lesson: Lesson) -> str:
-    items = [
-        ("本讲主线", lesson.core),
-        ("现场任务", lesson.demo_goal),
-        ("马上动手", lesson.practice_steps[0]),
-        (
-            "只看代码",
-            f"{lesson.snippets[0].title} · L{lesson.snippets[0].start}-L{lesson.snippets[0].end}",
-        ),
-    ]
-    body = "".join(
-        f"""
-        <article class="shared-focus-card">
-          <p>{html.escape(label)}</p>
-          <strong>{html.escape(content)}</strong>
-        </article>
-        """
-        for label, content in items
-    )
-    return f'<div class="shared-card-grid">{body}</div>'
 
 
 def build_home_page() -> str:
@@ -617,16 +571,15 @@ def build_home_page() -> str:
             <article class="lesson-card">
               <p class="lesson-index">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
               <h3>{html.escape(lesson.title)}</h3>
-              <p class="teacher-only">{html.escape(lesson.summary)}</p>
-              <p class="shared-only">{html.escape(lesson.demo_goal)}</p>
+              <p>{html.escape(lesson.summary)}</p>
               <div class="lesson-meta">
                 <span>{html.escape(lesson.lesson_minutes)}</span>
                 <span>{code_lines(lesson.code_path)} 行代码</span>
                 <span>{html.escape(lesson.core)}</span>
               </div>
-              <p class="lesson-kicker teacher-only">实战重点：{html.escape(lesson.workshop_prompt)}</p>
+              <p class="lesson-kicker">分享重点：{html.escape(lesson.workshop_prompt)}</p>
               <div class="lesson-tag-row">{render_tags(lesson.tags, "tag")}</div>
-              <a class="lesson-link" href="{lesson.slug}.html">看课堂版讲义</a>
+              <a class="lesson-link" href="{lesson.slug}.html">看分享讲义</a>
             </article>
             """
         )
@@ -645,24 +598,6 @@ def build_home_page() -> str:
             """
         )
 
-    shared_agenda = []
-    for time_range, title, _ in AGENDA:
-        shared_agenda.append(
-            f"""
-            <article class="shared-agenda-card">
-              <span>{html.escape(time_range)}</span>
-              <strong>{html.escape(title)}</strong>
-            </article>
-            """
-        )
-
-    shared_format_cards = [
-        ("一起看的主线", "每一讲只盯住主线、任务和关键代码，不展开全文。"),
-        ("课堂推进方式", "先看现场演示，再跟着做课堂练习，最后验证结果。"),
-        ("投屏信息密度", "共看版会隐藏主讲备注，让页面更适合边讲边看。"),
-        ("课程目标", "听完 60 分钟，大家要能自己改一轮最小 Agent。"),
-    ]
-
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -676,25 +611,21 @@ def build_home_page() -> str:
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">{SITE_TITLE}</span>
       </a>
-      <div class="header-tools">
-        {build_view_switch()}
-        <nav class="top-nav">
-          <a href="#agenda">课程流程</a>
-          <a href="#format">授课方式</a>
-          <a href="#lessons">七讲讲义</a>
-          <a href="{REPO_WEB_BASE}">GitHub</a>
-        </nav>
-      </div>
+      <nav class="top-nav">
+        <a href="#agenda">分享流程</a>
+        <a href="#format">分享方式</a>
+        <a href="#lessons">七讲讲义</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
     </header>
 
     <main id="main-content">
       <section class="hero-panel">
         <div class="hero-copy">
           <p class="eyebrow">{SITE_SUBTITLE}</p>
-          <h1>不讲全量原文，只讲能当场跑起来的 Agent</h1>
-          <p class="hero-lead">这套站点把前七篇文章压成一门 1 小时的实战分享课。每一讲只保留课堂必须讲的概念、演示命令、练习步骤和关键代码，帮助你讲得短、讲得稳、讲完大家还能自己动手。</p>
-          <p class="mode-note teacher-only">主讲版会显示主讲提示、踩坑提醒和课后延伸，适合备课或边讲边控场。</p>
-          <p class="mode-note shared-only">共看版会隐藏主讲备注，只保留共同观看时的节奏、重点和任务，适合投屏。</p>
+          <h1>先看关键代码，再把 Agent 跑起来</h1>
+          <p class="hero-lead">这套站点把前七篇文章压成一套面向技术分享科普的 1 小时讲义。每一讲都先抓最关键的实现，再用终端验证行为，最后留一个可以自己继续改的动手入口。</p>
+          <p class="mode-note">这是一套用于技术分享科普的讲义：重点是把原理讲清楚，把代码讲明白，把 Demo 跑通。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
             <a class="secondary-btn" href="#agenda">先看 60 分钟流程</a>
@@ -708,54 +639,39 @@ def build_home_page() -> str:
             </article>
             <article class="fact-card">
               <strong>7 讲</strong>
-              <span>全部压缩为课堂版讲义</span>
+              <span>全部压缩为分享讲义</span>
             </article>
             <article class="fact-card">
-              <strong>实战优先</strong>
-              <span>每讲都有演示命令与练习</span>
+              <strong>代码优先</strong>
+              <span>先看实现，再看行为结果</span>
             </article>
             <article class="fact-card">
-              <strong>不贴全文</strong>
-              <span>完整文章改为课后延伸</span>
+              <strong>可直接复现</strong>
+              <span>每讲都有演示命令与动手入口</span>
             </article>
           </div>
         </div>
       </section>
 
       <section class="section-block" id="format">
-        <div class="section-head teacher-only">
-          <p class="eyebrow">Course Outcome</p>
-          <h2>参与者 1 小时后应该带走什么</h2>
+        <div class="section-head">
+          <p class="eyebrow">Share Format</p>
+          <h2>这场技术分享怎么展开</h2>
+          <p>核心方法很简单：不从概念空讲开始，而是先抓代码主线，再用终端输出把原理落到可观察的结果上。</p>
         </div>
-        <div class="section-head shared-only">
-          <p class="eyebrow">共看模式</p>
-          <h2>共看版怎么跟着这门课走</h2>
-          <p>共看版只保留当前主线、马上要做的任务和关键代码，避免投屏时信息过载。</p>
-        </div>
-        <div class="format-grid teacher-only">
+        <div class="format-grid">
           <article class="format-card">
-            <h3>课程结果</h3>
+            <h3>讲清什么</h3>
             {render_bullets(SESSION_OUTCOMES)}
           </article>
           <article class="format-card">
-            <h3>上课准备</h3>
+            <h3>怎么准备</h3>
             {render_bullets(SESSION_SETUP)}
           </article>
           <article class="format-card">
-            <h3>授课节奏</h3>
+            <h3>分享顺序</h3>
             {render_bullets(SESSION_FORMAT)}
           </article>
-        </div>
-        <div class="shared-agenda-grid shared-only">
-          {"".join(
-              f'''
-              <article class="shared-agenda-card">
-                <span>{html.escape(label)}</span>
-                <strong>{html.escape(content)}</strong>
-              </article>
-              '''
-              for label, content in shared_format_cards
-          )}
         </div>
       </section>
 
@@ -763,22 +679,18 @@ def build_home_page() -> str:
         <div class="section-head">
           <p class="eyebrow">Agenda</p>
           <h2>60 分钟怎么分配</h2>
-          <p class="teacher-only">核心原则：每一讲都用“一个演示 + 一段关键代码 + 一个练习”收束，不把大家淹没在全文里。</p>
-          <p class="shared-only">共看版只保留时间线和当前讲次，现场口头补充细节即可。</p>
+          <p>核心原则：每一讲都先看关键代码，再用终端验证行为，最后给一个能自己继续改的入口，不把大家淹没在全文里。</p>
         </div>
-        <div class="agenda-list teacher-only">
+        <div class="agenda-list">
           {"".join(agenda_items)}
-        </div>
-        <div class="shared-agenda-grid shared-only">
-          {"".join(shared_agenda)}
         </div>
       </section>
 
       <section class="section-block" id="lessons">
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
-          <h2>七讲课堂版讲义</h2>
-          <p>每个页面都已经改成适合课堂分享的结构：讲什么、演示什么、大家马上做什么、看哪段代码。</p>
+          <h2>七讲分享讲义</h2>
+          <p>每个页面都按“关键代码 -> 现场演示 -> 自己试一轮”的顺序排好，适合在技术分享里直接展开。</p>
         </div>
         <div class="lesson-grid">
           {"".join(lesson_cards)}
@@ -797,13 +709,13 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     next_lesson = LESSONS[index + 1] if index < len(LESSONS) - 1 else None
 
     toc_links = [
-        ("goals", "这节课要带走什么"),
-        ("demo", "现场演示"),
-        ("practice", "课堂练习"),
-        ("code", "关键代码"),
-        ("talk", "讲课只讲这 3 件事"),
-        ("pitfalls", "容易踩坑"),
-        ("extend", "课后延伸"),
+        ("code", "先看关键代码"),
+        ("demo", "再看它怎么跑"),
+        ("practice", "自己试一轮"),
+        ("goals", "这一讲会看懂什么"),
+        ("talk", "分享只讲这 3 件事"),
+        ("pitfalls", "容易误解"),
+        ("extend", "继续深挖"),
     ]
 
     snippet_cards = []
@@ -848,18 +760,15 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">{SITE_TITLE}</span>
       </a>
-      <div class="header-tools">
-        {build_view_switch()}
-        <nav class="top-nav">
-          <a href="index.html#agenda">课程流程</a>
-          <a href="index.html#lessons">七讲讲义</a>
-          <a href="{REPO_WEB_BASE}">GitHub</a>
-        </nav>
-      </div>
+      <nav class="top-nav">
+        <a href="index.html#agenda">分享流程</a>
+        <a href="index.html#lessons">七讲讲义</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar teacher-only">
+      <aside class="article-sidebar">
         <div class="sidebar-card">
           <p class="eyebrow">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
           <h2 class="lesson-title">{html.escape(lesson.title)}</h2>
@@ -877,7 +786,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         </div>
 
         <div class="sidebar-card">
-          <h2>课堂目录</h2>
+          <h2>页面目录</h2>
           <nav class="toc">
             {"".join(f'<a class="toc-link" href="#{anchor}">{html.escape(label)}</a>' for anchor, label in toc_links)}
           </nav>
@@ -886,45 +795,39 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs teacher-only">
-            <a href="index.html">课程首页</a>
+          <div class="breadcrumbs">
+            <a href="index.html">分享首页</a>
             <span>/</span>
-            <a href="index.html#lessons">课堂版讲义</a>
+            <a href="index.html#lessons">分享讲义</a>
             <span>/</span>
             <span>第 {lesson.number} 讲</span>
           </div>
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
           <p class="lead">{html.escape(lesson.summary)}</p>
-          <p class="mode-note teacher-only">主讲版显示课堂目录、主讲提示、踩坑和课后延伸，适合备课与授课控制。</p>
-          <p class="mode-note shared-only">共看版已隐藏主讲备注，页面会放大重点信息，适合一起观看。</p>
-          <div class="tag-row teacher-only">{render_tags(lesson.tags, "tag")}</div>
+          <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
+          <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
-            <a class="primary-btn" href="{next_lesson.slug + '.html' if next_lesson else 'index.html#lessons'}">{'继续第 ' + next_lesson.number + ' 讲' if next_lesson else '返回课程首页'}</a>
-            <a class="secondary-btn teacher-only" href="{github_blob_url(lesson.md_path)}">完整原文</a>
+            <a class="primary-btn" href="#code">先看关键代码</a>
+            <a class="secondary-btn" href="#demo">再看现场演示</a>
           </div>
         </section>
 
-        <section class="lesson-section shared-only">
+        <section class="lesson-section" id="code">
           <div class="lesson-section-head">
-            <p class="eyebrow">共看焦点</p>
-            <h2>投屏时只看这 4 件事</h2>
+            <p class="eyebrow">Code First</p>
+            <h2>先看关键代码</h2>
+            <p>先抓住决定行为的那段实现，再去看终端结果，会更容易把 Agent 的工作方式讲清楚。</p>
           </div>
-          {build_shared_lesson_cards(lesson)}
-        </section>
-
-        <section class="lesson-section" id="goals">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Goal</p>
-            <h2>这节课要带走什么</h2>
+          <div class="code-group">
+            {"".join(snippet_cards)}
           </div>
-          {render_bullets(lesson.student_takeaways)}
         </section>
 
         <section class="lesson-section" id="demo">
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
-            <h2>现场演示</h2>
+            <h2>再看它怎么跑</h2>
             <p>{html.escape(lesson.demo_goal)}</p>
           </div>
           <div class="demo-box">
@@ -936,44 +839,42 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
         <section class="lesson-section" id="practice">
           <div class="lesson-section-head">
-            <p class="eyebrow">Practice</p>
-            <h2>课堂练习</h2>
+            <p class="eyebrow">Try It</p>
+            <h2>自己试一轮</h2>
             <p>{html.escape(lesson.workshop_prompt)}</p>
           </div>
           {render_steps(lesson.practice_steps)}
         </section>
 
-        <section class="lesson-section" id="code">
+        <section class="lesson-section" id="goals">
           <div class="lesson-section-head">
-            <p class="eyebrow">Code Focus</p>
-            <h2>关键代码</h2>
+            <p class="eyebrow">Takeaway</p>
+            <h2>这一讲会看懂什么</h2>
           </div>
-          <div class="code-group">
-            {"".join(snippet_cards)}
-          </div>
+          {render_bullets(lesson.student_takeaways)}
         </section>
 
-        <section class="lesson-section teacher-only" id="talk">
+        <section class="lesson-section" id="talk">
           <div class="lesson-section-head">
-            <p class="eyebrow">Talk Track</p>
-            <h2>讲课只讲这 3 件事</h2>
+            <p class="eyebrow">Share Track</p>
+            <h2>分享只讲这 3 件事</h2>
           </div>
           {render_bullets(lesson.talk_points)}
         </section>
 
-        <section class="lesson-section teacher-only" id="pitfalls">
+        <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Pitfalls</p>
-            <h2>容易踩坑</h2>
+            <p class="eyebrow">Misread</p>
+            <h2>容易误解</h2>
           </div>
           {render_bullets(lesson.pitfalls)}
         </section>
 
-        <section class="lesson-section teacher-only" id="extend">
+        <section class="lesson-section" id="extend">
           <div class="lesson-section-head">
-            <p class="eyebrow">After Class</p>
-            <h2>课后延伸</h2>
-            <p>课堂里不展示全文，课后再补完整文章和源码细节。</p>
+            <p class="eyebrow">Extend</p>
+            <h2>继续深挖</h2>
+            <p>分享里不展开全文，这里保留完整文章和源码入口，方便继续顺着往下看。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="{github_blob_url(lesson.md_path)}">读完整原文</a>
