@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const articleHero = document.querySelector(".article-hero");
+  const heroTitle = articleHero?.querySelector("h1");
+  const body = document.body;
+
+  if (articleHero && heroTitle && body.classList.contains("article-body")) {
+    const updateReadingState = () => {
+      const collapseAfter = Math.min(96, Math.max(40, articleHero.offsetHeight * 0.22));
+      body.classList.toggle("is-reading", window.scrollY > collapseAfter);
+    };
+
+    updateReadingState();
+    document.addEventListener("scroll", updateReadingState, { passive: true });
+    window.addEventListener("resize", updateReadingState);
+  }
+
   const progressBar = document.querySelector(".reading-progress-bar");
   if (progressBar) {
     const updateProgress = () => {

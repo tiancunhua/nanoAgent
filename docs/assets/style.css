@@ -12,6 +12,7 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --content-width: 1200px;
+  --article-width: 1380px;
 }
 
 * {
@@ -102,6 +103,10 @@ button:focus-visible {
   width: min(calc(100% - 40px), var(--content-width));
   margin: 0 auto;
   padding-bottom: 48px;
+}
+
+.article-body .site-shell {
+  width: min(calc(100% - 32px), var(--article-width));
 }
 
 .site-header {
@@ -387,8 +392,8 @@ button:focus-visible {
 
 .article-layout {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 30px;
 }
 
 .article-sidebar {
@@ -432,6 +437,7 @@ button:focus-visible {
 
 .article-main {
   min-width: 0;
+  width: 100%;
 }
 
 .breadcrumbs {
@@ -449,6 +455,22 @@ button:focus-visible {
 
 .article-hero h1 {
   font-size: clamp(2rem, 4vw, 3.6rem);
+  transform-origin: top left;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    max-height 220ms ease,
+    margin 220ms ease;
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+.article-body.is-reading .article-hero h1 {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  max-height: 0;
+  margin: 0;
+  pointer-events: none;
 }
 
 .lesson-section + .lesson-section {
