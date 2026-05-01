@@ -473,6 +473,29 @@ button:focus-visible {
   pointer-events: none;
 }
 
+.lesson-figure {
+  margin: 0 0 22px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(178, 76, 42, 0.14);
+  background: rgba(255, 248, 236, 0.72);
+}
+
+.lesson-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(31, 36, 48, 0.08);
+  background: #fffdf8;
+}
+
+.lesson-figure figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
 .lesson-section + .lesson-section {
   margin-top: 18px;
 }

@@ -80,10 +80,10 @@ LESSONS = [
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
         demo_goal="让大家当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。",
         demo_expected=[
-            "先指给大家看 `tools` 列表，说明模型只能从这份清单里挑能力。",
+            "先用循环图说明 Agent 每一轮都在做“思考 -> 选工具 -> 回填结果 -> 再思考”。",
             "终端先打印 `[Tool] write_file(...)`，说明模型选择了工具。",
             "再次要求它读取 `hello.txt`，验证效果已经落到真实文件。",
-            "顺手指出 `messages` 会随着每一步持续增长，而工具结果也会被回填进去。",
+            "再回头指给大家看 `tools` 列表，说明模型只能从这份清单里挑能力。",
         ],
         student_takeaways=[
             "能解释 Agent 与 Chat 的根本区别。",
@@ -98,10 +98,10 @@ LESSONS = [
             "给 `execute_bash` 加一句更清晰的描述，看看模型是否更容易选对工具。",
         ],
         talk_points=[
-            "Tool 先是一份 schema：名字、描述、参数，模型看到的是这份声明，不是 Python 函数本身。",
+            "先讲循环：Agent 不是只回答一次，而是在每一轮里决定要不要继续行动。",
             "LLM 输出的是结构化“调用意图”，不是直接执行系统命令。",
+            "再讲 Tool：`tools` 是一份 schema，名字、描述、参数决定了模型看得到哪些能力。",
             "`functions` 这张映射表才决定了工具名最后会落到哪段真实代码上。",
-            "`messages` 是 Agent 的短期工作区，每走一步都要回填现场结果。",
         ],
         pitfalls=[
             "只写 Python 函数、不把它放进 `tools`，模型就根本不知道这项能力存在。",
@@ -114,6 +114,12 @@ LESSONS = [
         code_path=ROOT / "01-essence/agent-essence.py",
         snippets=[
             Snippet(
+                title="先看最小 Agent 循环",
+                start=73,
+                end=97,
+                focus="先抓住这 20 多行：请求模型、拿到 tool call、执行工具、把结果回填，然后进入下一轮。",
+            ),
+            Snippet(
                 title="先看 Tool 声明",
                 start=11,
                 end=51,
@@ -125,12 +131,6 @@ LESSONS = [
                 end=70,
                 focus="Tool 不是抽象概念，最后一定要映射到真实函数，模型选中的名字就是从这里执行的。",
             ),
-            Snippet(
-                title="最小 Agent 循环",
-                start=73,
-                end=97,
-                focus="分享时只讲这 20 多行：发请求、拿工具调用、执行工具、把结果回填。",
-            )
         ],
     ),
     Lesson(
@@ -580,6 +580,15 @@ def build_footer() -> str:
     """
 
 
+def build_essence_figure() -> str:
+    return """
+    <figure class="lesson-figure">
+      <img src="assets/agent-loop-overview.svg" alt="Agent 循环示意图：用户任务进入模型，模型选择工具，工具执行结果回填给模型，再决定下一步。">
+      <figcaption>先记住这一点：Agent 的核心不是某一个 Tool，而是“模型决策、工具执行、结果回填、再次决策”这个循环。</figcaption>
+    </figure>
+    """
+
+
 def build_home_page() -> str:
     lesson_cards = []
     for lesson in LESSONS:
@@ -762,6 +771,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         if next_lesson
         else ""
     )
+    visual_html = build_essence_figure() if lesson.slug == "essence" else ""
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -836,6 +846,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
             <h2>先看关键代码</h2>
             <p>先抓住决定行为的那段实现，再去看终端结果，会更容易把 Agent 的工作方式讲清楚。</p>
           </div>
+          {visual_html}
           <div class="code-group">
             {"".join(snippet_cards)}
           </div>
