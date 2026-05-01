@@ -16,6 +16,17 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="01. 底层原理，只有 100 行｜1 小时实战分享课">
   <meta name="twitter:description" content="先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。">
+  <script>
+    (function () {
+      try {
+        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
+        var nextMode = savedMode === "shared" ? "shared" : "teacher";
+        document.documentElement.dataset.viewMode = nextMode;
+      } catch (error) {
+        document.documentElement.dataset.viewMode = "teacher";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,15 +39,24 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <nav class="top-nav">
-        <a href="index.html#agenda">课程流程</a>
-        <a href="index.html#lessons">七讲讲义</a>
-        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-      </nav>
+      <div class="header-tools">
+
+    <div class="view-switch" role="group" aria-label="页面视图切换">
+      <span class="view-switch-label">视图</span>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+    </div>
+
+        <nav class="top-nav">
+          <a href="index.html#agenda">课程流程</a>
+          <a href="index.html#lessons">七讲讲义</a>
+          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar">
+      <aside class="article-sidebar teacher-only">
         <div class="sidebar-card">
           <p class="eyebrow">第 01 讲 · 起步演示</p>
           <h2 class="lesson-title">底层原理，只有 100 行</h2>
@@ -56,37 +76,37 @@
               <strong>底层原理，只有 100 行</strong>
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
               <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
               <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
               <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
               <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
               <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
@@ -105,7 +125,7 @@
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs">
+          <div class="breadcrumbs teacher-only">
             <a href="index.html">课程首页</a>
             <span>/</span>
             <a href="index.html#lessons">课堂版讲义</a>
@@ -115,11 +135,41 @@
           <p class="eyebrow">1 小时实战分享课</p>
           <h1>01. 底层原理，只有 100 行</h1>
           <p class="lead">先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。</p>
-          <div class="tag-row"><span class="tag">工具调用</span><span class="tag">Agent Loop</span><span class="tag">最小实现</span></div>
+          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <div class="tag-row teacher-only"><span class="tag">工具调用</span><span class="tag">Agent Loop</span><span class="tag">最小实现</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="memory.html">继续第 02 讲</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.md">完整原文</a>
+            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.md">完整原文</a>
           </div>
+        </section>
+
+        <section class="lesson-section shared-only">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Shared Focus</p>
+            <h2>投屏时只看这 4 件事</h2>
+          </div>
+          <div class="shared-card-grid">
+        <article class="shared-focus-card">
+          <p>本讲主线</p>
+          <strong>LLM + 工具 + 循环</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>现场任务</p>
+          <strong>让学生当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>马上动手</p>
+          <strong>把 `max_iterations` 改成 2，观察复杂任务会如何提前中断。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>只看代码</p>
+          <strong>最小 Agent 循环 · L73-L97</strong>
+        </article>
+        </div>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -158,7 +208,7 @@
             <h2>关键代码</h2>
           </div>
           <div class="code-group">
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -193,11 +243,11 @@
   96             messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: result})
   97     return &quot;Max iterations reached&quot;</code></pre>
             </article>
-            
+
           </div>
         </section>
 
-        <section class="lesson-section" id="talk">
+        <section class="lesson-section teacher-only" id="talk">
           <div class="lesson-section-head">
             <p class="eyebrow">Talk Track</p>
             <h2>讲课只讲这 3 件事</h2>
@@ -205,7 +255,7 @@
           <ul class="lesson-list"><li>LLM 输出的是结构化“调用意图”，不是直接执行系统命令。</li><li>`messages` 是 Agent 的短期工作区，每走一步都要回填现场结果。</li><li>循环次数就是 Agent 的行动预算，也是最早的工程约束。</li></ul>
         </section>
 
-        <section class="lesson-section" id="pitfalls">
+        <section class="lesson-section teacher-only" id="pitfalls">
           <div class="lesson-section-head">
             <p class="eyebrow">Pitfalls</p>
             <h2>容易踩坑</h2>
@@ -213,7 +263,7 @@
           <ul class="lesson-list"><li>`execute_bash` 功能太强，后面必须加安全边界。</li><li>工具报错也要回填给模型，否则它无法自我修正。</li><li>只堆工具不设计循环，最后就会退化回普通问答。</li></ul>
         </section>
 
-        <section class="lesson-section" id="extend">
+        <section class="lesson-section teacher-only" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">After Class</p>
             <h2>课后延伸</h2>
@@ -226,12 +276,12 @@
         </section>
 
         <nav class="pager">
-          
+
           <a class="pager-link" href="memory.html"><span>下一篇</span><strong>02. 多步任务</strong></a>
         </nav>
       </article>
     </main>
-    
+
     <footer class="site-footer">
       <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
@@ -240,7 +290,7 @@
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
       </div>
     </footer>
-    
+
   </div>
 </body>
 </html>

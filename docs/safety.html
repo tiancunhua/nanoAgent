@@ -16,6 +16,17 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="07. 三道安全防线｜1 小时实战分享课">
   <meta name="twitter:description" content="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。">
+  <script>
+    (function () {
+      try {
+        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
+        var nextMode = savedMode === "shared" ? "shared" : "teacher";
+        document.documentElement.dataset.viewMode = nextMode;
+      } catch (error) {
+        document.documentElement.dataset.viewMode = "teacher";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,15 +39,24 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <nav class="top-nav">
-        <a href="index.html#agenda">课程流程</a>
-        <a href="index.html#lessons">七讲讲义</a>
-        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-      </nav>
+      <div class="header-tools">
+
+    <div class="view-switch" role="group" aria-label="页面视图切换">
+      <span class="view-switch-label">视图</span>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+    </div>
+
+        <nav class="top-nav">
+          <a href="index.html#agenda">课程流程</a>
+          <a href="index.html#lessons">七讲讲义</a>
+          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar">
+      <aside class="article-sidebar teacher-only">
         <div class="sidebar-card">
           <p class="eyebrow">第 07 讲 · 能力关进笼子</p>
           <h2 class="lesson-title">三道安全防线</h2>
@@ -56,37 +76,37 @@
               <strong>底层原理，只有 100 行</strong>
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
               <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
               <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
               <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
               <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
               <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
-            
+
             <a class="chapter-rail-link is-current" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
@@ -105,7 +125,7 @@
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs">
+          <div class="breadcrumbs teacher-only">
             <a href="index.html">课程首页</a>
             <span>/</span>
             <a href="index.html#lessons">课堂版讲义</a>
@@ -115,11 +135,41 @@
           <p class="eyebrow">1 小时实战分享课</p>
           <h1>07. 三道安全防线</h1>
           <p class="lead">最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
-          <div class="tag-row"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
+          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <div class="tag-row teacher-only"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="index.html#lessons">返回课程首页</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">完整原文</a>
+            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.md">完整原文</a>
           </div>
+        </section>
+
+        <section class="lesson-section shared-only">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Shared Focus</p>
+            <h2>投屏时只看这 4 件事</h2>
+          </div>
+          <div class="shared-card-grid">
+        <article class="shared-focus-card">
+          <p>本讲主线</p>
+          <strong>黑名单 + 人工确认 + 输出截断</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>现场任务</p>
+          <strong>让学生形成一个很强的工程直觉：能力越强，越要在人机边界处加护栏。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>马上动手</p>
+          <strong>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>只看代码</p>
+          <strong>危险命令黑名单与确认机制 · L49-L107</strong>
+        </article>
+        </div>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -158,7 +208,7 @@
             <h2>关键代码</h2>
           </div>
           <div class="code-group">
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -173,27 +223,27 @@
   52         if re.search(pattern, command):
   53             return True, pattern
   54     return False, None
-  55 
-  56 
+  55
+  56
   57 # ==================== 安全防线 2: 用户确认 ====================
   58 #
   59 # 命令没有被黑名单拦截，不代表它是安全的。
   60 # 所有 bash 命令在执行前都让用户过目确认。
   61 # 类似 OpenClaw / Claude Code 中的 &quot;Allow / Deny&quot; 机制。
-  62 
-  63 
+  62
+  63
   64 def ask_user_confirmation(tool_name, args):
   65     &quot;&quot;&quot;执行前询问用户确认&quot;&quot;&quot;
   66     if AUTO_APPROVE:
   67         return True
-  68 
+  68
   69     print(f&quot;\n┌─ 确认执行 ─────────────────────────────&quot;)
   70     print(f&quot;│ 工具: {tool_name}&quot;)
   71     for key, value in args.items():
   72         display = str(value)[:200]
   73         print(f&quot;│ {key}: {display}&quot;)
   74     print(f&quot;└────────────────────────────────────────&quot;)
-  75 
+  75
   76     while True:
   77         answer = input(&quot;[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; &quot;).strip().lower()
   78         if answer in (&quot;y&quot;, &quot;yes&quot;, &quot;&quot;):
@@ -205,17 +255,17 @@
   84             sys.exit(0)
   85         else:
   86             print(&quot;请输入 Y/N/Q&quot;)
-  87 
-  88 
+  87
+  88
   89 # ==================== 安全防线 3: 输出截断 ====================
   90 #
   91 # 工具返回的结果可能巨大（比如 cat 一个 10000 行的文件）。
   92 # 不截断的话会迅速撑爆 context window（第六篇讲的问题）。
   93 # 截断是压缩之外的另一道防线：从源头控制输入大小。
-  94 
+  94
   95 MAX_OUTPUT_LENGTH = 5000  # 字符数
-  96 
-  97 
+  96
+  97
   98 def truncate_output(text):
   99     &quot;&quot;&quot;超长输出截断，保留首尾&quot;&quot;&quot;
  100     if len(text) &lt;= MAX_OUTPUT_LENGTH:
@@ -227,7 +277,7 @@
  106         + text[-half:]
  107     )</code></pre>
             </article>
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -243,11 +293,11 @@
  166         msg = f&quot;🚫 命令被拦截（匹配危险模式: {pattern}）: {command}&quot;
  167         print(f&quot;  {msg}&quot;)
  168         return msg
- 169 
+ 169
  170     # 防线 2: 用户确认
  171     if not ask_user_confirmation(&quot;execute_bash&quot;, {&quot;command&quot;: command}):
  172         return &quot;用户跳过了此命令。&quot;
- 173 
+ 173
  174     # 执行
  175     try:
  176         result = subprocess.run(
@@ -258,15 +308,15 @@
  181         output = &quot;Error: 命令执行超时（30秒）&quot;
  182     except Exception as e:
  183         output = f&quot;Error: {str(e)}&quot;
- 184 
+ 184
  185     # 防线 3: 输出截断
  186     return truncate_output(output)</code></pre>
             </article>
-            
+
           </div>
         </section>
 
-        <section class="lesson-section" id="talk">
+        <section class="lesson-section teacher-only" id="talk">
           <div class="lesson-section-head">
             <p class="eyebrow">Talk Track</p>
             <h2>讲课只讲这 3 件事</h2>
@@ -274,7 +324,7 @@
           <ul class="lesson-list"><li>黑名单负责挡住已知高危动作，人工确认负责最后边界。</li><li>输出截断既是安全问题，也是稳定性问题。</li><li>真正可用的 Agent 一定要允许用户拒绝某一步。</li></ul>
         </section>
 
-        <section class="lesson-section" id="pitfalls">
+        <section class="lesson-section teacher-only" id="pitfalls">
           <div class="lesson-section-head">
             <p class="eyebrow">Pitfalls</p>
             <h2>容易踩坑</h2>
@@ -282,7 +332,7 @@
           <ul class="lesson-list"><li>只靠黑名单是不够的，绕过方式永远存在。</li><li>所有动作都确认会严重伤体验，要做分级策略。</li><li>`--auto` 只能在你完全信任的隔离环境里用。</li></ul>
         </section>
 
-        <section class="lesson-section" id="extend">
+        <section class="lesson-section teacher-only" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">After Class</p>
             <h2>课后延伸</h2>
@@ -296,11 +346,11 @@
 
         <nav class="pager">
           <a class="pager-link" href="compact.html"><span>上一篇</span><strong>06. 长任务生存</strong></a>
-          
+
         </nav>
       </article>
     </main>
-    
+
     <footer class="site-footer">
       <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
@@ -309,7 +359,7 @@
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
       </div>
     </footer>
-    
+
   </div>
 </body>
 </html>

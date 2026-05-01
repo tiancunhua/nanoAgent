@@ -16,6 +16,17 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="06. 上下文压缩｜1 小时实战分享课">
   <meta name="twitter:description" content="这一讲不讲理论史，只解决一个课堂上特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。">
+  <script>
+    (function () {
+      try {
+        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
+        var nextMode = savedMode === "shared" ? "shared" : "teacher";
+        document.documentElement.dataset.viewMode = nextMode;
+      } catch (error) {
+        document.documentElement.dataset.viewMode = "teacher";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,15 +39,24 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <nav class="top-nav">
-        <a href="index.html#agenda">课程流程</a>
-        <a href="index.html#lessons">七讲讲义</a>
-        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-      </nav>
+      <div class="header-tools">
+
+    <div class="view-switch" role="group" aria-label="页面视图切换">
+      <span class="view-switch-label">视图</span>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+    </div>
+
+        <nav class="top-nav">
+          <a href="index.html#agenda">课程流程</a>
+          <a href="index.html#lessons">七讲讲义</a>
+          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar">
+      <aside class="article-sidebar teacher-only">
         <div class="sidebar-card">
           <p class="eyebrow">第 06 讲 · 防止自我窒息</p>
           <h2 class="lesson-title">上下文压缩</h2>
@@ -56,37 +76,37 @@
               <strong>底层原理，只有 100 行</strong>
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
               <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
               <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
               <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
               <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
-            
+
             <a class="chapter-rail-link is-current" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
               <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
@@ -105,7 +125,7 @@
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs">
+          <div class="breadcrumbs teacher-only">
             <a href="index.html">课程首页</a>
             <span>/</span>
             <a href="index.html#lessons">课堂版讲义</a>
@@ -115,11 +135,41 @@
           <p class="eyebrow">1 小时实战分享课</p>
           <h1>06. 上下文压缩</h1>
           <p class="lead">这一讲不讲理论史，只解决一个课堂上特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。</p>
-          <div class="tag-row"><span class="tag">Context Window</span><span class="tag">Compaction</span><span class="tag">Summarization</span></div>
+          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <div class="tag-row teacher-only"><span class="tag">Context Window</span><span class="tag">Compaction</span><span class="tag">Summarization</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="safety.html">继续第 07 讲</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.md">完整原文</a>
+            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.md">完整原文</a>
           </div>
+        </section>
+
+        <section class="lesson-section shared-only">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Shared Focus</p>
+            <h2>投屏时只看这 4 件事</h2>
+          </div>
+          <div class="shared-card-grid">
+        <article class="shared-focus-card">
+          <p>本讲主线</p>
+          <strong>摘要旧消息，保留最近窗口</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>现场任务</p>
+          <strong>让学生看到压缩不是“加分项”，而是 Agent 长任务能不能活下来的生死线。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>马上动手</p>
+          <strong>把 `COMPACT_THRESHOLD` 调到 8，制造一轮可见的压缩。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>只看代码</p>
+          <strong>上下文压缩函数 · L129-L190</strong>
+        </article>
+        </div>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -158,7 +208,7 @@
             <h2>关键代码</h2>
           </div>
           <div class="code-group">
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -170,21 +220,21 @@
               <pre class="code-block"><code class="language-python"> 129 def compact_messages(messages):
  130     &quot;&quot;&quot;
  131     当 messages 过长时，把旧消息压缩成一段摘要。
- 132 
+ 132
  133     压缩前: [system, msg1, msg2, ..., msg15, msg16, msg17, msg18, msg19, msg20]
  134     压缩后: [system, summary_of(msg1~msg14), msg15, msg16, msg17, msg18, msg19, msg20]
  135     &quot;&quot;&quot;
  136     if len(messages) &lt;= COMPACT_THRESHOLD:
  137         return messages  # 没超阈值，不压缩
- 138 
+ 138
  139     print(
  140         f&quot;\n[Compact] messages 数量 ({len(messages)}) 超过阈值 ({COMPACT_THRESHOLD})，开始压缩...&quot;
  141     )
- 142 
+ 142
  143     system_msg = messages[0]  # system prompt 永远保留
  144     old_messages = messages[1:-KEEP_RECENT]  # 需要被压缩的旧消息
  145     recent_messages = messages[-KEEP_RECENT:]  # 最近的消息保留原样
- 146 
+ 146
  147     # 把旧消息拼成文本，交给 LLM 做摘要
  148     old_text = &quot;&quot;
  149     for msg in old_messages:
@@ -200,7 +250,7 @@
  159         )
  160         if content:
  161             old_text += f&quot;[{role}]: {content}\n&quot;
- 162 
+ 162
  163     # 调用 LLM 生成摘要
  164     summary_response = client.chat.completions.create(
  165         model=MODEL,
@@ -213,12 +263,12 @@
  172         ],
  173     )
  174     summary = summary_response.choices[0].message.content
- 175 
+ 175
  176     print(
  177         f&quot;[Compact] {len(old_messages)} 条旧消息 → 1 条摘要 (保留最近 {len(recent_messages)} 条)&quot;
  178     )
  179     print(f&quot;[Compact] 压缩后 messages: {1 + 1 + len(recent_messages)} 条\n&quot;)
- 180 
+ 180
  181     # 重新组装：system + 摘要 + 最近消息
  182     return [
  183         system_msg,
@@ -230,11 +280,11 @@
  189         *recent_messages,
  190     ]</code></pre>
             </article>
-            
+
           </div>
         </section>
 
-        <section class="lesson-section" id="talk">
+        <section class="lesson-section teacher-only" id="talk">
           <div class="lesson-section-head">
             <p class="eyebrow">Talk Track</p>
             <h2>讲课只讲这 3 件事</h2>
@@ -242,7 +292,7 @@
           <ul class="lesson-list"><li>压缩不是为了优雅，是为了不在真实任务里死于上下文溢出。</li><li>最不能丢的是 system prompt 和当前工作现场。</li><li>旧消息摘要化，本质上是在用模型帮助自己整理历史。</li></ul>
         </section>
 
-        <section class="lesson-section" id="pitfalls">
+        <section class="lesson-section teacher-only" id="pitfalls">
           <div class="lesson-section-head">
             <p class="eyebrow">Pitfalls</p>
             <h2>容易踩坑</h2>
@@ -250,7 +300,7 @@
           <ul class="lesson-list"><li>摘要过度会丢掉关键路径和文件名。</li><li>recent window 太短会让 Agent 瞬间断片。</li><li>只做截断不做压缩，依然扛不住复杂长任务。</li></ul>
         </section>
 
-        <section class="lesson-section" id="extend">
+        <section class="lesson-section teacher-only" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">After Class</p>
             <h2>课后延伸</h2>
@@ -268,7 +318,7 @@
         </nav>
       </article>
     </main>
-    
+
     <footer class="site-footer">
       <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
@@ -277,7 +327,7 @@
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
       </div>
     </footer>
-    
+
   </div>
 </body>
 </html>

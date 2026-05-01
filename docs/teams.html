@@ -16,6 +16,17 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="05. 多智能体团队协作｜1 小时实战分享课">
   <meta name="twitter:description" content="SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。">
+  <script>
+    (function () {
+      try {
+        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
+        var nextMode = savedMode === "shared" ? "shared" : "teacher";
+        document.documentElement.dataset.viewMode = nextMode;
+      } catch (error) {
+        document.documentElement.dataset.viewMode = "teacher";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,15 +39,24 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <nav class="top-nav">
-        <a href="index.html#agenda">课程流程</a>
-        <a href="index.html#lessons">七讲讲义</a>
-        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-      </nav>
+      <div class="header-tools">
+
+    <div class="view-switch" role="group" aria-label="页面视图切换">
+      <span class="view-switch-label">视图</span>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+    </div>
+
+        <nav class="top-nav">
+          <a href="index.html#agenda">课程流程</a>
+          <a href="index.html#lessons">七讲讲义</a>
+          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar">
+      <aside class="article-sidebar teacher-only">
         <div class="sidebar-card">
           <p class="eyebrow">第 05 讲 · 让角色长期存在</p>
           <h2 class="lesson-title">多智能体团队协作</h2>
@@ -56,37 +76,37 @@
               <strong>底层原理，只有 100 行</strong>
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
               <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
               <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
               <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
-            
+
             <a class="chapter-rail-link is-current" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
               <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
               <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
@@ -105,7 +125,7 @@
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs">
+          <div class="breadcrumbs teacher-only">
             <a href="index.html">课程首页</a>
             <span>/</span>
             <a href="index.html#lessons">课堂版讲义</a>
@@ -115,11 +135,41 @@
           <p class="eyebrow">1 小时实战分享课</p>
           <h1>05. 多智能体团队协作</h1>
           <p class="lead">SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。</p>
-          <div class="tag-row"><span class="tag">Team</span><span class="tag">Inbox</span><span class="tag">Lifecycle</span></div>
+          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <div class="tag-row teacher-only"><span class="tag">Team</span><span class="tag">Inbox</span><span class="tag">Lifecycle</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="compact.html">继续第 06 讲</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">完整原文</a>
+            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.md">完整原文</a>
           </div>
+        </section>
+
+        <section class="lesson-section shared-only">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Shared Focus</p>
+            <h2>投屏时只看这 4 件事</h2>
+          </div>
+          <div class="shared-card-grid">
+        <article class="shared-focus-card">
+          <p>本讲主线</p>
+          <strong>持久 Agent + 通信通道</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>现场任务</p>
+          <strong>把“团队协作”讲成一种可落地的软件结构，而不是抽象概念。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>马上动手</p>
+          <strong>把 `plan_team()` 固定成两开发一审查的三人团队。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>只看代码</p>
+          <strong>持久化的 Agent 对象 · L150-L210</strong>
+        </article>
+        </div>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -158,7 +208,7 @@
             <h2>关键代码</h2>
           </div>
           <div class="code-group">
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -179,11 +229,11 @@
  159             }
  160         ]
  161         print(f&quot;  [创建] {name} ({role})&quot;)
- 162 
+ 162
  163     def receive(self, sender, message):
  164         &quot;&quot;&quot;核心 3: 通信通道 —— 接收来自其他 Agent 的消息&quot;&quot;&quot;
  165         self.inbox.append({&quot;from&quot;: sender, &quot;content&quot;: message})
- 166 
+ 166
  167     def chat(self, task):
  168         &quot;&quot;&quot;
  169         核心 1: 持久记忆 —— 每次 chat() 的对话都累积在 self.messages 中
@@ -199,21 +249,21 @@
  179             resp = client.chat.completions.create(model=MODEL, messages=self.messages)
  180             self.messages.append(resp.choices[0].message)
  181             self.inbox.clear()
- 182 
+ 182
  183         # 执行本次任务
  184         self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
- 185 
+ 185
  186         for _ in range(10):
  187             response = client.chat.completions.create(
  188                 model=MODEL, messages=self.messages, tools=tools
  189             )
  190             message = response.choices[0].message
  191             self.messages.append(message)
- 192 
+ 192
  193             if not message.tool_calls:
  194                 print(f&quot;  [{self.name}] → {message.content[:100]}...&quot;)
  195                 return message.content
- 196 
+ 196
  197             for tc in message.tool_calls:
  198                 fn = tc.function.name
  199                 args = json.loads(tc.function.arguments)
@@ -226,10 +276,10 @@
  206                 self.messages.append(
  207                     {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
  208                 )
- 209 
+ 209
  210         return &quot;Max iterations reached&quot;</code></pre>
             </article>
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -241,38 +291,38 @@
               <pre class="code-block"><code class="language-python"> 219 class Team:
  220     def __init__(self):
  221         self.agents = {}  # name → Agent
- 222 
+ 222
  223     def hire(self, name, role):
  224         &quot;&quot;&quot;招募：创建一个持久 Agent&quot;&quot;&quot;
  225         agent = Agent(name, role)
  226         self.agents[name] = agent
  227         return agent
- 228 
+ 228
  229     def send(self, from_name, to_name, message):
  230         &quot;&quot;&quot;核心 3: Agent 之间的通信通道&quot;&quot;&quot;
  231         if to_name not in self.agents:
  232             return f&quot;Error: {to_name} not found&quot;
  233         self.agents[to_name].receive(from_name, message)
  234         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)
- 235 
+ 235
  236     def broadcast(self, from_name, message):
  237         &quot;&quot;&quot;广播：给团队所有其他人发消息&quot;&quot;&quot;
  238         for name, agent in self.agents.items():
  239             if name != from_name:
  240                 agent.receive(from_name, message)
  241         print(f&quot;  [广播] {from_name} → 全体: {message[:60]}...&quot;)
- 242 
+ 242
  243     def disband(self):
  244         &quot;&quot;&quot;解散：所有 Agent 生命周期结束&quot;&quot;&quot;
  245         names = list(self.agents.keys())
  246         self.agents.clear()
  247         print(f&quot;  [解散] 团队已解散 ({&#x27;, &#x27;.join(names)})&quot;)</code></pre>
             </article>
-            
+
           </div>
         </section>
 
-        <section class="lesson-section" id="talk">
+        <section class="lesson-section teacher-only" id="talk">
           <div class="lesson-section-head">
             <p class="eyebrow">Talk Track</p>
             <h2>讲课只讲这 3 件事</h2>
@@ -280,7 +330,7 @@
           <ul class="lesson-list"><li>多智能体最重要的不是人数，而是角色和生命周期。</li><li>Agent 的 `inbox` 足够简单，却已经能支持很多协作场景。</li><li>团队越大不一定越好，真正有价值的是信息流变清晰。</li></ul>
         </section>
 
-        <section class="lesson-section" id="pitfalls">
+        <section class="lesson-section teacher-only" id="pitfalls">
           <div class="lesson-section-head">
             <p class="eyebrow">Pitfalls</p>
             <h2>容易踩坑</h2>
@@ -288,7 +338,7 @@
           <ul class="lesson-list"><li>如果每个角色都很泛，最后只是多个普通助手轮流说话。</li><li>消息太多时又会重新触发上下文压力。</li><li>团队协作如果没有 reviewer，很难展示“协作带来的质量提升”。</li></ul>
         </section>
 
-        <section class="lesson-section" id="extend">
+        <section class="lesson-section teacher-only" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">After Class</p>
             <h2>课后延伸</h2>
@@ -306,7 +356,7 @@
         </nav>
       </article>
     </main>
-    
+
     <footer class="site-footer">
       <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
@@ -315,7 +365,7 @@
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
       </div>
     </footer>
-    
+
   </div>
 </body>
 </html>

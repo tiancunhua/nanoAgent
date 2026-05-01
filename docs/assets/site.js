@@ -1,4 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const VIEW_MODE_KEY = "nanoagent-view-mode";
+  const DEFAULT_MODE = "teacher";
+  const root = document.documentElement;
+  const body = document.body;
+  const modeButtons = [...document.querySelectorAll("[data-view-mode-option]")];
+
+  const setViewMode = (mode) => {
+    const nextMode = mode === "shared" ? "shared" : DEFAULT_MODE;
+    root.dataset.viewMode = nextMode;
+    body.dataset.viewMode = nextMode;
+    window.localStorage.setItem(VIEW_MODE_KEY, nextMode);
+
+    for (const button of modeButtons) {
+      const isActive = button.dataset.viewModeOption === nextMode;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    }
+  };
+
+  const savedMode = window.localStorage.getItem(VIEW_MODE_KEY) || DEFAULT_MODE;
+  setViewMode(savedMode);
+
+  for (const button of modeButtons) {
+    button.addEventListener("click", () => {
+      setViewMode(button.dataset.viewModeOption);
+    });
+  }
+
   const progressBar = document.querySelector(".reading-progress-bar");
   if (progressBar) {
     const updateProgress = () => {

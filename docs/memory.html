@@ -16,6 +16,17 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="02. 记忆与规划｜1 小时实战分享课">
   <meta name="twitter:description" content="给最小 Agent 加上长期记忆和规划能力，让它不只是“做一步”，而是能拆任务、按顺序推进。">
+  <script>
+    (function () {
+      try {
+        var savedMode = window.localStorage.getItem("nanoagent-view-mode");
+        var nextMode = savedMode === "shared" ? "shared" : "teacher";
+        document.documentElement.dataset.viewMode = nextMode;
+      } catch (error) {
+        document.documentElement.dataset.viewMode = "teacher";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,15 +39,24 @@
         <span class="brand-mark">nanoAgent</span>
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
-      <nav class="top-nav">
-        <a href="index.html#agenda">课程流程</a>
-        <a href="index.html#lessons">七讲讲义</a>
-        <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
-      </nav>
+      <div class="header-tools">
+
+    <div class="view-switch" role="group" aria-label="页面视图切换">
+      <span class="view-switch-label">视图</span>
+      <button type="button" class="view-switch-btn is-active" data-view-mode-option="teacher" aria-pressed="true">教师版</button>
+      <button type="button" class="view-switch-btn" data-view-mode-option="shared" aria-pressed="false">共享版</button>
+    </div>
+
+        <nav class="top-nav">
+          <a href="index.html#agenda">课程流程</a>
+          <a href="index.html#lessons">七讲讲义</a>
+          <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main class="article-layout" id="main-content">
-      <aside class="article-sidebar">
+      <aside class="article-sidebar teacher-only">
         <div class="sidebar-card">
           <p class="eyebrow">第 02 讲 · 从单步到连续工作</p>
           <h2 class="lesson-title">记忆与规划</h2>
@@ -56,37 +76,37 @@
               <strong>底层原理，只有 100 行</strong>
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
-            
+
             <a class="chapter-rail-link is-current" href="memory.html">
               <span class="course-step">第 02 讲</span>
               <strong>记忆与规划</strong>
               <small>多步任务 · 持久记忆 + Plan-then-Execute</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 03 讲</span>
               <strong>Rules、Skills 与 MCP</strong>
               <small>工程扩展 · 规则 + 技能 + 外部工具</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="subagent.html">
               <span class="course-step">第 04 讲</span>
               <strong>SubAgent 子智能体</strong>
               <small>任务委派 · 独立上下文 + 角色委派</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="teams.html">
               <span class="course-step">第 05 讲</span>
               <strong>多智能体团队协作</strong>
               <small>团队编排 · 持久 Agent + 通信通道</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="compact.html">
               <span class="course-step">第 06 讲</span>
               <strong>上下文压缩</strong>
               <small>长任务生存 · 摘要旧消息，保留最近窗口</small>
             </a>
-            
+
             <a class="chapter-rail-link" href="safety.html">
               <span class="course-step">第 07 讲</span>
               <strong>三道安全防线</strong>
@@ -105,7 +125,7 @@
 
       <article class="article-main">
         <section class="article-hero">
-          <div class="breadcrumbs">
+          <div class="breadcrumbs teacher-only">
             <a href="index.html">课程首页</a>
             <span>/</span>
             <a href="index.html#lessons">课堂版讲义</a>
@@ -115,11 +135,41 @@
           <p class="eyebrow">1 小时实战分享课</p>
           <h1>02. 记忆与规划</h1>
           <p class="lead">给最小 Agent 加上长期记忆和规划能力，让它不只是“做一步”，而是能拆任务、按顺序推进。</p>
-          <div class="tag-row"><span class="tag">Memory</span><span class="tag">Planning</span><span class="tag">Shared Messages</span></div>
+          <p class="mode-note teacher-only">教师版显示课堂目录、讲课提示、踩坑和课后延伸，适合备课与授课控制。</p>
+          <p class="mode-note shared-only">共享版已隐藏老师备注，页面会放大重点信息，适合和学生共看。</p>
+          <div class="tag-row teacher-only"><span class="tag">Memory</span><span class="tag">Planning</span><span class="tag">Shared Messages</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="skills-mcp.html">继续第 03 讲</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.md">完整原文</a>
+            <a class="secondary-btn teacher-only" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.md">完整原文</a>
           </div>
+        </section>
+
+        <section class="lesson-section shared-only">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Shared Focus</p>
+            <h2>投屏时只看这 4 件事</h2>
+          </div>
+          <div class="shared-card-grid">
+        <article class="shared-focus-card">
+          <p>本讲主线</p>
+          <strong>持久记忆 + Plan-then-Execute</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>现场任务</p>
+          <strong>演示 Agent 如何先拆步骤，再逐步执行，还能把结果写进记忆文件。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>马上动手</p>
+          <strong>先运行一次“创建 demo 文件”，再运行一次“读取刚才文件并补注释”，观察记忆是否生效。</strong>
+        </article>
+
+        <article class="shared-focus-card">
+          <p>只看代码</p>
+          <strong>先规划，再执行 · L131-L157</strong>
+        </article>
+        </div>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -158,7 +208,7 @@
             <h2>关键代码</h2>
           </div>
           <div class="code-group">
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -195,7 +245,7 @@
  156     except:
  157         return [task]</code></pre>
             </article>
-            
+
             <article class="code-card">
               <div class="code-card-head">
                 <div>
@@ -241,8 +291,8 @@
  194                 }
  195             )
  196     return &quot;Max iterations reached&quot;, actions, messages
- 197 
- 198 
+ 197
+ 198
  199 def run_agent_plus(task, use_plan=False):
  200     memory = load_memory()
  201     system_prompt = (
@@ -266,11 +316,11 @@
  219     save_memory(task, final_result)
  220     return final_result</code></pre>
             </article>
-            
+
           </div>
         </section>
 
-        <section class="lesson-section" id="talk">
+        <section class="lesson-section teacher-only" id="talk">
           <div class="lesson-section-head">
             <p class="eyebrow">Talk Track</p>
             <h2>讲课只讲这 3 件事</h2>
@@ -278,7 +328,7 @@
           <ul class="lesson-list"><li>规划不是额外魔法，只是把任务拆解前置了一次。</li><li>跨步骤共享 `messages`，就是让 Agent 在执行链路里“不断记住自己刚做了什么”。</li><li>长期记忆最开始不用上复杂系统，先把写入和回放跑通。</li></ul>
         </section>
 
-        <section class="lesson-section" id="pitfalls">
+        <section class="lesson-section teacher-only" id="pitfalls">
           <div class="lesson-section-head">
             <p class="eyebrow">Pitfalls</p>
             <h2>容易踩坑</h2>
@@ -286,7 +336,7 @@
           <ul class="lesson-list"><li>记忆窗口过大，后面会迅速碰到上下文爆炸。</li><li>规划失败时一定要有降级路径，不能卡死。</li><li>把所有历史都塞回 prompt，不等于真正的记忆系统。</li></ul>
         </section>
 
-        <section class="lesson-section" id="extend">
+        <section class="lesson-section teacher-only" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">After Class</p>
             <h2>课后延伸</h2>
@@ -304,7 +354,7 @@
         </nav>
       </article>
     </main>
-    
+
     <footer class="site-footer">
       <p>课堂版页面只保留 1 小时分享最需要的实战内容，完整原文与源码请看 GitHub。</p>
       <div class="footer-links">
@@ -313,7 +363,7 @@
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/build_site.py">站点生成器</a>
       </div>
     </footer>
-    
+
   </div>
 </body>
 </html>
