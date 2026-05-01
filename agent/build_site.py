@@ -80,26 +80,31 @@ LESSONS = [
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
         demo_goal="让大家当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。",
         demo_expected=[
+            "先指给大家看 `tools` 列表，说明模型只能从这份清单里挑能力。",
             "终端先打印 `[Tool] write_file(...)`，说明模型选择了工具。",
             "再次要求它读取 `hello.txt`，验证效果已经落到真实文件。",
-            "顺手指出 `messages` 会随着每一步持续增长。",
+            "顺手指出 `messages` 会随着每一步持续增长，而工具结果也会被回填进去。",
         ],
         student_takeaways=[
             "能解释 Agent 与 Chat 的根本区别。",
             "能看懂 `tools`、`functions`、`messages` 和循环的关系。",
+            "知道 Tool 的本质是“模型可见的能力声明”，不是模型自己发明出来的命令。",
             "知道 Agent 的执行权仍然掌握在代码里，不在模型里。",
         ],
         practice_steps=[
             "把 `max_iterations` 改成 2，观察复杂任务会如何提前中断。",
+            "把 `write_file` 从 `tools` 里临时删掉，再让 Agent 写文件，观察它为什么做不到。",
             "让 Agent 连续执行“写文件 + 读文件”两个动作，体会循环的必要性。",
             "给 `execute_bash` 加一句更清晰的描述，看看模型是否更容易选对工具。",
         ],
         talk_points=[
+            "Tool 先是一份 schema：名字、描述、参数，模型看到的是这份声明，不是 Python 函数本身。",
             "LLM 输出的是结构化“调用意图”，不是直接执行系统命令。",
+            "`functions` 这张映射表才决定了工具名最后会落到哪段真实代码上。",
             "`messages` 是 Agent 的短期工作区，每走一步都要回填现场结果。",
-            "循环次数就是 Agent 的行动预算，也是最早的工程约束。",
         ],
         pitfalls=[
+            "只写 Python 函数、不把它放进 `tools`，模型就根本不知道这项能力存在。",
             "`execute_bash` 功能太强，后面必须加安全边界。",
             "工具报错也要回填给模型，否则它无法自我修正。",
             "只堆工具不设计循环，最后就会退化回普通问答。",
@@ -108,6 +113,18 @@ LESSONS = [
         md_path=ROOT / "01-essence/agent-essence.md",
         code_path=ROOT / "01-essence/agent-essence.py",
         snippets=[
+            Snippet(
+                title="先看 Tool 声明",
+                start=11,
+                end=51,
+                focus="这段代码决定了模型能看到哪些能力，以及每个工具需要什么参数。",
+            ),
+            Snippet(
+                title="再看工具落地到哪段 Python",
+                start=54,
+                end=70,
+                focus="Tool 不是抽象概念，最后一定要映射到真实函数，模型选中的名字就是从这里执行的。",
+            ),
             Snippet(
                 title="最小 Agent 循环",
                 start=73,
