@@ -95,7 +95,7 @@ LESSONS = [
         short_title="最小闭环",
         stage="起步演示",
         lesson_minutes="8 分钟",
-        summary="暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。",
+        summary="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。",
         core="LLM + 工具 + 循环",
         tags=["工具调用", "Agent Loop", "最小实现"],
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
@@ -853,7 +853,6 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
           <p class="lead">{format_inline(lesson.summary)}</p>
-          <p class="mode-note">本页按“先看代码 → 再看演示 → 自己试一轮”的顺序编排。</p>
           <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
             <a class="primary-btn" href="#code">先看关键代码</a>
