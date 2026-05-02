@@ -116,18 +116,18 @@
             </article>
 
             <article class="agenda-item">
-              <p class="agenda-time">13 - 21</p>
+              <p class="agenda-time">13 - 23</p>
               <div class="agenda-content">
-                <h3>第 02 讲：记忆与规划</h3>
-                <p>演示 `--plan` 和 `agent_memory.md`，让 Agent 会连续工作。</p>
+                <h3>第 02 讲：Skills / Rules / MCP</h3>
+                <p>把 Skill、Rule、MCP 这三层能力接进来，重点讲它们各自进入了上下文还是工具列表。</p>
               </div>
             </article>
 
             <article class="agenda-item">
-              <p class="agenda-time">21 - 31</p>
+              <p class="agenda-time">23 - 31</p>
               <div class="agenda-content">
-                <h3>第 03 讲：Rules / Skills / MCP</h3>
-                <p>把 Agent 从脚本推到工程化外壳，但只讲配置分层和一个最小示例。</p>
+                <h3>第 03 讲：Memory</h3>
+                <p>演示 Agent 如何把一次执行结果写进记忆文件，并在下一次运行时带回上下文。</p>
               </div>
             </article>
 
@@ -189,7 +189,21 @@
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 02 讲 · 先把 Memory 讲透</p>
+              <p class="lesson-index">第 02 讲 · 第二步：把能力接进来</p>
+              <h3>Skills、Rules 与 MCP</h3>
+              <p>第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。</p>
+              <div class="lesson-meta">
+                <span>10 分钟</span>
+                <span>430 行代码</span>
+                <span>Skill + Rule + MCP</span>
+              </div>
+              <p class="lesson-kicker">分享重点：分享时只演示一个最小 Rule、一个最小 Skill，再指给大家看 MCP 工具是如何接进来的。</p>
+              <div class="lesson-tag-row"><span class="tag">Skills</span><span class="tag">Rules</span><span class="tag">MCP</span></div>
+              <a class="lesson-link" href="skills-mcp.html">看分享讲义</a>
+            </article>
+
+            <article class="lesson-card">
+              <p class="lesson-index">第 03 讲 · 第三步：把历史带回来</p>
               <h3>Memory：让 Agent 记住上一次</h3>
               <p>这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。</p>
               <div class="lesson-meta">
@@ -200,20 +214,6 @@
               <p class="lesson-kicker">分享重点：先连续跑两次任务，再打开 `agent_memory.md` 看看 Agent 是怎么把历史写下来又带回下一轮的。</p>
               <div class="lesson-tag-row"><span class="tag">Memory</span><span class="tag">Persistence</span><span class="tag">Context Replay</span></div>
               <a class="lesson-link" href="memory.html">看分享讲义</a>
-            </article>
-
-            <article class="lesson-card">
-              <p class="lesson-index">第 03 讲 · 从脚本到框架</p>
-              <h3>Rules、Skills 与 MCP</h3>
-              <p>这一讲只抓工程化里最值钱的三件事：规则约束、技能注入和工具外接，而不是把配置细节全部讲完。</p>
-              <div class="lesson-meta">
-                <span>10 分钟</span>
-                <span>430 行代码</span>
-                <span>规则 + 技能 + 外部工具</span>
-              </div>
-              <p class="lesson-kicker">分享重点：分享时只演示一个最小规则文件和一个最小技能定义，不展开完整配置宇宙。</p>
-              <div class="lesson-tag-row"><span class="tag">Rules</span><span class="tag">Skills</span><span class="tag">MCP</span></div>
-              <a class="lesson-link" href="skills-mcp.html">看分享讲义</a>
             </article>
 
             <article class="lesson-card">

@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>02. Memory：让 Agent 记住上一次｜1 小时技术分享讲义</title>
+  <title>03. Memory：让 Agent 记住上一次｜1 小时技术分享讲义</title>
   <meta name="description" content="这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/memory.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="02. Memory：让 Agent 记住上一次｜1 小时技术分享讲义">
+  <meta property="og:title" content="03. Memory：让 Agent 记住上一次｜1 小时技术分享讲义">
   <meta property="og:description" content="这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/memory.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="02. Memory：让 Agent 记住上一次｜1 小时技术分享讲义">
+  <meta name="twitter:title" content="03. Memory：让 Agent 记住上一次｜1 小时技术分享讲义">
   <meta name="twitter:description" content="这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
@@ -38,7 +38,7 @@
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 02 讲 · 先把 Memory 讲透</p>
+          <p class="eyebrow">第 03 讲 · 第三步：把历史带回来</p>
           <h2 class="lesson-title">Memory：让 Agent 记住上一次</h2>
           <p>这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。</p>
           <div class="chip-row">
@@ -57,16 +57,16 @@
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
 
-            <a class="chapter-rail-link is-current" href="memory.html">
+            <a class="chapter-rail-link" href="skills-mcp.html">
               <span class="course-step">第 02 讲</span>
-              <strong>Memory：让 Agent 记住上一次</strong>
-              <small>记忆回放 · 写入记忆 + 回放记忆</small>
+              <strong>Skills、Rules 与 MCP</strong>
+              <small>能力外置 · Skill + Rule + MCP</small>
             </a>
 
-            <a class="chapter-rail-link" href="skills-mcp.html">
+            <a class="chapter-rail-link is-current" href="memory.html">
               <span class="course-step">第 03 讲</span>
-              <strong>Rules、Skills 与 MCP</strong>
-              <small>工程扩展 · 规则 + 技能 + 外部工具</small>
+              <strong>Memory：让 Agent 记住上一次</strong>
+              <small>记忆回放 · 写入记忆 + 回放记忆</small>
             </a>
 
             <a class="chapter-rail-link" href="subagent.html">
@@ -110,10 +110,10 @@
             <span>/</span>
             <a href="index.html#lessons">分享讲义</a>
             <span>/</span>
-            <span>第 02 讲</span>
+            <span>第 03 讲</span>
           </div>
           <p class="eyebrow">1 小时技术分享讲义</p>
-          <h1>02. Memory：让 Agent 记住上一次</h1>
+          <h1>03. Memory：让 Agent 记住上一次</h1>
           <p class="lead">这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 `agent_memory.md`，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。</p>
           <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
           <div class="tag-row"><span class="tag">Memory</span><span class="tag">Persistence</span><span class="tag">Context Replay</span></div>
@@ -256,8 +256,8 @@ python agent/02-memory/agent-memory.py &quot;不重新读文件，只根据记�
         </section>
 
         <nav class="pager">
-          <a class="pager-link" href="essence.html"><span>上一篇</span><strong>01. 最小闭环</strong></a>
-          <a class="pager-link" href="skills-mcp.html"><span>下一篇</span><strong>03. 工程扩展</strong></a>
+          <a class="pager-link" href="skills-mcp.html"><span>上一篇</span><strong>02. 能力外置</strong></a>
+          <a class="pager-link" href="subagent.html"><span>下一篇</span><strong>04. 任务委派</strong></a>
         </nav>
       </article>
     </main>
