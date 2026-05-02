@@ -56,6 +56,7 @@ class Lesson:
     summary: str
     core: str
     tags: List[str]
+    scenario: str
     demo_command: str
     demo_goal: str
     demo_expected: List[str]
@@ -98,6 +99,7 @@ LESSONS = [
         summary="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。",
         core="LLM + 工具 + 循环",
         tags=["工具调用", "Agent Loop", "最小实现"],
+        scenario="把“帮我创建 hello.txt，内容写 Hello Agent”这类任务交给 ChatGPT，它只能给你建议；要让它真正在文件系统里创建出这个文件，就必须在模型外面再裹一层能调用工具、能循环执行的代码。",
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
         demo_goal="现场观察 Agent 不只是输出文字，而是真实地改动了文件系统。",
         demo_expected=[
@@ -163,6 +165,7 @@ LESSONS = [
         summary="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。",
         core="Skill + Rule + MCP",
         tags=["Skills", "Rules", "MCP"],
+        scenario="团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。",
         demo_command='python agent/03-skills-mcp/agent-skills-mcp.py "扫描项目里所有 TODO 并生成修复顺序"',
         demo_goal="展示 Agent 如何在启动时从项目目录加载 Skills、Rules 与 MCP 工具，使能力不再硬编码在脚本中。",
         demo_expected=[
@@ -218,6 +221,7 @@ LESSONS = [
         summary="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 `agent_memory.md`，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。",
         core="写入记忆 + 回放记忆",
         tags=["Memory", "Persistence", "Context Replay"],
+        scenario="今天让 Agent 写了一份总结，明天再启动它继续往下做——希望它能记得昨天写过什么，而不是每次都从一张白纸开始。这就是 Memory 要解决的问题。",
         demo_command='python agent/02-memory/agent-memory.py "创建 launch-note.txt，内容是 Agent Memory Demo"\npython agent/02-memory/agent-memory.py "不重新读文件，只根据记忆说明你上一次完成了什么任务"',
         demo_goal="演示 Agent 将执行结果写入记忆文件，并在下次运行时直接回放这段历史。",
         demo_expected=[
@@ -273,6 +277,7 @@ LESSONS = [
         summary="当单个 Agent 需要同时承担架构、后端、前端工作时，应将部分任务委派给更聚焦的子代理。",
         core="独立上下文 + 角色委派",
         tags=["SubAgent", "Delegation", "Role Prompt"],
+        scenario="一个项目同时要做后端、前端、还要写文档，主 Agent 一边在改 Python 一边在改 HTML，上下文越拉越长，最后什么都做不好。把后端的活交给一个专门写后端的子代理，主 Agent 才能集中做协调。",
         demo_command='python agent/04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
         demo_goal="委派并不神秘，本质就是把另一个 Agent 也封装成工具。",
         demo_expected=[
@@ -322,6 +327,7 @@ LESSONS = [
         summary="SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。",
         core="持久 Agent + 通信通道",
         tags=["Team", "Inbox", "Lifecycle"],
+        scenario="希望团队里有一位“开发”和一位“审查”长期存在：每个新任务都跑同样的流程，开发完成后自动转给审查，审查的意见再反馈回开发。SubAgent 那种一次性角色已经不够用了。",
         demo_command='python agent/05-teams/agent-teams.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
         demo_goal="将团队协作呈现为一种可落地的软件结构，而非抽象概念。",
         demo_expected=[
@@ -377,6 +383,7 @@ LESSONS = [
         summary="本讲跳过理论铺垫，专注于一个核心问题：长任务中 Agent 为何会被自身历史拖垮，以及压缩如何缓解。",
         core="摘要旧消息，保留最近窗口",
         tags=["Context Window", "Compaction", "Summarization"],
+        scenario="交给 Agent 一个跨几十轮的长任务，会发现它越走越慢、回答越来越含糊——背后是 messages 一直在膨胀，前面所有工具调用结果都被一次次带着走，最终撑爆 context window。",
         demo_command='python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt"',
         demo_goal="压缩并非加分项，而是 Agent 完成长任务的关键能力。",
         demo_expected=[
@@ -426,6 +433,7 @@ LESSONS = [
         summary="最后一讲聚焦 Agent 落地时不可缺少的三道边界：危险命令拦截、人工确认、超长输出截断。",
         core="黑名单 + 人工确认 + 输出截断",
         tags=["Safety", "Approval", "Guardrails"],
+        scenario="想让 Agent 帮你清理临时文件，但又担心它一句 `rm -rf` 把项目目录也带走，或者读到一个超长文件直接把上下文撑爆。能力越强，越需要在它和系统之间留出一道护栏。",
         demo_command='python agent/07-safety/agent-safe.py "列出当前目录的文件"',
         demo_goal="建立明确的工程直觉：能力越强，越需要在人机边界处加上护栏。",
         demo_expected=[
@@ -756,6 +764,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     next_lesson = LESSONS[index + 1] if index < len(LESSONS) - 1 else None
 
     toc_links = [
+        ("scenario", "什么时候会用到"),
         ("code", "先看关键代码"),
         ("demo", "再看它怎么跑"),
         ("practice", "自己试一轮"),
@@ -855,9 +864,17 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <p class="lead">{format_inline(lesson.summary)}</p>
           <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
-            <a class="primary-btn" href="#code">先看关键代码</a>
-            <a class="secondary-btn" href="#demo">再看现场演示</a>
+            <a class="primary-btn" href="#scenario">从场景开始</a>
+            <a class="secondary-btn" href="#code">直接看代码</a>
           </div>
+        </section>
+
+        <section class="lesson-section" id="scenario">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Scenario</p>
+            <h2>什么时候会用到</h2>
+          </div>
+          <p class="scenario-text">{format_inline(lesson.scenario)}</p>
         </section>
 
         <section class="lesson-section" id="code">

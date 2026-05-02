@@ -545,6 +545,17 @@ code.inline {
   white-space: nowrap;
 }
 
+.scenario-text {
+  margin: 0;
+  padding: 18px 22px;
+  border-left: 3px solid var(--accent);
+  border-radius: 14px;
+  background: rgba(255, 248, 236, 0.72);
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.85;
+}
+
 .demo-command {
   margin: 12px 0 16px;
 }
