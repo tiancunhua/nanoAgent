@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>从零开始理解 Agent｜1 小时技术分享讲义</title>
-  <meta name="description" content="把 nanoAgent 前七篇内容压缩成一套 1 小时技术分享讲义，只保留最适合科普分享的代码、演示和练习。">
+  <title>从零开始理解 Agent｜60 分钟讲义</title>
+  <meta name="description" content="将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，只保留最关键的代码、演示与延伸练习。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="从零开始理解 Agent｜1 小时技术分享讲义">
-  <meta property="og:description" content="把 nanoAgent 前七篇内容压缩成一套 1 小时技术分享讲义，只保留最适合科普分享的代码、演示和练习。">
+  <meta property="og:title" content="从零开始理解 Agent｜60 分钟讲义">
+  <meta property="og:description" content="将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，只保留最关键的代码、演示与延伸练习。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="从零开始理解 Agent｜1 小时技术分享讲义">
-  <meta name="twitter:description" content="把 nanoAgent 前七篇内容压缩成一套 1 小时技术分享讲义，只保留最适合科普分享的代码、演示和练习。">
+  <meta name="twitter:title" content="从零开始理解 Agent｜60 分钟讲义">
+  <meta name="twitter:description" content="将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，只保留最关键的代码、演示与延伸练习。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -28,8 +28,8 @@
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
-        <a href="#agenda">分享流程</a>
-        <a href="#format">分享方式</a>
+        <a href="#agenda">时间分配</a>
+        <a href="#format">讲义结构</a>
         <a href="#lessons">七讲讲义</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
@@ -38,24 +38,24 @@
     <main id="main-content">
       <section class="hero-panel">
         <div class="hero-copy">
-          <p class="eyebrow">1 小时技术分享讲义</p>
-          <h1>先看关键代码，再把 Agent 跑起来</h1>
-          <p class="hero-lead">这套站点把前七篇文章压成一套面向技术分享科普的 1 小时讲义。每一讲都先抓最关键的实现，再用终端验证行为，最后留一个可以自己继续改的动手入口。</p>
-          <p class="mode-note">这是一套用于技术分享科普的讲义：重点是把原理讲清楚，把代码讲明白，把 Demo 跑通。</p>
+          <p class="eyebrow">60 分钟讲义</p>
+          <h1>从关键代码到完整运行的 Agent</h1>
+          <p class="hero-lead">本站将前七篇内容浓缩为一套 60 分钟讲义。每一讲先呈现关键实现，再用终端验证行为，最后给出一个可继续修改的动手入口。</p>
+          <p class="mode-note">讲义结构统一：先呈现原理，再阅读代码，最后运行 Demo。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
-            <a class="secondary-btn" href="#agenda">先看 60 分钟流程</a>
+            <a class="secondary-btn" href="#agenda">查看 60 分钟流程</a>
           </div>
         </div>
         <div class="hero-side">
           <div class="fact-grid">
             <article class="fact-card">
               <strong>60 分钟</strong>
-              <span>一小时完整分享</span>
+              <span>完整讲义时长</span>
             </article>
             <article class="fact-card">
               <strong>7 讲</strong>
-              <span>全部压缩为分享讲义</span>
+              <span>覆盖核心 Agent 能力</span>
             </article>
             <article class="fact-card">
               <strong>代码优先</strong>
@@ -63,7 +63,7 @@
             </article>
             <article class="fact-card">
               <strong>可直接复现</strong>
-              <span>每讲都有演示命令与动手入口</span>
+              <span>每讲均附演示命令与动手入口</span>
             </article>
           </div>
         </div>
@@ -71,22 +71,22 @@
 
       <section class="section-block" id="format">
         <div class="section-head">
-          <p class="eyebrow">Share Format</p>
-          <h2>这场技术分享怎么展开</h2>
-          <p>核心方法很简单：不从概念空讲开始，而是先抓代码主线，再用终端输出把原理落到可观察的结果上。</p>
+          <p class="eyebrow">Format</p>
+          <h2>讲义结构</h2>
+          <p>讲义不从抽象概念开始，而是以代码为主线，用终端输出把原理落到可观察的结果上。</p>
         </div>
         <div class="format-grid">
           <article class="format-card">
-            <h3>讲清什么</h3>
-            <ul class="lesson-list"><li>能从零解释 Agent 的最小工作闭环，而不是只会使用现成产品。</li><li>能把一个单文件 Agent 逐步升级到有记忆、可委派、可扩展、可控的原型。</li><li>能现场带着大家跑 3 个最小 demo，并把关键代码讲清楚。</li></ul>
+            <h3>学习目标</h3>
+            <ul class="lesson-list"><li>理解 Agent 的最小工作闭环，而不止于现成产品的使用层面。</li><li>掌握将单文件 Agent 升级为具备记忆、委派、扩展与安全控制的完整原型的路径。</li><li>通过最小 Demo 与关键代码片段，建立对 Agent 工程结构的判断力。</li></ul>
           </article>
           <article class="format-card">
-            <h3>怎么准备</h3>
-            <ul class="lesson-list"><li>Python 环境可运行 <code class="inline">agent/*.py</code> 文件。</li><li>已设置 <code class="inline">OPENAI_API_KEY</code>，并准备一个可用模型。</li><li>分享时优先用终端和代码窗口，不用展示全部原文文章。</li></ul>
+            <h3>环境准备</h3>
+            <ul class="lesson-list"><li>Python 环境，可运行 <code class="inline">agent/*.py</code> 文件。</li><li>已配置 <code class="inline">OPENAI_API_KEY</code>，并准备一个可用模型。</li><li>终端与代码编辑器即可，无需额外的演示软件。</li></ul>
           </article>
           <article class="format-card">
-            <h3>分享顺序</h3>
-            <ul class="lesson-list"><li>30% 关键代码：先抓住决定行为的那几行实现，不从概念空讲开始。</li><li>40% 现场演示：再用终端把行为跑出来，让代码和结果一一对应。</li><li>30% 动手延伸：最后留一个可自己复现的小改动，方便继续探索。</li></ul>
+            <h3>结构比例</h3>
+            <ul class="lesson-list"><li>30% 关键代码：聚焦决定行为的核心实现，不展开抽象概念。</li><li>40% 现场演示：用终端输出验证行为，代码与结果一一对应。</li><li>30% 动手延伸：留出可独立复现的小改动入口，方便继续深入。</li></ul>
           </article>
         </div>
       </section>
@@ -94,16 +94,16 @@
       <section class="section-block" id="agenda">
         <div class="section-head">
           <p class="eyebrow">Agenda</p>
-          <h2>60 分钟怎么分配</h2>
-          <p>核心原则：每一讲都先看关键代码，再用终端验证行为，最后给一个能自己继续改的入口，不把大家淹没在全文里。</p>
+          <h2>60 分钟时间分配</h2>
+          <p>整体节奏：每一讲先看关键代码，再用终端验证行为，最后给出一个可独立复现的入口。</p>
         </div>
         <div class="agenda-list">
 
             <article class="agenda-item">
               <p class="agenda-time">00 - 05</p>
               <div class="agenda-content">
-                <h3>开场：为什么今天不讲大而全</h3>
-                <p>先建立一个共识：这 1 小时只保留真正能拿去做 Demo 的内容。</p>
+                <h3>开场：内容范围与目标</h3>
+                <p>明确这一小时仅覆盖能直接用于 Demo 的核心内容。</p>
               </div>
             </article>
 
@@ -111,7 +111,7 @@
               <p class="agenda-time">05 - 13</p>
               <div class="agenda-content">
                 <h3>第 01 讲：最小闭环</h3>
-                <p>跑通最小 Agent，让大家看见工具调用、执行和结果回填。</p>
+                <p>运行最小 Agent，观察工具调用、执行与结果回填的完整流程。</p>
               </div>
             </article>
 
@@ -119,7 +119,7 @@
               <p class="agenda-time">13 - 23</p>
               <div class="agenda-content">
                 <h3>第 02 讲：Skills / Rules / MCP</h3>
-                <p>把 Skill、Rule、MCP 这三层能力接进来，重点讲它们各自进入了上下文还是工具列表。</p>
+                <p>接入 Skill、Rule、MCP 三层能力，区分它们注入到上下文还是工具列表。</p>
               </div>
             </article>
 
@@ -127,7 +127,7 @@
               <p class="agenda-time">23 - 31</p>
               <div class="agenda-content">
                 <h3>第 03 讲：Memory</h3>
-                <p>演示 Agent 如何把一次执行结果写进记忆文件，并在下一次运行时带回上下文。</p>
+                <p>演示 Agent 将执行结果写入记忆文件，并在下次运行时回放到上下文。</p>
               </div>
             </article>
 
@@ -135,7 +135,7 @@
               <p class="agenda-time">31 - 39</p>
               <div class="agenda-content">
                 <h3>第 04 讲：SubAgent</h3>
-                <p>用前后端双角色案例，解释为什么复杂任务要委派。</p>
+                <p>通过前后端双角色案例，说明复杂任务需要委派的原因。</p>
               </div>
             </article>
 
@@ -143,7 +143,7 @@
               <p class="agenda-time">39 - 48</p>
               <div class="agenda-content">
                 <h3>第 05 讲：Teams</h3>
-                <p>把委派升级成长期协作团队，重点演示 reviewer 复盘。</p>
+                <p>将委派扩展为长期协作团队，演示 reviewer 复盘机制。</p>
               </div>
             </article>
 
@@ -151,7 +151,7 @@
               <p class="agenda-time">48 - 55</p>
               <div class="agenda-content">
                 <h3>第 06 讲：上下文压缩</h3>
-                <p>现场把阈值调小，强制触发一次压缩。</p>
+                <p>调低阈值，触发一次完整的压缩流程。</p>
               </div>
             </article>
 
@@ -159,7 +159,7 @@
               <p class="agenda-time">55 - 60</p>
               <div class="agenda-content">
                 <h3>第 07 讲：安全防线 + 收尾</h3>
-                <p>用危险命令拦截与人工确认收束工程边界。</p>
+                <p>通过危险命令拦截与人工确认，收束工程化边界。</p>
               </div>
             </article>
 
@@ -169,107 +169,107 @@
       <section class="section-block" id="lessons">
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
-          <h2>七讲分享讲义</h2>
-          <p>每个页面都按“关键代码 -> 现场演示 -> 自己试一轮”的顺序排好，适合在技术分享里直接展开。</p>
+          <h2>七讲讲义</h2>
+          <p>每页统一按“关键代码 → 现场演示 → 自己试一轮”的顺序编排。</p>
         </div>
         <div class="lesson-grid">
 
             <article class="lesson-card">
               <p class="lesson-index">第 01 讲 · 起步演示</p>
               <h3>底层原理，只有 100 行</h3>
-              <p>先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。</p>
+              <p>暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。</p>
               <div class="lesson-meta">
                 <span>8 分钟</span>
                 <span>103 行代码</span>
                 <span>LLM + 工具 + 循环</span>
               </div>
-              <p class="lesson-kicker">分享重点：把它当成一台会自己选工具的“任务执行机”，而不是聊天窗口。</p>
+              <p class="lesson-kicker">要点：将其视作一台能自主选择工具的任务执行器，而非聊天窗口。</p>
               <div class="lesson-tag-row"><span class="tag">工具调用</span><span class="tag">Agent Loop</span><span class="tag">最小实现</span></div>
-              <a class="lesson-link" href="essence.html">看分享讲义</a>
+              <a class="lesson-link" href="essence.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 02 讲 · 第二步：把能力接进来</p>
+              <p class="lesson-index">第 02 讲 · 第二步：能力外置</p>
               <h3>Skills、Rules 与 MCP</h3>
-              <p>第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。</p>
+              <p>本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。</p>
               <div class="lesson-meta">
                 <span>10 分钟</span>
                 <span>430 行代码</span>
                 <span>Skill + Rule + MCP</span>
               </div>
-              <p class="lesson-kicker">分享重点：分享时只演示一个最小 Rule、一个最小 Skill，再指给大家看 MCP 工具是如何接进来的。</p>
+              <p class="lesson-kicker">要点：使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。</p>
               <div class="lesson-tag-row"><span class="tag">Skills</span><span class="tag">Rules</span><span class="tag">MCP</span></div>
-              <a class="lesson-link" href="skills-mcp.html">看分享讲义</a>
+              <a class="lesson-link" href="skills-mcp.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 03 讲 · 第三步：把历史带回来</p>
+              <p class="lesson-index">第 03 讲 · 第三步：持久记忆</p>
               <h3>Memory：让 Agent 记住上一次</h3>
-              <p>这一讲把重点放在 Memory 本身：Agent 如何把一次任务写进 <code class="inline">agent_memory.md</code>，又如何在下一次运行时把这段历史重新带回上下文。规划只作为补充，不是主线。</p>
+              <p>本讲聚焦 Memory 本身：Agent 如何将一次任务写入 <code class="inline">agent_memory.md</code>，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。</p>
               <div class="lesson-meta">
                 <span>8 分钟</span>
                 <span>232 行代码</span>
                 <span>写入记忆 + 回放记忆</span>
               </div>
-              <p class="lesson-kicker">分享重点：先连续跑两次任务，再打开 <code class="inline">agent_memory.md</code> 看看 Agent 是怎么把历史写下来又带回下一轮的。</p>
+              <p class="lesson-kicker">要点：连续运行两次任务，再打开 <code class="inline">agent_memory.md</code> 观察历史如何被写入并带回下一轮。</p>
               <div class="lesson-tag-row"><span class="tag">Memory</span><span class="tag">Persistence</span><span class="tag">Context Replay</span></div>
-              <a class="lesson-link" href="memory.html">看分享讲义</a>
+              <a class="lesson-link" href="memory.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 04 讲 · 把活拆出去</p>
+              <p class="lesson-index">第 04 讲 · 任务拆分</p>
               <h3>SubAgent 子智能体</h3>
-              <p>当一个 Agent 同时想架构、写后端、写前端时，就该把一部分任务委派给更聚焦的子代理。</p>
+              <p>当单个 Agent 需要同时承担架构、后端、前端工作时，应将部分任务委派给更聚焦的子代理。</p>
               <div class="lesson-meta">
                 <span>8 分钟</span>
                 <span>344 行代码</span>
                 <span>独立上下文 + 角色委派</span>
               </div>
-              <p class="lesson-kicker">分享重点：最好的分享方式是只演一个前后端双角色案例，让委派的价值立刻可见。</p>
+              <p class="lesson-kicker">要点：使用一个前后端双角色案例进行演示，委派的价值会立即显现。</p>
               <div class="lesson-tag-row"><span class="tag">SubAgent</span><span class="tag">Delegation</span><span class="tag">Role Prompt</span></div>
-              <a class="lesson-link" href="subagent.html">看分享讲义</a>
+              <a class="lesson-link" href="subagent.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 05 讲 · 让角色长期存在</p>
+              <p class="lesson-index">第 05 讲 · 持久化协作</p>
               <h3>多智能体团队协作</h3>
-              <p>SubAgent 还是一次性临时工；这一讲把角色变成有身份、会通信、能复盘的真正团队。</p>
+              <p>SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。</p>
               <div class="lesson-meta">
                 <span>9 分钟</span>
                 <span>362 行代码</span>
                 <span>持久 Agent + 通信通道</span>
               </div>
-              <p class="lesson-kicker">分享重点：讲 1 小时时，把多智能体团队讲成“带 reviewer 的协作流水线”最容易让大家记住。</p>
+              <p class="lesson-kicker">要点：可将多智能体团队类比为带 reviewer 的协作流水线，便于记忆。</p>
               <div class="lesson-tag-row"><span class="tag">Team</span><span class="tag">Inbox</span><span class="tag">Lifecycle</span></div>
-              <a class="lesson-link" href="teams.html">看分享讲义</a>
+              <a class="lesson-link" href="teams.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 06 讲 · 防止自我窒息</p>
+              <p class="lesson-index">第 06 讲 · 上下文管理</p>
               <h3>上下文压缩</h3>
-              <p>这一讲不讲理论史，只解决一个分享里特别容易说清的问题：为什么长任务里 Agent 会被自己的历史压死。</p>
+              <p>本讲跳过理论铺垫，专注于一个核心问题：长任务中 Agent 为何会被自身历史拖垮，以及压缩如何缓解。</p>
               <div class="lesson-meta">
                 <span>7 分钟</span>
                 <span>252 行代码</span>
                 <span>摘要旧消息，保留最近窗口</span>
               </div>
-              <p class="lesson-kicker">分享重点：分享时把阈值调小，强制触发一次压缩，是最直观的讲法。</p>
+              <p class="lesson-kicker">要点：调小阈值并强制触发一次压缩，是最直观的演示方式。</p>
               <div class="lesson-tag-row"><span class="tag">Context Window</span><span class="tag">Compaction</span><span class="tag">Summarization</span></div>
-              <a class="lesson-link" href="compact.html">看分享讲义</a>
+              <a class="lesson-link" href="compact.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
-              <p class="lesson-index">第 07 讲 · 能力关进笼子</p>
+              <p class="lesson-index">第 07 讲 · 工程边界</p>
               <h3>三道安全防线</h3>
-              <p>最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
+              <p>最后一讲聚焦 Agent 落地时不可缺少的三道边界：危险命令拦截、人工确认、超长输出截断。</p>
               <div class="lesson-meta">
                 <span>5 分钟</span>
                 <span>288 行代码</span>
                 <span>黑名单 + 人工确认 + 输出截断</span>
               </div>
-              <p class="lesson-kicker">分享重点：把安全讲成‘让 Agent 能上线’的最后门槛，大家会更容易记住。</p>
+              <p class="lesson-kicker">要点：将安全视为让 Agent 能上线的最后门槛。</p>
               <div class="lesson-tag-row"><span class="tag">Safety</span><span class="tag">Approval</span><span class="tag">Guardrails</span></div>
-              <a class="lesson-link" href="safety.html">看分享讲义</a>
+              <a class="lesson-link" href="safety.html">查看讲义</a>
             </article>
 
         </div>
@@ -277,7 +277,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>这套分享讲义只保留 1 小时技术分享最需要的代码、演示与延伸线索，完整原文与源码请看 GitHub。</p>
+      <p>本讲义仅保留最关键的代码、演示与延伸线索，完整原文与源码请见 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>

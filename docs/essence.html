@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>01. 底层原理，只有 100 行｜1 小时技术分享讲义</title>
-  <meta name="description" content="先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。">
+  <title>01. 底层原理，只有 100 行｜60 分钟讲义</title>
+  <meta name="description" content="暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/essence.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="01. 底层原理，只有 100 行｜1 小时技术分享讲义">
-  <meta property="og:description" content="先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。">
+  <meta property="og:title" content="01. 底层原理，只有 100 行｜60 分钟讲义">
+  <meta property="og:description" content="暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/essence.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="01. 底层原理，只有 100 行｜1 小时技术分享讲义">
-  <meta name="twitter:description" content="先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。">
+  <meta name="twitter:title" content="01. 底层原理，只有 100 行｜60 分钟讲义">
+  <meta name="twitter:description" content="暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -29,7 +29,7 @@
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
-        <a href="index.html#agenda">分享流程</a>
+        <a href="index.html#agenda">时间分配</a>
         <a href="index.html#lessons">七讲讲义</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
@@ -40,7 +40,7 @@
         <div class="sidebar-card">
           <p class="eyebrow">第 01 讲 · 起步演示</p>
           <h2 class="lesson-title">底层原理，只有 100 行</h2>
-          <p>先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。</p>
+          <p>暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。</p>
           <div class="chip-row">
             <span class="chip">8 分钟</span>
             <span class="chip">103 行代码</span>
@@ -98,7 +98,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#code">先看关键代码</a><a class="toc-link" href="#demo">再看它怎么跑</a><a class="toc-link" href="#practice">自己试一轮</a><a class="toc-link" href="#goals">这一讲会看懂什么</a><a class="toc-link" href="#talk">分享只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易误解</a><a class="toc-link" href="#extend">继续深挖</a>
+            <a class="toc-link" href="#code">先看关键代码</a><a class="toc-link" href="#demo">再看它怎么跑</a><a class="toc-link" href="#practice">自己试一轮</a><a class="toc-link" href="#goals">这一讲会看懂什么</a><a class="toc-link" href="#talk">三个核心要点</a><a class="toc-link" href="#pitfalls">容易误解</a><a class="toc-link" href="#extend">继续深挖</a>
           </nav>
         </div>
       </aside>
@@ -106,16 +106,16 @@
       <article class="article-main">
         <section class="article-hero">
           <div class="breadcrumbs">
-            <a href="index.html">分享首页</a>
+            <a href="index.html">首页</a>
             <span>/</span>
-            <a href="index.html#lessons">分享讲义</a>
+            <a href="index.html#lessons">讲义列表</a>
             <span>/</span>
             <span>第 01 讲</span>
           </div>
-          <p class="eyebrow">1 小时技术分享讲义</p>
+          <p class="eyebrow">60 分钟讲义</p>
           <h1>01. 底层原理，只有 100 行</h1>
-          <p class="lead">先别谈框架，把 Agent 最小闭环直接跑出来：模型决定工具，代码执行工具，结果继续喂回模型。</p>
-          <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
+          <p class="lead">暂不引入框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。</p>
+          <p class="mode-note">本页按“先看代码 → 再看演示 → 自己试一轮”的顺序编排。</p>
           <div class="tag-row"><span class="tag">工具调用</span><span class="tag">Agent Loop</span><span class="tag">最小实现</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#code">先看关键代码</a>
@@ -127,7 +127,7 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Code First</p>
             <h2>先看关键代码</h2>
-            <p>先抓住决定行为的那段实现，再去看终端结果，会更容易把 Agent 的工作方式讲清楚。</p>
+            <p>聚焦决定行为的核心实现，再结合终端结果对照，能更直观地理解 Agent 的工作方式。</p>
           </div>
 
     <figure class="lesson-figure">
@@ -140,8 +140,8 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
-                  <p class="lesson-index">先看最小 Agent 循环</p>
-                  <h3>先抓住这 20 多行：请求模型、拿到 tool call、执行工具、把结果回填，然后进入下一轮。</h3>
+                  <p class="lesson-index">最小 Agent 循环</p>
+                  <h3>围绕这二十余行展开：请求模型、获取 tool call、执行工具、回填结果、进入下一轮。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L73-L97">看 GitHub 行号</a>
               </div>
@@ -175,7 +175,7 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
-                  <p class="lesson-index">先看 Tool 声明</p>
+                  <p class="lesson-index">Tool 声明</p>
                   <h3>这段代码决定了模型能看到哪些能力，以及每个工具需要什么参数。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L11-L51">看 GitHub 行号</a>
@@ -226,8 +226,8 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
-                  <p class="lesson-index">再看工具落地到哪段 Python</p>
-                  <h3>Tool 不是抽象概念，最后一定要映射到真实函数，模型选中的名字就是从这里执行的。</h3>
+                  <p class="lesson-index">工具映射到真实函数</p>
+                  <h3>Tool 并非抽象概念，最终必须映射到真实函数；模型选中的名字就在这里被执行。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L54-L70">看 GitHub 行号</a>
               </div>
@@ -257,12 +257,12 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
-            <p>让大家当场看到 Agent 不是“回答文字”，而是真的改动了文件系统。</p>
+            <p>现场观察 Agent 不只是输出文字，而是真实地改动了文件系统。</p>
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code>python agent/01-essence/agent-essence.py &quot;创建 hello.txt，内容是 Hello Agent&quot;</code></pre>
-            <ul class="lesson-list"><li>先用循环图说明 Agent 每一轮都在做“思考 -&gt; 选工具 -&gt; 回填结果 -&gt; 再思考”。</li><li>终端先打印 <code class="inline">[Tool] write_file(...)</code>，说明模型选择了工具。</li><li>再次要求它读取 <code class="inline">hello.txt</code>，验证效果已经落到真实文件。</li><li>再回头指给大家看 <code class="inline">tools</code> 列表，说明模型只能从这份清单里挑能力。</li></ul>
+            <ul class="lesson-list"><li>对照循环图：Agent 每一轮执行“决策 → 调用工具 → 回填结果 → 再次决策”。</li><li>终端首先打印 <code class="inline">[Tool] write_file(...)</code>，表示模型选择了工具。</li><li>再次要求读取 <code class="inline">hello.txt</code>，确认改动已落到真实文件。</li><li>查看 <code class="inline">tools</code> 列表：模型只能从这份清单中选择能力。</li></ul>
           </div>
         </section>
 
@@ -270,9 +270,9 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>把它当成一台会自己选工具的“任务执行机”，而不是聊天窗口。</p>
+            <p>将其视作一台能自主选择工具的任务执行器，而非聊天窗口。</p>
           </div>
-          <ol class="lesson-steps"><li>把 <code class="inline">max_iterations</code> 改成 2，观察复杂任务会如何提前中断。</li><li>把 <code class="inline">write_file</code> 从 <code class="inline">tools</code> 里临时删掉，再让 Agent 写文件，观察它为什么做不到。</li><li>让 Agent 连续执行“写文件 + 读文件”两个动作，体会循环的必要性。</li><li>给 <code class="inline">execute_bash</code> 加一句更清晰的描述，看看模型是否更容易选对工具。</li></ol>
+          <ol class="lesson-steps"><li>将 <code class="inline">max_iterations</code> 改为 2，观察复杂任务如何被提前中断。</li><li>临时从 <code class="inline">tools</code> 中移除 <code class="inline">write_file</code>，再要求 Agent 写文件，观察其无法完成的原因。</li><li>让 Agent 连续执行“写文件 + 读文件”两个动作，体会循环结构的必要性。</li><li>为 <code class="inline">execute_bash</code> 补充更清晰的描述，观察模型是否更易选中正确工具。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -280,15 +280,15 @@
             <p class="eyebrow">Takeaway</p>
             <h2>这一讲会看懂什么</h2>
           </div>
-          <ul class="lesson-list"><li>能解释 Agent 与 Chat 的根本区别。</li><li>能看懂 <code class="inline">tools</code>、<code class="inline">functions</code>、<code class="inline">messages</code> 和循环的关系。</li><li>知道 Tool 的本质是“模型可见的能力声明”，不是模型自己发明出来的命令。</li><li>知道 Agent 的执行权仍然掌握在代码里，不在模型里。</li></ul>
+          <ul class="lesson-list"><li>能解释 Agent 与 Chat 的本质区别。</li><li>能看懂 <code class="inline">tools</code>、<code class="inline">functions</code>、<code class="inline">messages</code> 与循环之间的关系。</li><li>理解 Tool 是模型可见的能力声明，而非模型自行生成的命令。</li><li>明确 Agent 的执行权由代码掌握，不在模型一侧。</li></ul>
         </section>
 
         <section class="lesson-section" id="talk">
           <div class="lesson-section-head">
-            <p class="eyebrow">Share Track</p>
-            <h2>分享只讲这 3 件事</h2>
+            <p class="eyebrow">Key Points</p>
+            <h2>三个核心要点</h2>
           </div>
-          <ul class="lesson-list"><li>先讲循环：Agent 不是只回答一次，而是在每一轮里决定要不要继续行动。</li><li>LLM 输出的是结构化“调用意图”，不是直接执行系统命令。</li><li>再讲 Tool：<code class="inline">tools</code> 是模型看到的能力清单，<code class="inline">functions</code> 才是真正落地执行的代码。</li></ul>
+          <ul class="lesson-list"><li>循环：Agent 并非只响应一次，而是在每一轮中决定是否继续行动。</li><li>LLM 输出的是结构化调用意图，并不直接执行系统命令。</li><li>Tool：<code class="inline">tools</code> 是模型看到的能力清单，<code class="inline">functions</code> 才是真正落地执行的代码。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -296,14 +296,14 @@
             <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
-          <ul class="lesson-list"><li>只写 Python 函数、不把它放进 <code class="inline">tools</code>，模型就根本不知道这项能力存在。</li><li><code class="inline">execute_bash</code> 功能太强，后面必须加安全边界。</li><li>工具报错也要回填给模型，否则它无法自我修正。</li><li>只堆工具不设计循环，最后就会退化回普通问答。</li></ul>
+          <ul class="lesson-list"><li>仅实现 Python 函数而未注册到 <code class="inline">tools</code>，模型无法感知该能力的存在。</li><li><code class="inline">execute_bash</code> 权限过大，后续必须补充安全边界。</li><li>工具报错同样需要回填给模型，否则模型无法自我修正。</li><li>只堆叠工具而不设计循环，最终会退化为普通问答。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续深挖</h2>
-            <p>分享里不展开全文，这里保留完整文章和源码入口，方便继续顺着往下看。</p>
+            <p>本页未展开完整原文，可通过下方入口查看完整文章与源码。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.md">读完整原文</a>
@@ -319,7 +319,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>这套分享讲义只保留 1 小时技术分享最需要的代码、演示与延伸线索，完整原文与源码请看 GitHub。</p>
+      <p>本讲义仅保留最关键的代码、演示与延伸线索，完整原文与源码请见 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>

@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>02. Skills、Rules 与 MCP｜1 小时技术分享讲义</title>
-  <meta name="description" content="第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。">
+  <title>02. Skills、Rules 与 MCP｜60 分钟讲义</title>
+  <meta name="description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="02. Skills、Rules 与 MCP｜1 小时技术分享讲义">
-  <meta property="og:description" content="第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。">
+  <meta property="og:title" content="02. Skills、Rules 与 MCP｜60 分钟讲义">
+  <meta property="og:description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="02. Skills、Rules 与 MCP｜1 小时技术分享讲义">
-  <meta name="twitter:description" content="第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。">
+  <meta name="twitter:title" content="02. Skills、Rules 与 MCP｜60 分钟讲义">
+  <meta name="twitter:description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 </head>
@@ -29,7 +29,7 @@
         <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
-        <a href="index.html#agenda">分享流程</a>
+        <a href="index.html#agenda">时间分配</a>
         <a href="index.html#lessons">七讲讲义</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
       </nav>
@@ -38,9 +38,9 @@
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 02 讲 · 第二步：把能力接进来</p>
+          <p class="eyebrow">第 02 讲 · 第二步：能力外置</p>
           <h2 class="lesson-title">Skills、Rules 与 MCP</h2>
-          <p>第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。</p>
+          <p>本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
             <span class="chip">430 行代码</span>
@@ -98,7 +98,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#code">先看关键代码</a><a class="toc-link" href="#demo">再看它怎么跑</a><a class="toc-link" href="#practice">自己试一轮</a><a class="toc-link" href="#goals">这一讲会看懂什么</a><a class="toc-link" href="#talk">分享只讲这 3 件事</a><a class="toc-link" href="#pitfalls">容易误解</a><a class="toc-link" href="#extend">继续深挖</a>
+            <a class="toc-link" href="#code">先看关键代码</a><a class="toc-link" href="#demo">再看它怎么跑</a><a class="toc-link" href="#practice">自己试一轮</a><a class="toc-link" href="#goals">这一讲会看懂什么</a><a class="toc-link" href="#talk">三个核心要点</a><a class="toc-link" href="#pitfalls">容易误解</a><a class="toc-link" href="#extend">继续深挖</a>
           </nav>
         </div>
       </aside>
@@ -106,16 +106,16 @@
       <article class="article-main">
         <section class="article-hero">
           <div class="breadcrumbs">
-            <a href="index.html">分享首页</a>
+            <a href="index.html">首页</a>
             <span>/</span>
-            <a href="index.html#lessons">分享讲义</a>
+            <a href="index.html#lessons">讲义列表</a>
             <span>/</span>
             <span>第 02 讲</span>
           </div>
-          <p class="eyebrow">1 小时技术分享讲义</p>
+          <p class="eyebrow">60 分钟讲义</p>
           <h1>02. Skills、Rules 与 MCP</h1>
-          <p class="lead">第二讲不讲计划，重点讲三层能力扩展：Skill 补知识，Rule 立边界，MCP 接外部工具。真正的重点不是配置细节，而是它们分别进入了上下文还是工具列表。</p>
-          <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
+          <p class="lead">本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。</p>
+          <p class="mode-note">本页按“先看代码 → 再看演示 → 自己试一轮”的顺序编排。</p>
           <div class="tag-row"><span class="tag">Skills</span><span class="tag">Rules</span><span class="tag">MCP</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#code">先看关键代码</a>
@@ -127,7 +127,7 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Code First</p>
             <h2>先看关键代码</h2>
-            <p>先抓住决定行为的那段实现，再去看终端结果，会更容易把 Agent 的工作方式讲清楚。</p>
+            <p>聚焦决定行为的核心实现，再结合终端结果对照，能更直观地理解 Agent 的工作方式。</p>
           </div>
 
           <div class="code-group">
@@ -135,8 +135,8 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
-                  <p class="lesson-index">先看 Rules / Skills / MCP 怎么加载</p>
-                  <h3>这段代码把 Rule、Skill 和 MCP 工具从项目目录读出来，是“能力外置”的入口。</h3>
+                  <p class="lesson-index">Rules / Skills / MCP 的加载</p>
+                  <h3>这段代码从项目目录读取 Rule、Skill 与 MCP 工具，是能力外置的入口。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L266-L305">看 GitHub 行号</a>
               </div>
@@ -185,8 +185,8 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
-                  <p class="lesson-index">再看它们怎么进入上下文和工具列表</p>
-                  <h3>真正的关键是注入位置：Rules / Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
+                  <p class="lesson-index">进入上下文与工具列表的方式</p>
+                  <h3>关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L370-L394">看 GitHub 行号</a>
               </div>
@@ -224,12 +224,12 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
-            <p>展示 Agent 如何在启动时从项目目录加载 Skills、Rules 和 MCP 工具，让能力不再写死在脚本里。</p>
+            <p>展示 Agent 如何在启动时从项目目录加载 Skills、Rules 与 MCP 工具，使能力不再硬编码在脚本中。</p>
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code>python agent/03-skills-mcp/agent-skills-mcp.py &quot;扫描项目里所有 TODO 并生成修复顺序&quot;</code></pre>
-            <ul class="lesson-list"><li>终端先出现 <code class="inline">[Init] Loading ClaudeCode features...</code>，然后是 <code class="inline">[Rules]</code>、<code class="inline">[Skills]</code>、<code class="inline">[MCP]</code> 各自的加载日志。</li><li>回头指给大家看 <code class="inline">all_tools = base_tools + mcp_tools</code> 这一行，说明 MCP 工具是从外部并入工具列表的。</li><li>强调一句主线：Rules / Skills 走的是 prompt，MCP 走的是 tools，进入的层不一样。</li></ul>
+            <ul class="lesson-list"><li>终端先出现 <code class="inline">[Init] Loading ClaudeCode features...</code>，随后依次打印 <code class="inline">[Rules]</code>、<code class="inline">[Skills]</code>、<code class="inline">[MCP]</code> 加载日志。</li><li>查看 <code class="inline">all_tools = base_tools + mcp_tools</code> 这一行，可见 MCP 工具如何从外部并入工具列表。</li><li>主线一句话：Rules 与 Skills 注入到 prompt，MCP 注入到 tools，进入的层不同。</li></ul>
           </div>
         </section>
 
@@ -237,9 +237,9 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>分享时只演示一个最小 Rule、一个最小 Skill，再指给大家看 MCP 工具是如何接进来的。</p>
+            <p>使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。</p>
           </div>
-          <ol class="lesson-steps"><li>新建 <code class="inline">.agent/rules/code-style.md</code>，只写一条简单规范，再运行一次任务。</li><li>给 <code class="inline">.agent/skills/</code> 放一个最小 JSON 技能描述，观察加载输出。</li><li>在 <code class="inline">.agent/mcp.json</code> 里声明一个最小 tool 配置，观察 <code class="inline">all_tools</code> 是如何变化的。</li></ol>
+          <ol class="lesson-steps"><li>新建 <code class="inline">.agent/rules/code-style.md</code>，写入一条简单规范，再运行一次任务。</li><li>在 <code class="inline">.agent/skills/</code> 中放入一个最小 JSON 技能描述，观察加载输出。</li><li>在 <code class="inline">.agent/mcp.json</code> 中声明一个最小 tool 配置，观察 <code class="inline">all_tools</code> 的变化。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -247,15 +247,15 @@
             <p class="eyebrow">Takeaway</p>
             <h2>这一讲会看懂什么</h2>
           </div>
-          <ul class="lesson-list"><li>知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。</li><li>能看懂 Rules / Skills / MCP 分别从哪里加载，最后怎么拼进上下文和工具列表。</li><li>理解工程化 Agent 的关键不是计划，而是能力和约束的外置。</li></ul>
+          <ul class="lesson-list"><li>知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。</li><li>能识别 Rules、Skills、MCP 各自的加载来源，以及它们如何拼装进上下文与工具列表。</li><li>理解工程化 Agent 的关键不在于计划能力，而在于能力与约束的外置。</li></ul>
         </section>
 
         <section class="lesson-section" id="talk">
           <div class="lesson-section-head">
-            <p class="eyebrow">Share Track</p>
-            <h2>分享只讲这 3 件事</h2>
+            <p class="eyebrow">Key Points</p>
+            <h2>三个核心要点</h2>
           </div>
-          <ul class="lesson-list"><li>Skill 补的是知识，Rule 管的是行为，MCP 扩的是工具边界，这三层不要混在一起。</li><li>Rules 和 Skills 最后进入 prompt，MCP 最后进入 tools，注入位置不同，作用也不同。</li><li>能力外置以后，Agent 才开始像一个项目级系统，而不是单文件脚本。</li></ul>
+          <ul class="lesson-list"><li>Skill 补充的是知识，Rule 管理的是行为，MCP 扩展的是工具边界，三层不应混淆。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li>能力外置之后，Agent 才开始呈现项目级系统的形态，而非单文件脚本。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -263,14 +263,14 @@
             <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
-          <ul class="lesson-list"><li>把所有东西都塞进 Rule，会让职责边界变糊，模型也更难稳定执行。</li><li>Skills 太多会稀释上下文，MCP 工具太多会降低模型的选 tool 准确率。</li><li>规则、技能、工具描述互相冲突时，模型的表现会变得不稳定。</li></ul>
+          <ul class="lesson-list"><li>将全部约束堆入 Rule，会模糊职责边界，模型也更难稳定执行。</li><li>Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。</li><li>规则、技能、工具描述互相冲突时，模型表现会显著不稳定。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续深挖</h2>
-            <p>分享里不展开全文，这里保留完整文章和源码入口，方便继续顺着往下看。</p>
+            <p>本页未展开完整原文，可通过下方入口查看完整文章与源码。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.md">读完整原文</a>
@@ -286,7 +286,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>这套分享讲义只保留 1 小时技术分享最需要的代码、演示与延伸线索，完整原文与源码请看 GitHub。</p>
+      <p>本讲义仅保留最关键的代码、演示与延伸线索，完整原文与源码请见 GitHub。</p>
       <div class="footer-links">
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
