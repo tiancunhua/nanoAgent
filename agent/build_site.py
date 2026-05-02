@@ -34,7 +34,7 @@ REPO_WEB_BASE = "https://github.com/GitHubxsy/nanoAgent"
 SITE_URL = "https://githubxsy.github.io/nanoAgent"
 SITE_TITLE = "从零开始理解 Agent"
 SITE_SUBTITLE = "60 分钟讲义"
-SITE_DESCRIPTION = "将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，只保留最关键的代码、演示与延伸练习。"
+SITE_DESCRIPTION = "将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，并补上总结篇、Agent 番外与大模型系列目录。"
 
 
 @dataclass
@@ -68,6 +68,16 @@ class Lesson:
     md_path: Path
     code_path: Path
     snippets: List[Snippet]
+
+
+@dataclass
+class Resource:
+    number: str
+    label: str
+    title: str
+    short_title: str
+    summary: str
+    path: Path
 
 
 def detect_source_branch() -> str:
@@ -515,6 +525,20 @@ AGENDA = [
 ]
 
 
+SUMMARY_OUTCOMES = [
+    "把 Agent 重新看成一套系统：模型负责生成，Harness 负责让它真正干活。",
+    "能用“循环、能力外置、记忆、委派、协作、压缩、安全”七个关键词复述整套结构。",
+    "知道接下来往哪继续：想补 Agent 工程细节，就看番外；想补底层原理，就回到大模型系列。",
+]
+
+
+SUMMARY_PATHS = [
+    ("回看七讲", "重新串起最小闭环到上线边界的完整路径，适合分享结束后收束主线。"),
+    ("补 Agent 番外", "继续回答七讲里没展开的问题：文件系统、Streaming、Eval、真实 MCP 等。"),
+    ("补模型基础", "把 Agent 再接回大模型正篇十讲与番外六讲，形成完整技术地图。"),
+]
+
+
 def github_blob_url(path: Path) -> str:
     relative = path.relative_to(REPO_ROOT).as_posix()
     return f"{REPO_WEB_BASE}/blob/{SOURCE_BRANCH}/{relative}"
@@ -568,6 +592,109 @@ def render_steps(items: List[str]) -> str:
     return f'<ol class="lesson-steps">{body}</ol>'
 
 
+def markdown_title(path: Path) -> str:
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return path.stem
+
+
+def strip_markdown_text(text: str) -> str:
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = text.replace("**", "").replace("*", "").replace("`", "")
+    text = text.replace("_", "").replace("“", '"').replace("”", '"')
+    text = re.sub(r"^>\s*", "", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip(" -")
+
+
+def shorten_title(title: str) -> str:
+    if "：" in title:
+        return title.split("：", 1)[1].strip()
+    return title
+
+
+def truncate_text(text: str, limit: int = 92) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1].rstrip() + "…"
+
+
+def markdown_summary(path: Path) -> str:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    seen_heading = False
+    blockquote_lines: List[str] = []
+    paragraph_lines: List[str] = []
+
+    for line in lines:
+        stripped = line.strip()
+        if not seen_heading:
+            if stripped.startswith("# "):
+                seen_heading = True
+            continue
+
+        if not stripped:
+            if blockquote_lines or paragraph_lines:
+                break
+            continue
+
+        if stripped.startswith(">"):
+            blockquote_lines.append(strip_markdown_text(stripped))
+            continue
+
+        if stripped.startswith(("#", "-", "*", "|")):
+            continue
+
+        paragraph_lines.append(strip_markdown_text(stripped))
+        if len(" ".join(paragraph_lines)) >= 120:
+            break
+
+    text = " ".join(blockquote_lines or paragraph_lines)
+    return truncate_text(text or shorten_title(markdown_title(path)))
+
+
+def resource_number(path: Path) -> str:
+    prefix = path.parent.name.split("-", 1)[0]
+    return prefix if prefix.isdigit() else "Full"
+
+
+def build_resource(path: Path, label: str) -> Resource:
+    title = markdown_title(path)
+    return Resource(
+        number=resource_number(path),
+        label=label,
+        title=title,
+        short_title=shorten_title(title),
+        summary=markdown_summary(path),
+        path=path,
+    )
+
+
+AGENT_BONUS_PATHS = [
+    ROOT / "full/nanoAgent-bonus-harness.md",
+    ROOT / "08-filesystem/nanoAgent-bonus-filesystem.md",
+    ROOT / "09-token/nanoAgent-bonus-token.md",
+    ROOT / "10-tool-selection/nanoAgent-bonus-tool-selection.md",
+    ROOT / "11-streaming/nanoAgent-bonus-streaming.md",
+    ROOT / "12-command/nanoAgent-bonus-command.md",
+    ROOT / "13-observable/nanoAgent-bonus-observable.md",
+    ROOT / "14-eval/nanoAgent-bonus-eval.md",
+    ROOT / "15-agent-creation-modes/nanoagent-bonus-agent-creation-modes.md",
+    ROOT / "16-mcp-real/nanoagent-bonus-mcp-real.md",
+]
+
+LLM_SERIES_PATHS = sorted(
+    (REPO_ROOT / "llm").glob("*/*.md"),
+    key=lambda path: int(path.parent.name.split("-", 1)[0]),
+)
+
+AGENT_BONUS_RESOURCES = [build_resource(path, "Agent 番外") for path in AGENT_BONUS_PATHS]
+LLM_MAIN_RESOURCES = [build_resource(path, "大模型正篇") for path in LLM_SERIES_PATHS if int(path.parent.name.split("-", 1)[0]) <= 10]
+LLM_BONUS_RESOURCES = [build_resource(path, "大模型番外") for path in LLM_SERIES_PATHS if int(path.parent.name.split("-", 1)[0]) > 10]
+FULL_AGENT_GUIDE = ROOT / "full/agent-full.md"
+FULL_AGENT_CODE = ROOT / "full/agent-full.py"
+
+
 def code_lines(path: Path) -> int:
     return len(path.read_text(encoding="utf-8").splitlines())
 
@@ -580,7 +707,23 @@ def excerpt_code(path: Path, start: int, end: int) -> str:
     return "\n".join(selected)
 
 
-def lesson_nav(current_slug: str) -> str:
+def render_resource_cards(resources: List[Resource], button_text: str) -> str:
+    cards = []
+    for resource in resources:
+        cards.append(
+            f"""
+            <article class="lesson-card">
+              <p class="lesson-index">{html.escape(resource.label)} · {html.escape(resource.number)}</p>
+              <h3>{html.escape(resource.short_title)}</h3>
+              <p>{html.escape(resource.summary)}</p>
+              <a class="lesson-link" href="{github_blob_url(resource.path)}">{html.escape(button_text)}</a>
+            </article>
+            """
+        )
+    return "".join(cards)
+
+
+def course_nav(current_slug: str) -> str:
     items = []
     for lesson in LESSONS:
         current_class = " is-current" if lesson.slug == current_slug else ""
@@ -593,16 +736,28 @@ def lesson_nav(current_slug: str) -> str:
             </a>
             '''
         )
+    summary_class = " is-current" if current_slug == "summary" else ""
+    items.append(
+        f'''
+        <a class="chapter-rail-link{summary_class}" href="summary.html">
+          <span class="course-step">总结篇</span>
+          <strong>从七讲到延伸阅读</strong>
+          <small>主线收束 · Agent 番外 · 大模型目录</small>
+        </a>
+        '''
+    )
     return "".join(items)
 
 
 def build_footer() -> str:
     return f"""
     <footer class="site-footer">
-      <p>本讲义仅保留最关键的代码、演示与延伸线索，完整原文与源码请见 GitHub。</p>
+      <p>本讲义仅保留最关键的代码、演示与延伸线索；总结篇、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
+        <a href="summary.html">总结篇</a>
         <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
         <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
+        <a href="{github_blob_url(REPO_ROOT / 'llm/README.md')}">大模型导读</a>
         <a href="{github_blob_url(ROOT / 'build_site.py')}">站点生成器</a>
       </div>
     </footer>
@@ -653,6 +808,23 @@ def build_home_page() -> str:
             """
         )
 
+    summary_cards = []
+    summary_links = [
+        ("summary.html", "查看总结篇"),
+        ("summary.html#extras", "查看 Agent 番外"),
+        ("summary.html#llm", "查看大模型目录"),
+    ]
+    for (title, note), (href, label) in zip(SUMMARY_PATHS, summary_links):
+        summary_cards.append(
+            f"""
+            <article class="format-card">
+              <h3>{html.escape(title)}</h3>
+              <p>{html.escape(note)}</p>
+              <a class="secondary-btn" href="{href}">{html.escape(label)}</a>
+            </article>
+            """
+        )
+
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -670,6 +842,7 @@ def build_home_page() -> str:
         <a href="#agenda">时间分配</a>
         <a href="#format">讲义结构</a>
         <a href="#lessons">七讲讲义</a>
+        <a href="summary.html">总结与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
     </header>
@@ -751,6 +924,17 @@ def build_home_page() -> str:
           {"".join(lesson_cards)}
         </div>
       </section>
+
+      <section class="section-block" id="summary">
+        <div class="section-head">
+          <p class="eyebrow">Wrap Up</p>
+          <h2>总结与延伸</h2>
+          <p>七讲讲完之后，不在这里断掉：继续收束主线、跳到 Agent 番外，再回到底层大模型系列。</p>
+        </div>
+        <div class="format-grid">
+          {"".join(summary_cards)}
+        </div>
+      </section>
     </main>
     {build_footer()}
   </div>
@@ -799,7 +983,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     next_link = (
         f'<a class="pager-link" href="{next_lesson.slug}.html"><span>下一篇</span><strong>{next_lesson.number}. {html.escape(next_lesson.short_title)}</strong></a>'
         if next_lesson
-        else ""
+        else '<a class="pager-link" href="summary.html"><span>下一篇</span><strong>总结篇 · 从七讲到延伸阅读</strong></a>'
     )
     visual_html = build_essence_figure() if lesson.slug == "essence" else ""
 
@@ -820,6 +1004,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
         <a href="index.html#lessons">七讲讲义</a>
+        <a href="summary.html">总结与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
     </header>
@@ -839,7 +1024,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
         <div class="sidebar-card">
           <h2>课程导航</h2>
-          <div class="chapter-rail">{lesson_nav(lesson.slug)}</div>
+          <div class="chapter-rail">{course_nav(lesson.slug)}</div>
         </div>
 
         <div class="sidebar-card">
@@ -960,6 +1145,211 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 """
 
 
+def build_summary_page() -> str:
+    recap_cards = []
+    for lesson in LESSONS:
+        recap_cards.append(
+            f"""
+            <article class="lesson-card">
+              <p class="lesson-index">第 {lesson.number} 讲 · {html.escape(lesson.short_title)}</p>
+              <h3>{html.escape(lesson.title)}</h3>
+              <p>{format_inline(lesson.workshop_prompt)}</p>
+              <div class="lesson-meta">
+                <span>{html.escape(lesson.lesson_minutes)}</span>
+                <span>{html.escape(lesson.core)}</span>
+              </div>
+              <a class="lesson-link" href="{lesson.slug}.html">回看这一讲</a>
+            </article>
+            """
+        )
+
+    path_cards = []
+    path_links = [
+        ("summary.html#full", "完整版 Agent"),
+        ("summary.html#extras", "Agent 番外"),
+        ("summary.html#llm", "大模型目录"),
+    ]
+    for (title, note), (href, label) in zip(SUMMARY_PATHS, path_links):
+        path_cards.append(
+            f"""
+            <article class="format-card">
+              <h3>{html.escape(title)}</h3>
+              <p>{html.escape(note)}</p>
+              <a class="secondary-btn" href="{href}">{html.escape(label)}</a>
+            </article>
+            """
+        )
+
+    toc_links = [
+        ("closure", "一小时之后留下什么"),
+        ("map", "七讲怎么串起来"),
+        ("full", "完整版 Agent"),
+        ("extras", "Agent 番外篇"),
+        ("llm", "大模型序列目录"),
+        ("next", "下一步怎么继续"),
+    ]
+
+    return f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  {build_head(f"总结篇｜{SITE_SUBTITLE}", "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。", "summary.html", "article")}
+</head>
+<body class="article-body">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="reading-progress" aria-hidden="true"><span class="reading-progress-bar"></span></div>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">nanoAgent</span>
+        <span class="brand-text">{SITE_TITLE}</span>
+      </a>
+      <nav class="top-nav">
+        <a href="index.html#agenda">时间分配</a>
+        <a href="index.html#lessons">七讲讲义</a>
+        <a href="#extras">Agent 番外</a>
+        <a href="#llm">大模型目录</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="article-layout" id="main-content">
+      <aside class="article-sidebar">
+        <div class="sidebar-card">
+          <p class="eyebrow">总结篇</p>
+          <h2 class="lesson-title">从最小闭环到完整 Harness</h2>
+          <p>这一页不再展开新概念，而是把七讲串成一张地图，并给出分享结束后的延伸阅读入口。</p>
+          <div class="chip-row">
+            <span class="chip">主线收束</span>
+            <span class="chip">Agent 番外</span>
+            <span class="chip">大模型目录</span>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>课程导航</h2>
+          <div class="chapter-rail">{course_nav("summary")}</div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2>页面目录</h2>
+          <nav class="toc">
+            {"".join(f'<a class="toc-link" href="#{anchor}">{html.escape(label)}</a>' for anchor, label in toc_links)}
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-main">
+        <section class="article-hero">
+          <div class="breadcrumbs">
+            <a href="index.html">首页</a>
+            <span>/</span>
+            <a href="index.html#lessons">讲义列表</a>
+            <span>/</span>
+            <span>总结篇</span>
+          </div>
+          <p class="eyebrow">{SITE_SUBTITLE}</p>
+          <h1>总结篇：从七讲到延伸阅读</h1>
+          <p class="lead">七讲主线到这里收束：先把最小闭环搭起来，再逐步补上能力外置、记忆、委派、协作、压缩与安全。接下来要么继续补 Agent 工程细节，要么回到底层大模型原理。</p>
+          <div class="tag-row">
+            <span class="tag">总结篇</span>
+            <span class="tag">Agent 番外</span>
+            <span class="tag">大模型目录</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#map">先看七讲地图</a>
+            <a class="secondary-btn" href="#extras">再看延伸目录</a>
+          </div>
+        </section>
+
+        <section class="lesson-section" id="closure">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Closure</p>
+            <h2>一小时之后留下什么</h2>
+            <p>如果只记住三件事，应该是下面这些。</p>
+          </div>
+          {render_bullets(SUMMARY_OUTCOMES)}
+        </section>
+
+        <section class="lesson-section" id="map">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Map</p>
+            <h2>七讲怎么串起来</h2>
+            <p>顺序不是随便排的，而是从“让模型能动手”一路走到“让它可以上线”。</p>
+          </div>
+          <div class="lesson-grid">
+            {"".join(recap_cards)}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="full">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Full Build</p>
+            <h2>完整版 Agent</h2>
+            <p>如果你想把七讲里的组件重新拼回一个可直接运行的原型，这里是最快的入口。</p>
+          </div>
+          <div class="lesson-grid">
+            <article class="lesson-card">
+              <p class="lesson-index">Full · {code_lines(FULL_AGENT_CODE)} 行代码</p>
+              <h3>七篇合一：完整 Agent</h3>
+              <p>把工具循环、记忆、Rules、Skills、MCP、SubAgent、Teams、上下文压缩和安全防线重新放回一个文件，适合对照七讲之后整体回看。</p>
+              <div class="deep-links">
+                <a class="lesson-link" href="{github_blob_url(FULL_AGENT_GUIDE)}">看完整说明</a>
+                <a class="secondary-btn" href="{github_blob_url(FULL_AGENT_CODE)}">看完整代码</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="lesson-section" id="extras">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Agent Bonus</p>
+            <h2>Agent 番外篇</h2>
+            <p>这些番外回答七讲里没有展开的问题：为什么需要文件系统、Token 花在哪、Streaming 怎么做、怎么评估是否完成任务、真实 MCP 长什么样。</p>
+          </div>
+          <div class="lesson-grid">
+            {render_resource_cards(AGENT_BONUS_RESOURCES, "读番外原文")}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="llm">
+          <div class="lesson-section-head">
+            <p class="eyebrow">LLM Series</p>
+            <h2>大模型序列文章目录</h2>
+            <p>想把 Agent 再接回底层原理，可以顺着这套目录往回看：先正篇十讲，再番外六讲。</p>
+          </div>
+          <p class="lesson-index">正篇十讲</p>
+          <div class="lesson-grid">
+            {render_resource_cards(LLM_MAIN_RESOURCES, "读原文")}
+          </div>
+          <p class="lesson-index summary-subtitle">番外六讲</p>
+          <div class="lesson-grid">
+            {render_resource_cards(LLM_BONUS_RESOURCES, "读原文")}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="next">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Next Step</p>
+            <h2>下一步怎么继续</h2>
+            <p>分享结束后，通常从这三条路径继续最顺。</p>
+          </div>
+          <div class="format-grid">
+            {"".join(path_cards)}
+          </div>
+        </section>
+
+        <nav class="pager">
+          <a class="pager-link" href="{LESSONS[-1].slug}.html"><span>上一篇</span><strong>{LESSONS[-1].number}. {html.escape(LESSONS[-1].short_title)}</strong></a>
+        </nav>
+      </article>
+    </main>
+    {build_footer()}
+  </div>
+</body>
+</html>
+"""
+
+
 def ensure_dirs() -> None:
     DOCS_DIR.mkdir(exist_ok=True)
     ASSETS_DIR.mkdir(exist_ok=True)
@@ -976,6 +1366,7 @@ def main() -> None:
     for index, lesson in enumerate(LESSONS):
         page = tidy_output(build_lesson_page(index, lesson))
         (DOCS_DIR / f"{lesson.slug}.html").write_text(page, encoding="utf-8")
+    (DOCS_DIR / "summary.html").write_text(tidy_output(build_summary_page()), encoding="utf-8")
 
 
 if __name__ == "__main__":

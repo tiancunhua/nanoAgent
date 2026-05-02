@@ -500,6 +500,10 @@ button:focus-visible {
   margin-top: 18px;
 }
 
+.summary-subtitle {
+  margin: 24px 0 14px;
+}
+
 .lesson-section-head {
   margin-bottom: 14px;
 }
