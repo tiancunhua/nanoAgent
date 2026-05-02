@@ -136,7 +136,7 @@
               <div class="code-card-head">
                 <div>
                   <p class="lesson-index">把 subagent 做成一个工具</p>
-                  <h3>独立 `sub_messages` + 禁止递归，是这段实现最值得讲的两点。</h3>
+                  <h3>独立 <code class="inline">sub_messages</code> + 禁止递归，是这段实现最值得讲的两点。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.py#L104-L142">看 GitHub 行号</a>
               </div>
@@ -193,7 +193,7 @@
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code>python agent/04-subagent/agent-subagent.py &quot;创建一个 TODO 应用，包含 Python 后端和 HTML 前端&quot;</code></pre>
-            <ul class="lesson-list"><li>主 Agent 会调用 `subagent(...)`，并给它一个明确角色与任务。</li><li>子代理有自己的 `sub_messages`，不会把主代理上下文一股脑复制过去。</li><li>子代理返回的是结果摘要，而不是完整内部历史。</li></ul>
+            <ul class="lesson-list"><li>主 Agent 会调用 <code class="inline">subagent(...)</code>，并给它一个明确角色与任务。</li><li>子代理有自己的 <code class="inline">sub_messages</code>，不会把主代理上下文一股脑复制过去。</li><li>子代理返回的是结果摘要，而不是完整内部历史。</li></ul>
           </div>
         </section>
 
@@ -224,7 +224,7 @@
 
         <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Misread</p>
+            <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
           <ul class="lesson-list"><li>任务边界不清时，主代理和子代理会重复劳动。</li><li>允许无限递归委派，成本和复杂度都会失控。</li><li>如果子代理的角色太泛，它只是换了个名字的主代理。</li></ul>

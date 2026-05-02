@@ -1,8 +1,29 @@
 import html
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
+
+
+_INLINE_CODE_RE = re.compile(r"`([^`]+)`")
+
+
+def format_inline(text: str) -> str:
+    """HTML-escape text and convert markdown `inline code` into <code class="inline">."""
+    parts = []
+    last = 0
+    for match in _INLINE_CODE_RE.finditer(text):
+        parts.append(html.escape(text[last:match.start()]))
+        parts.append(f'<code class="inline">{html.escape(match.group(1))}</code>')
+        last = match.end()
+    parts.append(html.escape(text[last:]))
+    return "".join(parts)
+
+
+def strip_inline_marks(text: str) -> str:
+    """Drop markdown `backticks` for places where HTML tags are not allowed (e.g. <meta>)."""
+    return _INLINE_CODE_RE.sub(r"\1", text)
 
 
 ROOT = Path(__file__).parent
@@ -100,8 +121,7 @@ LESSONS = [
         talk_points=[
             "先讲循环：Agent 不是只回答一次，而是在每一轮里决定要不要继续行动。",
             "LLM 输出的是结构化“调用意图”，不是直接执行系统命令。",
-            "再讲 Tool：`tools` 是一份 schema，名字、描述、参数决定了模型看得到哪些能力。",
-            "`functions` 这张映射表才决定了工具名最后会落到哪段真实代码上。",
+            "再讲 Tool：`tools` 是模型看到的能力清单，`functions` 才是真正落地执行的代码。",
         ],
         pitfalls=[
             "只写 Python 函数、不把它放进 `tools`，模型就根本不知道这项能力存在。",
@@ -146,9 +166,9 @@ LESSONS = [
         demo_command='python agent/03-skills-mcp/agent-skills-mcp.py "扫描项目里所有 TODO 并生成修复顺序"',
         demo_goal="展示 Agent 如何在启动时从项目目录加载 Skills、Rules 和 MCP 工具，让能力不再写死在脚本里。",
         demo_expected=[
-            "如果项目下放了 `.agent/rules` 或 `.agent/skills`，启动时能看到对应的加载日志。",
-            "再指出 MCP 工具会并入 `all_tools`，说明工具边界可以从外部接进来。",
-            "最后强调真正的主线不是计划，而是 Rule / Skill / MCP 各自进入了不同层。",
+            "终端先出现 `[Init] Loading ClaudeCode features...`，然后是 `[Rules]`、`[Skills]`、`[MCP]` 各自的加载日志。",
+            "回头指给大家看 `all_tools = base_tools + mcp_tools` 这一行，说明 MCP 工具是从外部并入工具列表的。",
+            "强调一句主线：Rules / Skills 走的是 prompt，MCP 走的是 tools，进入的层不一样。",
         ],
         student_takeaways=[
             "知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。",
@@ -402,7 +422,7 @@ LESSONS = [
         title="三道安全防线",
         short_title="上线边界",
         stage="能力关进笼子",
-        lesson_minutes="8 分钟",
+        lesson_minutes="5 分钟",
         summary="最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。",
         core="黑名单 + 人工确认 + 输出截断",
         tags=["Safety", "Approval", "Guardrails"],
@@ -504,22 +524,23 @@ def page_url(filename: str) -> str:
 
 def build_head(title: str, description: str, filename: str, page_type: str) -> str:
     canonical = page_url(filename)
+    plain_description = strip_inline_marks(description)
     return f"""
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{html.escape(title)}</title>
-  <meta name="description" content="{html.escape(description)}">
+  <meta name="description" content="{html.escape(plain_description)}">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="{html.escape(canonical)}">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="{page_type}">
   <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
   <meta property="og:title" content="{html.escape(title)}">
-  <meta property="og:description" content="{html.escape(description)}">
+  <meta property="og:description" content="{html.escape(plain_description)}">
   <meta property="og:url" content="{html.escape(canonical)}">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{html.escape(title)}">
-  <meta name="twitter:description" content="{html.escape(description)}">
+  <meta name="twitter:description" content="{html.escape(plain_description)}">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
 """.strip()
@@ -530,12 +551,12 @@ def render_tags(tags: List[str], class_name: str) -> str:
 
 
 def render_bullets(items: List[str], class_name: str = "lesson-list") -> str:
-    body = "".join(f"<li>{html.escape(item)}</li>" for item in items)
+    body = "".join(f"<li>{format_inline(item)}</li>" for item in items)
     return f'<ul class="{class_name}">{body}</ul>'
 
 
 def render_steps(items: List[str]) -> str:
-    body = "".join(f"<li>{html.escape(item)}</li>" for item in items)
+    body = "".join(f"<li>{format_inline(item)}</li>" for item in items)
     return f'<ol class="lesson-steps">{body}</ol>'
 
 
@@ -597,13 +618,13 @@ def build_home_page() -> str:
             <article class="lesson-card">
               <p class="lesson-index">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
               <h3>{html.escape(lesson.title)}</h3>
-              <p>{html.escape(lesson.summary)}</p>
+              <p>{format_inline(lesson.summary)}</p>
               <div class="lesson-meta">
                 <span>{html.escape(lesson.lesson_minutes)}</span>
                 <span>{code_lines(lesson.code_path)} 行代码</span>
                 <span>{html.escape(lesson.core)}</span>
               </div>
-              <p class="lesson-kicker">分享重点：{html.escape(lesson.workshop_prompt)}</p>
+              <p class="lesson-kicker">分享重点：{format_inline(lesson.workshop_prompt)}</p>
               <div class="lesson-tag-row">{render_tags(lesson.tags, "tag")}</div>
               <a class="lesson-link" href="{lesson.slug}.html">看分享讲义</a>
             </article>
@@ -752,7 +773,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
               <div class="code-card-head">
                 <div>
                   <p class="lesson-index">{html.escape(snippet.title)}</p>
-                  <h3>{html.escape(snippet.focus)}</h3>
+                  <h3>{format_inline(snippet.focus)}</h3>
                 </div>
                 <a class="source-link" href="{github_lines_url(lesson.code_path, snippet.start, snippet.end)}">看 GitHub 行号</a>
               </div>
@@ -799,7 +820,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         <div class="sidebar-card">
           <p class="eyebrow">第 {lesson.number} 讲 · {html.escape(lesson.stage)}</p>
           <h2 class="lesson-title">{html.escape(lesson.title)}</h2>
-          <p>{html.escape(lesson.summary)}</p>
+          <p>{format_inline(lesson.summary)}</p>
           <div class="chip-row">
             <span class="chip">{html.escape(lesson.lesson_minutes)}</span>
             <span class="chip">{code_lines(lesson.code_path)} 行代码</span>
@@ -831,7 +852,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           </div>
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>{lesson.number}. {html.escape(lesson.title)}</h1>
-          <p class="lead">{html.escape(lesson.summary)}</p>
+          <p class="lead">{format_inline(lesson.summary)}</p>
           <p class="mode-note">这页按“先看代码，再看演示，最后自己试一轮”的顺序编排，适合技术分享科普场景。</p>
           <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
@@ -856,7 +877,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
-            <p>{html.escape(lesson.demo_goal)}</p>
+            <p>{format_inline(lesson.demo_goal)}</p>
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
@@ -869,7 +890,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>{html.escape(lesson.workshop_prompt)}</p>
+            <p>{format_inline(lesson.workshop_prompt)}</p>
           </div>
           {render_steps(lesson.practice_steps)}
         </section>
@@ -892,7 +913,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
         <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Misread</p>
+            <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
           {render_bullets(lesson.pitfalls)}

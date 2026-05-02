@@ -216,7 +216,7 @@
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code>python agent/06-compact/agent-compact.py &quot;在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt&quot;</code></pre>
-            <ul class="lesson-list"><li>把阈值调小后，很容易在终端看到 `[Compact]` 日志。</li><li>压缩会保留 system prompt 与最近几条消息，只把旧消息折叠成摘要。</li><li>强调：压缩也是花 token 的，所以它是工程折中，不是白送能力。</li></ul>
+            <ul class="lesson-list"><li>把阈值调小后，很容易在终端看到 <code class="inline">[Compact]</code> 日志。</li><li>压缩会保留 system prompt 与最近几条消息，只把旧消息折叠成摘要。</li><li>强调：压缩也是花 token 的，所以它是工程折中，不是白送能力。</li></ul>
           </div>
         </section>
 
@@ -226,7 +226,7 @@
             <h2>自己试一轮</h2>
             <p>分享时把阈值调小，强制触发一次压缩，是最直观的讲法。</p>
           </div>
-          <ol class="lesson-steps"><li>把 `COMPACT_THRESHOLD` 调到 8，制造一轮可见的压缩。</li><li>把 `KEEP_RECENT` 从 6 改成 4，比较当前任务衔接是否变差。</li><li>观察压缩前后 messages 的结构变化，不只看日志。</li></ol>
+          <ol class="lesson-steps"><li>把 <code class="inline">COMPACT_THRESHOLD</code> 调到 8，制造一轮可见的压缩。</li><li>把 <code class="inline">KEEP_RECENT</code> 从 6 改成 4，比较当前任务衔接是否变差。</li><li>观察压缩前后 messages 的结构变化，不只看日志。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -234,7 +234,7 @@
             <p class="eyebrow">Takeaway</p>
             <h2>这一讲会看懂什么</h2>
           </div>
-          <ul class="lesson-list"><li>知道为什么更大的 context window 不是根治方案。</li><li>能解释 `COMPACT_THRESHOLD` 与 `KEEP_RECENT` 的取舍。</li><li>理解“记住要点、忘掉细节”是 Agent 的必要能力。</li></ul>
+          <ul class="lesson-list"><li>知道为什么更大的 context window 不是根治方案。</li><li>能解释 <code class="inline">COMPACT_THRESHOLD</code> 与 <code class="inline">KEEP_RECENT</code> 的取舍。</li><li>理解“记住要点、忘掉细节”是 Agent 的必要能力。</li></ul>
         </section>
 
         <section class="lesson-section" id="talk">
@@ -247,7 +247,7 @@
 
         <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Misread</p>
+            <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
           <ul class="lesson-list"><li>摘要过度会丢掉关键路径和文件名。</li><li>recent window 太短会让 Agent 瞬间断片。</li><li>只做截断不做压缩，依然扛不住复杂长任务。</li></ul>

@@ -42,7 +42,7 @@
           <h2 class="lesson-title">三道安全防线</h2>
           <p>最后一讲只讲 Agent 真正落地时最不能省的边界：危险命令拦截、人工确认、超长输出截断。</p>
           <div class="chip-row">
-            <span class="chip">8 分钟</span>
+            <span class="chip">5 分钟</span>
             <span class="chip">288 行代码</span>
             <span class="chip">黑名单 + 人工确认 + 输出截断</span>
           </div>
@@ -258,7 +258,7 @@
             <h2>自己试一轮</h2>
             <p>把安全讲成‘让 Agent 能上线’的最后门槛，大家会更容易记住。</p>
           </div>
-          <ol class="lesson-steps"><li>给 `DANGEROUS_PATTERNS` 自己再补一条高危命令规则。</li><li>把 `read_file` 改成只允许读取项目目录，做一个最小白名单。</li><li>故意读取一个超长文件，观察截断提示如何返回给模型。</li></ol>
+          <ol class="lesson-steps"><li>给 <code class="inline">DANGEROUS_PATTERNS</code> 自己再补一条高危命令规则。</li><li>把 <code class="inline">read_file</code> 改成只允许读取项目目录，做一个最小白名单。</li><li>故意读取一个超长文件，观察截断提示如何返回给模型。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -279,10 +279,10 @@
 
         <section class="lesson-section" id="pitfalls">
           <div class="lesson-section-head">
-            <p class="eyebrow">Misread</p>
+            <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
-          <ul class="lesson-list"><li>只靠黑名单是不够的，绕过方式永远存在。</li><li>所有动作都确认会严重伤体验，要做分级策略。</li><li>`--auto` 只能在你完全信任的隔离环境里用。</li></ul>
+          <ul class="lesson-list"><li>只靠黑名单是不够的，绕过方式永远存在。</li><li>所有动作都确认会严重伤体验，要做分级策略。</li><li><code class="inline">--auto</code> 只能在你完全信任的隔离环境里用。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">
