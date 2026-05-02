@@ -1,7 +1,9 @@
 import html
+import json
 import re
 import subprocess
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import List
 
@@ -35,6 +37,8 @@ SITE_URL = "https://githubxsy.github.io/nanoAgent"
 SITE_TITLE = "从零开始理解 Agent"
 SITE_SUBTITLE = "60 分钟讲义"
 SITE_DESCRIPTION = "将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，并补上总结篇、Agent 番外与大模型系列目录。"
+SITE_AUTHOR = "GitHubxsy"
+BUILD_DATE = date.today().isoformat()
 
 
 @dataclass
@@ -539,6 +543,27 @@ SUMMARY_PATHS = [
 ]
 
 
+PUBLIC_AUDIENCE = [
+    "想在 1 小时内建立 Agent 核心心智模型的人。",
+    "准备做技术分享、内部培训或团队 onboarding 的人。",
+    "已经在用 ChatGPT / Claude，但想理解 Agent 工程结构的人。",
+]
+
+
+PUBLIC_SCOPE = [
+    "七讲主线：场景、关键代码、演示命令、延伸练习。",
+    "总结篇：七讲地图、完整版 Agent、继续阅读路径。",
+    "配套目录：Agent 番外与大模型序列，方便课后继续深入。",
+]
+
+
+PUBLIC_USAGE = [
+    "第一次访问：按第 01 讲到第 07 讲顺序阅读，再用总结篇收束主线。",
+    "用于分享：用首页时间分配做大纲，用每讲 Demo 命令做现场演示。",
+    "用于复习：直接进入总结篇，按问题跳转到番外或大模型目录。",
+]
+
+
 def github_blob_url(path: Path) -> str:
     relative = path.relative_to(REPO_ROOT).as_posix()
     return f"{REPO_WEB_BASE}/blob/{SOURCE_BRANCH}/{relative}"
@@ -554,16 +579,62 @@ def page_url(filename: str) -> str:
     return f"{SITE_URL}/{filename}"
 
 
-def build_head(title: str, description: str, filename: str, page_type: str) -> str:
+def site_publisher() -> dict:
+    return {
+        "@type": "Organization",
+        "name": SITE_AUTHOR,
+        "url": REPO_WEB_BASE,
+    }
+
+
+def build_json_ld(payloads: List[dict]) -> str:
+    scripts = []
+    for payload in payloads:
+        scripts.append(
+            '<script type="application/ld+json">'
+            + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+            + "</script>"
+        )
+    return "\n  ".join(scripts)
+
+
+def breadcrumb_schema(items: List[tuple[str, str]]) -> dict:
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": index + 1,
+                "name": name,
+                "item": url,
+            }
+            for index, (name, url) in enumerate(items)
+        ],
+    }
+
+
+def build_head(
+    title: str,
+    description: str,
+    filename: str,
+    page_type: str,
+    *,
+    robots: str = "index,follow",
+    structured_data=None,
+) -> str:
     canonical = page_url(filename)
     plain_description = strip_inline_marks(description)
+    json_ld = build_json_ld(structured_data) if structured_data else ""
     return f"""
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{html.escape(title)}</title>
   <meta name="description" content="{html.escape(plain_description)}">
+  <meta name="robots" content="{html.escape(robots)}">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="{html.escape(canonical)}">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="{page_type}">
   <meta property="og:site_name" content="{html.escape(SITE_TITLE)}">
@@ -575,7 +646,84 @@ def build_head(title: str, description: str, filename: str, page_type: str) -> s
   <meta name="twitter:description" content="{html.escape(plain_description)}">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
+  {json_ld}
 """.strip()
+
+
+def home_structured_data() -> List[dict]:
+    return [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": SITE_TITLE,
+            "url": SITE_URL,
+            "description": SITE_DESCRIPTION,
+            "inLanguage": "zh-CN",
+            "publisher": site_publisher(),
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": f"{SITE_TITLE}｜{SITE_SUBTITLE}",
+            "description": SITE_DESCRIPTION,
+            "provider": site_publisher(),
+            "educationalLevel": "Intermediate",
+            "inLanguage": "zh-CN",
+            "url": page_url("index.html"),
+        },
+    ]
+
+
+def lesson_structured_data(lesson: Lesson) -> List[dict]:
+    return [
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": f"{lesson.number}. {lesson.title}",
+            "description": strip_inline_marks(lesson.summary),
+            "dateModified": BUILD_DATE,
+            "inLanguage": "zh-CN",
+            "author": site_publisher(),
+            "publisher": site_publisher(),
+            "url": page_url(f"{lesson.slug}.html"),
+            "keywords": lesson.tags,
+            "isPartOf": {
+                "@type": "CreativeWorkSeries",
+                "name": SITE_TITLE,
+                "url": page_url("index.html"),
+            },
+        },
+        breadcrumb_schema(
+            [
+                ("首页", page_url("index.html")),
+                ("七讲讲义", page_url("index.html") + "#lessons"),
+                (f"第 {lesson.number} 讲", page_url(f"{lesson.slug}.html")),
+            ]
+        ),
+    ]
+
+
+def summary_structured_data() -> List[dict]:
+    return [
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "总结篇：从七讲到延伸阅读",
+            "description": "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。",
+            "dateModified": BUILD_DATE,
+            "inLanguage": "zh-CN",
+            "author": site_publisher(),
+            "publisher": site_publisher(),
+            "url": page_url("summary.html"),
+        },
+        breadcrumb_schema(
+            [
+                ("首页", page_url("index.html")),
+                ("七讲讲义", page_url("index.html") + "#lessons"),
+                ("总结篇", page_url("summary.html")),
+            ]
+        ),
+    ]
 
 
 def render_tags(tags: List[str], class_name: str) -> str:
@@ -828,7 +976,7 @@ def build_home_page() -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  {build_head(f"{SITE_TITLE}｜{SITE_SUBTITLE}", SITE_DESCRIPTION, "index.html", "website")}
+  {build_head(f"{SITE_TITLE}｜{SITE_SUBTITLE}", SITE_DESCRIPTION, "index.html", "website", structured_data=home_structured_data())}
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -839,6 +987,7 @@ def build_home_page() -> str:
         <span class="brand-text">{SITE_TITLE}</span>
       </a>
       <nav class="top-nav">
+        <a href="#public-ready">站点说明</a>
         <a href="#agenda">时间分配</a>
         <a href="#format">讲义结构</a>
         <a href="#lessons">七讲讲义</a>
@@ -852,11 +1001,11 @@ def build_home_page() -> str:
         <div class="hero-copy">
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>从关键代码到完整运行的 Agent</h1>
-          <p class="hero-lead">本站将前七篇内容浓缩为一套 60 分钟讲义。每一讲先呈现关键实现，再用终端验证行为，最后给出一个可继续修改的动手入口。</p>
-          <p class="mode-note">讲义结构统一：先呈现原理，再阅读代码，最后运行 Demo。</p>
+          <p class="hero-lead">这是一个面向公开分享的 Agent 技术讲义站点：把前七篇内容重组为一条可讲、可演示、可复现的主线，帮助读者从最小闭环走到上线边界。</p>
+          <p class="mode-note">讲义结构统一：先交代使用场景，再阅读关键代码，然后用终端演示把行为跑出来。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
-            <a class="secondary-btn" href="#agenda">查看 60 分钟流程</a>
+            <a class="secondary-btn" href="#public-ready">查看站点说明</a>
           </div>
         </div>
         <div class="hero-side">
@@ -878,6 +1027,28 @@ def build_home_page() -> str:
               <span>每讲均附演示命令与动手入口</span>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="public-ready">
+        <div class="section-head">
+          <p class="eyebrow">Public Ready</p>
+          <h2>这套站点怎么使用</h2>
+          <p>公开上线之后，首页需要先回答三个问题：适合谁、这里有什么、第一次应该怎么读。</p>
+        </div>
+        <div class="format-grid">
+          <article class="format-card">
+            <h3>适合谁</h3>
+            {render_bullets(PUBLIC_AUDIENCE)}
+          </article>
+          <article class="format-card">
+            <h3>这里有什么</h3>
+            {render_bullets(PUBLIC_SCOPE)}
+          </article>
+          <article class="format-card">
+            <h3>怎么使用</h3>
+            {render_bullets(PUBLIC_USAGE)}
+          </article>
         </div>
       </section>
 
@@ -990,7 +1161,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  {build_head(f"{lesson.number}. {lesson.title}｜{SITE_SUBTITLE}", lesson.summary, f"{lesson.slug}.html", "article")}
+  {build_head(f"{lesson.number}. {lesson.title}｜{SITE_SUBTITLE}", lesson.summary, f"{lesson.slug}.html", "article", structured_data=lesson_structured_data(lesson))}
 </head>
 <body class="article-body">
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -1192,7 +1363,7 @@ def build_summary_page() -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  {build_head(f"总结篇｜{SITE_SUBTITLE}", "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。", "summary.html", "article")}
+  {build_head(f"总结篇｜{SITE_SUBTITLE}", "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。", "summary.html", "article", structured_data=summary_structured_data())}
 </head>
 <body class="article-body">
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -1350,6 +1521,109 @@ def build_summary_page() -> str:
 """
 
 
+def build_not_found_page() -> str:
+    description = "页面不存在。可返回首页、七讲讲义或总结篇继续阅读。"
+    return f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  {build_head("404｜从零开始理解 Agent", description, "404.html", "website", robots="noindex,follow")}
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">nanoAgent</span>
+        <span class="brand-text">{SITE_TITLE}</span>
+      </a>
+      <nav class="top-nav">
+        <a href="index.html">首页</a>
+        <a href="summary.html">总结与延伸</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">404</p>
+          <h1>这个页面没有找到</h1>
+          <p class="hero-lead">链接可能已经变更，或者你访问了一个不存在的地址。可以从首页重新进入，也可以直接跳到总结篇继续阅读。</p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="index.html">返回首页</a>
+            <a class="secondary-btn" href="summary.html">进入总结篇</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="fact-grid">
+            <article class="fact-card">
+              <strong>7 讲主线</strong>
+              <span>从最小闭环到上线边界</span>
+            </article>
+            <article class="fact-card">
+              <strong>总结篇</strong>
+              <span>七讲地图与延伸目录</span>
+            </article>
+            <article class="fact-card">
+              <strong>Agent 番外</strong>
+              <span>继续补工程细节</span>
+            </article>
+            <article class="fact-card">
+              <strong>LLM 目录</strong>
+              <span>回到底层原理继续看</span>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    {build_footer()}
+  </div>
+</body>
+</html>
+"""
+
+
+def build_robots_txt() -> str:
+    return f"""User-agent: *
+Allow: /
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+
+
+def build_sitemap_xml() -> str:
+    pages = ["index.html", "summary.html", *[f"{lesson.slug}.html" for lesson in LESSONS]]
+    entries = []
+    for filename in pages:
+        entries.append(
+            "  <url>\n"
+            f"    <loc>{page_url(filename)}</loc>\n"
+            f"    <lastmod>{BUILD_DATE}</lastmod>\n"
+            "  </url>"
+        )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "\n".join(entries)
+        + "\n</urlset>\n"
+    )
+
+
+def build_favicon_svg() -> str:
+    return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="nanoAgent">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2430" />
+      <stop offset="100%" stop-color="#b24c2a" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#f7efe2" />
+  <rect x="14" y="14" width="100" height="100" rx="22" fill="url(#g)" />
+  <path d="M37 84V44h16l24 24V44h14v40H75L51 60v24H37z" fill="#fff7ef" />
+</svg>
+"""
+
+
 def ensure_dirs() -> None:
     DOCS_DIR.mkdir(exist_ok=True)
     ASSETS_DIR.mkdir(exist_ok=True)
@@ -1367,6 +1641,11 @@ def main() -> None:
         page = tidy_output(build_lesson_page(index, lesson))
         (DOCS_DIR / f"{lesson.slug}.html").write_text(page, encoding="utf-8")
     (DOCS_DIR / "summary.html").write_text(tidy_output(build_summary_page()), encoding="utf-8")
+    (DOCS_DIR / "404.html").write_text(tidy_output(build_not_found_page()), encoding="utf-8")
+    (DOCS_DIR / "robots.txt").write_text(build_robots_txt(), encoding="utf-8")
+    (DOCS_DIR / "sitemap.xml").write_text(build_sitemap_xml(), encoding="utf-8")
+    (ASSETS_DIR / "favicon.svg").write_text(build_favicon_svg(), encoding="utf-8")
+    (DOCS_DIR / ".nojekyll").write_text("", encoding="utf-8")
 
 
 if __name__ == "__main__":
