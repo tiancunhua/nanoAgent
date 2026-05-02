@@ -441,7 +441,7 @@ LESSONS = [
         slug="safety",
         number="07",
         title="三道安全防线",
-        short_title="上线边界",
+        short_title="安全边界",
         stage="工程边界",
         lesson_minutes="5 分钟",
         summary="最后一讲聚焦 Agent 落地时不可缺少的三道边界：危险命令拦截、人工确认、超长输出截断。",
@@ -475,7 +475,7 @@ LESSONS = [
             "所有动作都需确认会显著降低体验，应采用分级策略。",
             "`--auto` 仅适合在完全信任的隔离环境中使用。",
         ],
-        workshop_prompt="将安全视为让 Agent 能上线的最后门槛。",
+        workshop_prompt="将安全视为让 Agent 能被放心使用的基本前提。",
         md_path=ROOT / "07-safety/agent-safe.md",
         code_path=ROOT / "07-safety/agent-safe.py",
         snippets=[
@@ -537,7 +537,7 @@ SUMMARY_OUTCOMES = [
 
 
 SUMMARY_PATHS = [
-    ("回看七讲", "重新串起最小闭环到上线边界的完整路径，适合分享结束后收束主线。"),
+    ("回看七讲", "重新串起最小闭环到安全边界的完整路径，适合分享结束后收束主线。"),
     ("补 Agent 番外", "继续回答七讲里没展开的问题：文件系统、Streaming、Eval、真实 MCP 等。"),
     ("补模型基础", "把 Agent 再接回大模型正篇十讲与番外六讲，形成完整技术地图。"),
 ]
@@ -979,7 +979,7 @@ def build_home_page() -> str:
         <div class="hero-copy">
           <p class="eyebrow">{SITE_SUBTITLE}</p>
           <h1>从关键代码到完整运行的 Agent</h1>
-          <p class="hero-lead">这是一个面向公开分享的 Agent 技术讲义站点：把前七篇内容重组为一条可讲、可演示、可复现的主线，帮助读者从最小闭环走到上线边界。</p>
+          <p class="hero-lead">这是一个面向公开分享的 Agent 技术讲义站点：把前七篇内容重组为一条可讲、可演示、可复现的主线，帮助读者从最小闭环走到安全边界。</p>
           <p class="mode-note">讲义结构统一：先交代使用场景，再阅读关键代码，然后用终端演示把行为跑出来。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
@@ -1400,7 +1400,7 @@ def build_summary_page() -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Map</p>
             <h2>七讲怎么串起来</h2>
-            <p>顺序不是随便排的，而是从“让模型能动手”一路走到“让它可以上线”。</p>
+            <p>顺序不是随便排的，而是从“让模型能动手”一路走到“让它安全可控地做事”。</p>
           </div>
           <div class="lesson-grid">
             {"".join(recap_cards)}
@@ -1513,7 +1513,7 @@ def build_not_found_page() -> str:
           <div class="fact-grid">
             <article class="fact-card">
               <strong>7 讲主线</strong>
-              <span>从最小闭环到上线边界</span>
+              <span>从最小闭环到安全边界</span>
             </article>
             <article class="fact-card">
               <strong>总结篇</strong>
