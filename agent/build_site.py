@@ -543,27 +543,6 @@ SUMMARY_PATHS = [
 ]
 
 
-PUBLIC_AUDIENCE = [
-    "想在 1 小时内建立 Agent 核心心智模型的人。",
-    "准备做技术分享、内部培训或团队 onboarding 的人。",
-    "已经在用 ChatGPT / Claude，但想理解 Agent 工程结构的人。",
-]
-
-
-PUBLIC_SCOPE = [
-    "七讲主线：场景、关键代码、演示命令、延伸练习。",
-    "总结篇：七讲地图、完整版 Agent、继续阅读路径。",
-    "配套目录：Agent 番外与大模型序列，方便课后继续深入。",
-]
-
-
-PUBLIC_USAGE = [
-    "第一次访问：按第 01 讲到第 07 讲顺序阅读，再用总结篇收束主线。",
-    "用于分享：用首页时间分配做大纲，用每讲 Demo 命令做现场演示。",
-    "用于复习：直接进入总结篇，按问题跳转到番外或大模型目录。",
-]
-
-
 def github_blob_url(path: Path) -> str:
     relative = path.relative_to(REPO_ROOT).as_posix()
     return f"{REPO_WEB_BASE}/blob/{SOURCE_BRANCH}/{relative}"
@@ -987,7 +966,6 @@ def build_home_page() -> str:
         <span class="brand-text">{SITE_TITLE}</span>
       </a>
       <nav class="top-nav">
-        <a href="#public-ready">站点说明</a>
         <a href="#agenda">时间分配</a>
         <a href="#format">讲义结构</a>
         <a href="#lessons">七讲讲义</a>
@@ -1005,7 +983,6 @@ def build_home_page() -> str:
           <p class="mode-note">讲义结构统一：先交代使用场景，再阅读关键代码，然后用终端演示把行为跑出来。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
-            <a class="secondary-btn" href="#public-ready">查看站点说明</a>
           </div>
         </div>
         <div class="hero-side">
@@ -1027,28 +1004,6 @@ def build_home_page() -> str:
               <span>每讲均附演示命令与动手入口</span>
             </article>
           </div>
-        </div>
-      </section>
-
-      <section class="section-block" id="public-ready">
-        <div class="section-head">
-          <p class="eyebrow">Public Ready</p>
-          <h2>这套站点怎么使用</h2>
-          <p>公开上线之后，首页需要先回答三个问题：适合谁、这里有什么、第一次应该怎么读。</p>
-        </div>
-        <div class="format-grid">
-          <article class="format-card">
-            <h3>适合谁</h3>
-            {render_bullets(PUBLIC_AUDIENCE)}
-          </article>
-          <article class="format-card">
-            <h3>这里有什么</h3>
-            {render_bullets(PUBLIC_SCOPE)}
-          </article>
-          <article class="format-card">
-            <h3>怎么使用</h3>
-            {render_bullets(PUBLIC_USAGE)}
-          </article>
         </div>
       </section>
 
