@@ -171,10 +171,10 @@ LESSONS = [
     ),
     Lesson(
         slug="skills-mcp",
-        number="02",
+        number="03",
         title="Skills、Rules 与 MCP",
         short_title="能力外置",
-        stage="第二步：能力外置",
+        stage="第三步：能力外置",
         lesson_minutes="10 分钟",
         summary="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。",
         core="Skill + Rule + MCP",
@@ -227,10 +227,10 @@ LESSONS = [
     ),
     Lesson(
         slug="memory",
-        number="03",
+        number="02",
         title="Memory：让 Agent 记住上一次",
         short_title="记忆回放",
-        stage="第三步：持久记忆",
+        stage="第二步：持久记忆",
         lesson_minutes="8 分钟",
         summary="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 `agent_memory.md`，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。",
         core="写入记忆 + 回放记忆",
@@ -495,6 +495,8 @@ LESSONS = [
     ),
 ]
 
+LESSONS = sorted(LESSONS, key=lambda lesson: lesson.number)
+
 
 SESSION_OUTCOMES = [
     "理解 Agent 的最小工作闭环，而不止于现成产品的使用层面。",
@@ -520,8 +522,8 @@ SESSION_FORMAT = [
 AGENDA = [
     ("00 - 05", "开场：内容范围与目标", "明确这一小时仅覆盖能直接用于 Demo 的核心内容。"),
     ("05 - 13", "第 01 讲：最小闭环", "运行最小 Agent，观察工具调用、执行与结果回填的完整流程。"),
-    ("13 - 23", "第 02 讲：Skills / Rules / MCP", "接入 Skill、Rule、MCP 三层能力，区分它们注入到上下文还是工具列表。"),
-    ("23 - 31", "第 03 讲：Memory", "演示 Agent 将执行结果写入记忆文件，并在下次运行时回放到上下文。"),
+    ("13 - 21", "第 02 讲：Memory", "演示 Agent 将执行结果写入记忆文件，并在下次运行时回放到上下文。"),
+    ("21 - 31", "第 03 讲：Skills / Rules / MCP", "接入 Skill、Rule、MCP 三层能力，区分它们注入到上下文还是工具列表。"),
     ("31 - 39", "第 04 讲：SubAgent", "通过前后端双角色案例，说明复杂任务需要委派的原因。"),
     ("39 - 48", "第 05 讲：Teams", "将委派扩展为长期协作团队，演示 reviewer 复盘机制。"),
     ("48 - 55", "第 06 讲：上下文压缩", "调低阈值，触发一次完整的压缩流程。"),

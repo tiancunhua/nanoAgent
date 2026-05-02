@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>03. Memory：让 Agent 记住上一次｜60 分钟讲义</title>
+  <title>02. Memory：让 Agent 记住上一次｜60 分钟讲义</title>
   <meta name="description" content="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 agent_memory.md，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#1f2430">
@@ -12,16 +12,16 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="03. Memory：让 Agent 记住上一次｜60 分钟讲义">
+  <meta property="og:title" content="02. Memory：让 Agent 记住上一次｜60 分钟讲义">
   <meta property="og:description" content="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 agent_memory.md，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/memory.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="03. Memory：让 Agent 记住上一次｜60 分钟讲义">
+  <meta name="twitter:title" content="02. Memory：让 Agent 记住上一次｜60 分钟讲义">
   <meta name="twitter:description" content="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 agent_memory.md，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Memory：让 Agent 记住上一次","description":"本讲聚焦 Memory 本身：Agent 如何将一次任务写入 agent_memory.md，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。","dateModified":"2026-05-02","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/memory.html","keywords":["Memory","Persistence","Context Replay"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 03 讲","item":"https://githubxsy.github.io/nanoAgent/memory.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"02. Memory：让 Agent 记住上一次","description":"本讲聚焦 Memory 本身：Agent 如何将一次任务写入 agent_memory.md，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。","dateModified":"2026-05-03","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/memory.html","keywords":["Memory","Persistence","Context Replay"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 02 讲","item":"https://githubxsy.github.io/nanoAgent/memory.html"}]}</script>
 </head>
 <body class="article-body">
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -43,7 +43,7 @@
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">第 03 讲 · 第三步：持久记忆</p>
+          <p class="eyebrow">第 02 讲 · 第二步：持久记忆</p>
           <h2 class="lesson-title">Memory：让 Agent 记住上一次</h2>
           <p>本讲聚焦 Memory 本身：Agent 如何将一次任务写入 <code class="inline">agent_memory.md</code>，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。</p>
           <div class="chip-row">
@@ -62,16 +62,16 @@
               <small>最小闭环 · LLM + 工具 + 循环</small>
             </a>
 
-            <a class="chapter-rail-link" href="skills-mcp.html">
-              <span class="course-step">第 02 讲</span>
-              <strong>Skills、Rules 与 MCP</strong>
-              <small>能力外置 · Skill + Rule + MCP</small>
-            </a>
-
             <a class="chapter-rail-link is-current" href="memory.html">
-              <span class="course-step">第 03 讲</span>
+              <span class="course-step">第 02 讲</span>
               <strong>Memory：让 Agent 记住上一次</strong>
               <small>记忆回放 · 写入记忆 + 回放记忆</small>
+            </a>
+
+            <a class="chapter-rail-link" href="skills-mcp.html">
+              <span class="course-step">第 03 讲</span>
+              <strong>Skills、Rules 与 MCP</strong>
+              <small>能力外置 · Skill + Rule + MCP</small>
             </a>
 
             <a class="chapter-rail-link" href="subagent.html">
@@ -121,10 +121,10 @@
             <span>/</span>
             <a href="index.html#lessons">讲义列表</a>
             <span>/</span>
-            <span>第 03 讲</span>
+            <span>第 02 讲</span>
           </div>
           <p class="eyebrow">60 分钟讲义</p>
-          <h1>03. Memory：让 Agent 记住上一次</h1>
+          <h1>02. Memory：让 Agent 记住上一次</h1>
           <p class="lead">本讲聚焦 Memory 本身：Agent 如何将一次任务写入 <code class="inline">agent_memory.md</code>，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。</p>
           <div class="tag-row"><span class="tag">Memory</span><span class="tag">Persistence</span><span class="tag">Context Replay</span></div>
           <div class="hero-actions">
@@ -274,8 +274,8 @@ python agent/02-memory/agent-memory.py &quot;不重新读文件，只根据记�
         </section>
 
         <nav class="pager">
-          <a class="pager-link" href="skills-mcp.html"><span>上一篇</span><strong>02. 能力外置</strong></a>
-          <a class="pager-link" href="subagent.html"><span>下一篇</span><strong>04. 任务委派</strong></a>
+          <a class="pager-link" href="essence.html"><span>上一篇</span><strong>01. 最小闭环</strong></a>
+          <a class="pager-link" href="skills-mcp.html"><span>下一篇</span><strong>03. 能力外置</strong></a>
         </nav>
       </article>
     </main>
