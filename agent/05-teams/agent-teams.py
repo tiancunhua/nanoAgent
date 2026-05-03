@@ -152,6 +152,7 @@ class Agent:
         self.name = name
         self.role = role
         self.inbox = []  # 通信通道：其他 Agent 发来的消息
+        self.chat_count = 0
         self.messages = [  # 持久记忆：跨多次 chat() 保持
             {
                 "role": "system",
@@ -169,8 +170,14 @@ class Agent:
         核心 1: 持久记忆 —— 每次 chat() 的对话都累积在 self.messages 中
         第二次 chat() 时，Agent 还记得第一次做了什么
         """
+        self.chat_count += 1
+        print(
+            f"  [记忆] {self.name} 第 {self.chat_count} 次 chat，"
+            f"已有 {len(self.messages)} 条 messages，inbox {len(self.inbox)} 条"
+        )
         # 如果 inbox 有新消息，先注入
         if self.inbox:
+            print(f"  [收件箱] {self.name} 读取 {len(self.inbox)} 条团队消息")
             mail = "\n".join(f"[来自 {m['from']}]: {m['content']}" for m in self.inbox)
             self.messages.append(
                 {"role": "user", "content": f"你收到了团队成员的消息:\n{mail}"}
@@ -192,6 +199,9 @@ class Agent:
 
             if not message.tool_calls:
                 print(f"  [{self.name}] → {message.content[:100]}...")
+                print(
+                    f"  [记忆] {self.name} 本轮结束，messages {len(self.messages)} 条"
+                )
                 return message.content
 
             for tc in message.tool_calls:
@@ -267,7 +277,7 @@ def plan_team(task):
             {
                 "name": "chris",
                 "role": "release reviewer",
-                "task": "不要读写文件。先输出 3 行发布验收标准，每行不超过 18 个字，等待团队广播后用于最终审查。",
+                "task": "不要读写文件。先输出 3 行发布验收标准，编号为 G1/G2/G3，每行不超过 18 个字。",
             },
         ]
 
@@ -343,7 +353,7 @@ def run_team(task):
     print(f"{'=' * 60}")
 
     review_prompt = (
-        "请根据你收到的所有团队成果，用 4 行输出最终审查：结论、依据、风险、下一步。不要表格。"
+        "请引用你第一次制定的 G1/G2/G3 验收标准，并根据你收到的团队成果，用 4 行输出最终审查：结论、记忆证据、风险、下一步。不要表格。"
         if is_fixed_demo
         else "请根据你收到的所有团队成果，做一个最终的总结和审查。如有问题请指出。"
     )
