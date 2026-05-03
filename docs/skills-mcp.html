@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>03. Skills、Rules 与 MCP｜60 分钟讲义</title>
-  <meta name="description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
+  <meta name="description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#1f2430">
   <link rel="canonical" href="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
@@ -13,14 +13,14 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="从零开始理解 Agent">
   <meta property="og:title" content="03. Skills、Rules 与 MCP｜60 分钟讲义">
-  <meta property="og:description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
+  <meta property="og:description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="03. Skills、Rules 与 MCP｜60 分钟讲义">
-  <meta name="twitter:description" content="本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。">
+  <meta name="twitter:description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-03","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-03","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 03 讲","item":"https://githubxsy.github.io/nanoAgent/skills-mcp.html"}]}</script>
 </head>
 <body class="article-body">
@@ -45,10 +45,10 @@
         <div class="sidebar-card">
           <p class="eyebrow">第 03 讲 · 第三步：能力外置</p>
           <h2 class="lesson-title">Skills、Rules 与 MCP</h2>
-          <p>本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。</p>
+          <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">430 行代码</span>
+            <span class="chip">448 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -125,7 +125,7 @@
           </div>
           <p class="eyebrow">60 分钟讲义</p>
           <h1>03. Skills、Rules 与 MCP</h1>
-          <p class="lead">本讲聚焦三层能力扩展：Skill 补充知识，Rule 设定边界，MCP 接入外部工具。重点不在配置细节，而在它们分别注入到上下文还是工具列表。</p>
+          <p class="lead">本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="tag-row"><span class="tag">Skills</span><span class="tag">Rules</span><span class="tag">MCP</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#scenario">从场景开始</a>
@@ -153,51 +153,73 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
+                  <p class="lesson-index">演示迭代上限</p>
+                  <h3>第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L15-L19">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python">  15 MEMORY_FILE = &quot;agent_memory.md&quot;
+  16 RULES_DIR = &quot;.agent/rules&quot;
+  17 SKILLS_DIR = &quot;.agent/skills&quot;
+  18 MCP_CONFIG = &quot;.agent/mcp.json&quot;
+  19 DEFAULT_MAX_ITERATIONS = 10</code></pre>
+            </article>
+
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
                   <h3>这段代码从项目目录读取 Rule、Skill 与 MCP 工具，是能力外置的入口。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L266-L305">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L275-L321">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 266 def load_rules():
- 267     rules = []
- 268     if not os.path.exists(RULES_DIR):
- 269         return &quot;&quot;
- 270     try:
- 271         for rule_file in Path(RULES_DIR).glob(&quot;*.md&quot;):
- 272             with open(rule_file, &quot;r&quot;) as f:
- 273                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
- 274         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
- 275     except:
- 276         return &quot;&quot;
- 277
- 278
- 279 def load_skills():
- 280     skills = []
- 281     if not os.path.exists(SKILLS_DIR):
- 282         return []
- 283     try:
- 284         for skill_file in Path(SKILLS_DIR).glob(&quot;*.json&quot;):
- 285             with open(skill_file, &quot;r&quot;) as f:
- 286                 skills.append(json.load(f))
- 287         return skills
- 288     except:
- 289         return []
- 290
- 291
- 292 def load_mcp_tools():
- 293     if not os.path.exists(MCP_CONFIG):
- 294         return []
- 295     try:
- 296         with open(MCP_CONFIG, &quot;r&quot;) as f:
- 297             config = json.load(f)
- 298             mcp_tools = []
- 299             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
- 300                 if server_config.get(&quot;disabled&quot;, False):
- 301                     continue
- 302                 for tool in server_config.get(&quot;tools&quot;, []):
- 303                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
- 304             return mcp_tools
- 305     except:</code></pre>
+              <pre class="code-block"><code class="language-python"> 275 def load_rules():
+ 276     rules = []
+ 277     if not os.path.exists(RULES_DIR):
+ 278         return &quot;&quot;
+ 279     try:
+ 280         for rule_file in sorted(Path(RULES_DIR).glob(&quot;*.md&quot;)):
+ 281             with open(rule_file, &quot;r&quot;) as f:
+ 282                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
+ 283         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
+ 284     except:
+ 285         return &quot;&quot;
+ 286
+ 287
+ 288 def count_rule_files():
+ 289     if not os.path.exists(RULES_DIR):
+ 290         return 0
+ 291     return len(list(Path(RULES_DIR).glob(&quot;*.md&quot;)))
+ 292
+ 293
+ 294 def load_skills():
+ 295     skills = []
+ 296     if not os.path.exists(SKILLS_DIR):
+ 297         return []
+ 298     try:
+ 299         for skill_file in Path(SKILLS_DIR).glob(&quot;*.json&quot;):
+ 300             with open(skill_file, &quot;r&quot;) as f:
+ 301                 skills.append(json.load(f))
+ 302         return skills
+ 303     except:
+ 304         return []
+ 305
+ 306
+ 307 def load_mcp_tools():
+ 308     if not os.path.exists(MCP_CONFIG):
+ 309         return []
+ 310     try:
+ 311         with open(MCP_CONFIG, &quot;r&quot;) as f:
+ 312             config = json.load(f)
+ 313             mcp_tools = []
+ 314             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
+ 315                 if server_config.get(&quot;disabled&quot;, False):
+ 316                     continue
+ 317                 for tool in server_config.get(&quot;tools&quot;, []):
+ 318                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
+ 319             return mcp_tools
+ 320     except:
+ 321         return []</code></pre>
             </article>
 
             <article class="code-card">
@@ -206,33 +228,33 @@
                   <p class="lesson-index">进入上下文与工具列表的方式</p>
                   <h3>关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L370-L394">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L385-L409">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 370 def run_agent_claudecode(task, use_plan=False):
- 371     global plan_mode, current_plan
- 372     print(&quot;[Init] Loading ClaudeCode features...&quot;)
- 373     memory = load_memory()
- 374     rules = load_rules()
- 375     skills = load_skills()
- 376     mcp_tools = load_mcp_tools()
- 377     all_tools = base_tools + mcp_tools
- 378     context_parts = [
- 379         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 380     ]
- 381     if rules:
- 382         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 383         print(f&quot;[Rules] Loaded {len(rules.split(&#x27;# &#x27;)) - 1} rule files&quot;)
- 384     if skills:
- 385         context_parts.append(
- 386             f&quot;\n# Skills\n&quot;
- 387             + &quot;\n&quot;.join([f&quot;- {s[&#x27;name&#x27;]}: {s.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot; for s in skills])
- 388         )
- 389         print(f&quot;[Skills] Loaded {len(skills)} skills&quot;)
- 390     if mcp_tools:
- 391         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools&quot;)
- 392     if memory:
- 393         context_parts.append(f&quot;\n# Previous Context\n{memory}&quot;)
- 394     messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;\n&quot;.join(context_parts)}]</code></pre>
+              <pre class="code-block"><code class="language-python"> 385 def run_agent_claudecode(task, use_plan=False):
+ 386     global plan_mode, current_plan
+ 387     print(&quot;[Init] Loading ClaudeCode features...&quot;)
+ 388     memory = load_memory()
+ 389     rule_count = count_rule_files()
+ 390     rules = load_rules()
+ 391     skills = load_skills()
+ 392     mcp_tools = load_mcp_tools()
+ 393     all_tools = base_tools + mcp_tools
+ 394     context_parts = [
+ 395         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 396     ]
+ 397     if rules:
+ 398         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 399         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 400     if skills:
+ 401         context_parts.append(
+ 402             f&quot;\n# Skills\n&quot;
+ 403             + &quot;\n&quot;.join([f&quot;- {s[&#x27;name&#x27;]}: {s.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot; for s in skills])
+ 404         )
+ 405         skill_names = [skill[&quot;name&quot;] for skill in skills]
+ 406         print(f&quot;[Skills] Loaded {len(skills)} skills: {&#x27;, &#x27;.join(skill_names)}&quot;)
+ 407     if mcp_tools:
+ 408         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 409         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
             </article>
 
           </div>
@@ -242,12 +264,12 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
-            <p>展示 Agent 如何在启动时从项目目录加载 Skills、Rules 与 MCP 工具，使能力不再硬编码在脚本中。</p>
+            <p>展示 Agent 如何在启动时加载一个最小 Rule、一个最小 Skill 与一个 MCP 工具，并把这些外置能力带入本轮任务。</p>
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python agent/03-skills-mcp/agent-skills-mcp.py &quot;扫描项目里所有 TODO 并生成修复顺序&quot;</code></pre>
-            <ul class="lesson-list"><li>终端先出现 <code class="inline">[Init] Loading ClaudeCode features...</code>，随后依次打印 <code class="inline">[Rules]</code>、<code class="inline">[Skills]</code>、<code class="inline">[MCP]</code> 加载日志。</li><li>查看 <code class="inline">all_tools = base_tools + mcp_tools</code> 这一行，可见 MCP 工具如何从外部并入工具列表。</li><li>主线一句话：Rules 与 Skills 注入到 prompt，MCP 注入到 tools，进入的层不同。</li></ul>
+            <pre class="demo-command"><code>python agent/03-skills-mcp/agent-skills-mcp.py &quot;扫描项目里所有 TODO，调用 project_guide 说明 Rule、Skill、MCP 如何接入，并生成最多 3 项修复顺序&quot;</code></pre>
+            <ul class="lesson-list"><li>终端先出现 <code class="inline">[Init] Loading ClaudeCode features...</code>，随后打印 <code class="inline">[Rules] Loaded 1</code>、<code class="inline">[Skills] Loaded 1 skills: todo_prioritizer</code>、<code class="inline">[MCP] Loaded 1 MCP tools: project_guide</code>。</li><li>模型可以调用 <code class="inline">[Tool] project_guide(...)</code>，这说明 MCP 工具已经从 <code class="inline">.agent/mcp.json</code> 并入工具列表。</li><li>本讲将 <code class="inline">DEFAULT_MAX_ITERATIONS</code> 提到 10，让现场演示有足够轮次完成搜索、调用 MCP 工具与生成结论。</li><li>主线一句话：Rule 与 Skill 进入 prompt，MCP 进入 tools，三者接入位置不同。</li></ul>
           </div>
         </section>
 
@@ -257,7 +279,7 @@
             <h2>自己试一轮</h2>
             <p>使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。</p>
           </div>
-          <ol class="lesson-steps"><li>新建 <code class="inline">.agent/rules/code-style.md</code>，写入一条简单规范，再运行一次任务。</li><li>在 <code class="inline">.agent/skills/</code> 中放入一个最小 JSON 技能描述，观察加载输出。</li><li>在 <code class="inline">.agent/mcp.json</code> 中声明一个最小 tool 配置，观察 <code class="inline">all_tools</code> 的变化。</li></ol>
+          <ol class="lesson-steps"><li>打开 <code class="inline">.agent/rules/demo-style.md</code>，改一条输出要求，再运行一次任务。</li><li>打开 <code class="inline">.agent/skills/todo-prioritizer.json</code>，调整 TODO 排序规则，观察结论变化。</li><li>打开 <code class="inline">.agent/mcp.json</code>，将 <code class="inline">project_guide</code> 改名或禁用，观察 <code class="inline">[MCP]</code> 日志和工具列表变化。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -273,7 +295,7 @@
             <p class="eyebrow">Key Points</p>
             <h2>三个核心要点</h2>
           </div>
-          <ul class="lesson-list"><li>Skill 补充的是知识，Rule 管理的是行为，MCP 扩展的是工具边界，三层不应混淆。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li>能力外置之后，Agent 才开始呈现项目级系统的形态，而非单文件脚本。</li></ul>
+          <ul class="lesson-list"><li>最小 Rule 用来约束输出行为，最小 Skill 用来补充任务知识，最小 MCP 用来扩展可调用工具。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 是演示友好值，能避免复杂搜索在结论前过早中断。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -281,7 +303,7 @@
             <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
-          <ul class="lesson-list"><li>将全部约束堆入 Rule，会模糊职责边界，模型也更难稳定执行。</li><li>Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。</li><li>规则、技能、工具描述互相冲突时，模型表现会显著不稳定。</li></ul>
+          <ul class="lesson-list"><li>将全部约束堆入 Rule，会模糊职责边界，模型也更难稳定执行。</li><li>Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。</li><li>迭代次数调高会改善演示完整度，但也会增加 token 成本与执行时间。</li><li>规则、技能、工具描述互相冲突时，模型表现会显著不稳定。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

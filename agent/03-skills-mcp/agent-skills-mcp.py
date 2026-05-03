@@ -16,6 +16,7 @@ MEMORY_FILE = "agent_memory.md"
 RULES_DIR = ".agent/rules"
 SKILLS_DIR = ".agent/skills"
 MCP_CONFIG = ".agent/mcp.json"
+DEFAULT_MAX_ITERATIONS = 10
 
 current_plan = []
 plan_mode = False
@@ -192,6 +193,13 @@ def bash(command):
         return f"Error: {str(e)}"
 
 
+def project_guide(topic="Agent demo"):
+    return (
+        f"Project guide for {topic}: Rules and Skills are injected into the prompt; "
+        "MCP tools are appended to the tools list and become callable by name."
+    )
+
+
 def plan(task):
     global current_plan, plan_mode
     if plan_mode:
@@ -227,6 +235,7 @@ available_functions = {
     "glob": glob,
     "grep": grep,
     "bash": bash,
+    "project_guide": project_guide,
     "plan": plan,
 }
 
@@ -268,12 +277,18 @@ def load_rules():
     if not os.path.exists(RULES_DIR):
         return ""
     try:
-        for rule_file in Path(RULES_DIR).glob("*.md"):
+        for rule_file in sorted(Path(RULES_DIR).glob("*.md")):
             with open(rule_file, "r") as f:
                 rules.append(f"# {rule_file.stem}\n{f.read()}")
         return "\n\n".join(rules) if rules else ""
     except:
         return ""
+
+
+def count_rule_files():
+    if not os.path.exists(RULES_DIR):
+        return 0
+    return len(list(Path(RULES_DIR).glob("*.md")))
 
 
 def load_skills():
@@ -306,7 +321,7 @@ def load_mcp_tools():
         return []
 
 
-def run_agent_step(messages, tools, max_iterations=5):
+def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
     global current_plan, plan_mode
     for _ in range(max_iterations):
         response = client.chat.completions.create(
@@ -371,6 +386,7 @@ def run_agent_claudecode(task, use_plan=False):
     global plan_mode, current_plan
     print("[Init] Loading ClaudeCode features...")
     memory = load_memory()
+    rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
     mcp_tools = load_mcp_tools()
@@ -380,15 +396,17 @@ def run_agent_claudecode(task, use_plan=False):
     ]
     if rules:
         context_parts.append(f"\n# Rules\n{rules}")
-        print(f"[Rules] Loaded {len(rules.split('# ')) - 1} rule files")
+        print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
         context_parts.append(
             f"\n# Skills\n"
             + "\n".join([f"- {s['name']}: {s.get('description', '')}" for s in skills])
         )
-        print(f"[Skills] Loaded {len(skills)} skills")
+        skill_names = [skill["name"] for skill in skills]
+        print(f"[Skills] Loaded {len(skills)} skills: {', '.join(skill_names)}")
     if mcp_tools:
-        print(f"[MCP] Loaded {len(mcp_tools)} MCP tools")
+        tool_names = [tool["function"]["name"] for tool in mcp_tools]
+        print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
     if memory:
         context_parts.append(f"\n# Previous Context\n{memory}")
     messages = [{"role": "system", "content": "\n".join(context_parts)}]

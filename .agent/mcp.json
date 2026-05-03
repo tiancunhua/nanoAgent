@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "demo": {
+      "disabled": false,
+      "tools": [
+        {
+          "name": "project_guide",
+          "description": "Return a short explanation of how Rule, Skill, and MCP are wired into this demo project.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "The demo topic to explain."
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
