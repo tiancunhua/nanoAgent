@@ -3,7 +3,6 @@ import json
 import subprocess
 import sys
 import glob as glob_module
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 from openai import OpenAI
@@ -12,7 +11,6 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL")
 )
 
-MEMORY_FILE = "agent_memory.md"
 RULES_DIR = ".agent/rules"
 SKILLS_DIR = ".agent/skills"
 MCP_CONFIG = ".agent/mcp.json"
@@ -250,28 +248,6 @@ def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
         return {"_argument_error": f"Invalid JSON arguments: {error}"}
 
 
-def load_memory():
-    if not os.path.exists(MEMORY_FILE):
-        return ""
-    try:
-        with open(MEMORY_FILE, "r") as f:
-            content = f.read()
-            lines = content.split("\n")
-            return "\n".join(lines[-50:]) if len(lines) > 50 else content
-    except:
-        return ""
-
-
-def save_memory(task, result):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    entry = f"\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n"
-    try:
-        with open(MEMORY_FILE, "a") as f:
-            f.write(entry)
-    except:
-        pass
-
-
 def load_rules():
     rules = []
     if not os.path.exists(RULES_DIR):
@@ -385,7 +361,6 @@ def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
 def run_agent_claudecode(task, use_plan=False):
     global plan_mode, current_plan
     print("[Init] Loading ClaudeCode features...")
-    memory = load_memory()
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
@@ -407,8 +382,6 @@ def run_agent_claudecode(task, use_plan=False):
     if mcp_tools:
         tool_names = [tool["function"]["name"] for tool in mcp_tools]
         print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
-    if memory:
-        context_parts.append(f"\n# Previous Context\n{memory}")
     messages = [{"role": "system", "content": "\n".join(context_parts)}]
     if use_plan:
         plan_mode = True
@@ -429,7 +402,6 @@ def run_agent_claudecode(task, use_plan=False):
         messages.append({"role": "user", "content": task})
         final_result, messages = run_agent_step(messages, all_tools)
         print(f"\n{final_result}")
-    save_memory(task, final_result)
     return final_result
 
 
@@ -442,7 +414,7 @@ if __name__ == "__main__":
             "Usage: python agent/03-skills-mcp/agent-skills-mcp.py [--plan] 'your task'"
         )
         print("  --plan: Enable task planning")
-        print("\nFeatures: Memory, Rules, Skills, MCP, Plan tool")
+        print("\nFeatures: Rules, Skills, MCP, Plan tool")
         sys.exit(1)
     task = " ".join(sys.argv[1:])
     run_agent_claudecode(task, use_plan=use_plan)

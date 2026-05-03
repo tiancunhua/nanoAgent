@@ -223,20 +223,20 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="演示迭代上限",
-                start=15,
-                end=19,
+                start=14,
+                end=17,
                 focus="第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。",
             ),
             Snippet(
                 title="Rules / Skills / MCP 的加载",
-                start=275,
-                end=321,
+                start=251,
+                end=297,
                 focus="这段代码从项目目录读取 Rule、Skill 与 MCP 工具，是能力外置的入口。",
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=385,
-                end=409,
+                start=361,
+                end=384,
                 focus="关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 `all_tools`。",
             ),
         ],

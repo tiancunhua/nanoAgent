@@ -1,10 +1,10 @@
 # 从零开始理解 Agent（三）：OpenClaw / Claude Code 的 Rules、Skills 与 MCP 机制
 
-> **「从零开始理解 Agent」系列** —— 通过一个不到 300 行的开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。
+> **「从零开始理解 Agent」系列** —— 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的核心概念。
 >
 > - [第一篇：底层原理，只有 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
 > - [第二篇：记忆与规划](../02-memory/agent-memory.md) —— 182 行
-> - **第三篇：Rules、Skills 与 MCP**（本文）—— 265 行
+> - **第三篇：Rules、Skills 与 MCP**（本文）—— 能力外置
 > - [第四篇：SubAgent 子智能体](../04-subagent/agent-subagent.md) —— 192 行
 > - [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) —— 270 行
 > - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 169 行
@@ -14,7 +14,7 @@
 
 但在第二篇结尾，我们留下了三个未解之谜：工具是硬编码的，没有行为约束，规划是被动触发的。
 
-今天我们继续进化—— [agent-skills-mcp.py](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/03-skills-mcp/agent-skills-mcp.py)（265 行）。如果你用过 OpenClaw 或 Claude Code，你对 `CLAUDE.md` 规则文件、`.agent/skills/` 技能目录、MCP 工具配置一定不陌生——这些概念正是本篇要拆解的核心。agent-skills-mcp.py 在前两个版本的基础上，引入了四个新概念来回答那三个问题：
+今天我们继续进化—— [agent-skills-mcp.py](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/03-skills-mcp/agent-skills-mcp.py)。如果你用过 OpenClaw 或 Claude Code，你对 `CLAUDE.md` 规则文件、`.agent/skills/` 技能目录、MCP 工具配置一定不陌生——这些概念正是本篇要拆解的核心。为了让演示更聚焦，本篇刻意不加载 Memory：第二讲负责“记住过去”，第三讲只观察 Rules、Skills、MCP 如何外置能力。
 
 | 未解问题 | 解决方案 | 新概念 |
 |---------|---------|--------|
@@ -28,10 +28,10 @@
 
 先回顾整个进化路线：
 
-| 能力 | agent-essence.py (100行) | agent-memory.py (182行) | agent-skills-mcp.py (265行) |
+| 能力 | agent-essence.py (100行) | agent-memory.py (182行) | agent-skills-mcp.py |
 |------|---|---|---|
 | 基础工具 | bash / read / write | bash / read / write | read / write / **edit** / **glob** / **grep** / bash |
-| 记忆 | ❌ | ✅ 文件持久化 | ✅ 文件持久化 |
+| 记忆 | ❌ | ✅ 文件持久化 | ❌ 本讲移除，避免干扰 |
 | 规划 | ❌ | ✅ 外部函数，手动触发 | ✅ **规划本身是一个工具，Agent 自主触发** |
 | Rules | ❌ | ❌ | ✅ `.agent/rules/*.md` |
 | Skills | ❌ | ❌ | ✅ `.agent/skills/*.json` |
@@ -152,10 +152,10 @@ Rules 是**项目级的 system prompt 扩展**。它解决了一个关键问题�
 
 如果你用过 OpenClaw 或 Claude Code，你一定对 `CLAUDE.md` 不陌生——它就是 Rules 的工程化实现。在 Claude Code 中对应 `CLAUDE.md` 文件和 `.claude/rules/` 目录，在 OpenClaw 中也沿用了相同的约定。在 Cursor 中是 `.cursorrules`，在 GitHub Copilot 中是 `.github/copilot-instructions.md`。名字不同，本质一样——**用声明式文件定制 Agent 的行为边界**。
 
-回顾第二篇中 agent-memory.py 的 system prompt 构建方式，当时只有"基础指令 + 记忆"两层。现在变成了三层拼接：
+回顾第二篇中 agent-memory.py 的 system prompt 构建方式，当时重点是"基础指令 + 记忆"。第三讲为了避免历史上下文干扰演示结果，只保留能力外置相关内容，变成三层拼接：
 
 ```
-最终 system prompt = 基础指令 + Rules（项目规则） + Skills（技能描述） + Memory（历史记忆）
+最终 system prompt = 基础指令 + Rules（项目规则） + Skills（技能描述）
 ```
 
 ---
@@ -393,7 +393,6 @@ def run_agent_claudecode(task, use_plan=False):
     print("[Init] Loading ClaudeCode features...")
 
     # 1. 从文件系统加载所有外部配置
-    memory = load_memory()        # 历史记忆
     rules = load_rules()          # 行为规则
     skills = load_skills()        # 技能注册
     mcp_tools = load_mcp_tools()  # MCP 外部工具
@@ -401,11 +400,10 @@ def run_agent_claudecode(task, use_plan=False):
     # 2. 合并工具列表（基础工具 + MCP 工具）
     all_tools = base_tools + mcp_tools
 
-    # 3. 构建 system prompt（基础指令 + Rules + Skills + Memory）
+    # 3. 构建 system prompt（基础指令 + Rules + Skills）
     context_parts = ["You are a helpful assistant..."]
     if rules:   context_parts.append(f"\n# Rules\n{rules}")
     if skills:  context_parts.append(f"\n# Skills\n...")
-    if memory:  context_parts.append(f"\n# Previous Context\n{memory}")
 
     messages = [{"role": "system", "content": "\n".join(context_parts)}]
     # 4. 执行 ...
@@ -417,7 +415,6 @@ def run_agent_claudecode(task, use_plan=False):
 │  .agent/rules/*.md    → load_rules()    → system prompt │
 │  .agent/skills/*.json → load_skills()   → system prompt │
 │  .agent/mcp.json      → load_mcp_tools()→ tools 列表    │
-│  agent_memory.md      → load_memory()   → system prompt │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
                           │
@@ -428,7 +425,6 @@ def run_agent_claudecode(task, use_plan=False):
               │    基础指令           │
               │    + Rules           │
               │    + Skills          │
-              │    + Memory          │
               │                      │
               │  tools =             │
               │    base_tools (7个)   │
@@ -439,16 +435,16 @@ def run_agent_claudecode(task, use_plan=False):
 
 这个架构揭示了一个重要原则：**Agent 的能力由两个正交维度定义**——
 
-- **prompt 维度**（知道什么）：Rules、Skills、Memory 扩展的是 LLM 的认知
+- **prompt 维度**（知道什么）：Rules、Skills 扩展的是 LLM 的认知
 - **tools 维度**（能做什么）：MCP 扩展的是 LLM 的行动能力
 
 两者独立变化、自由组合，构成了 Agent 的完整能力空间。
 
 ---
 
-## 八、从 100 行到 265 行的认知地图
+## 八、从最小循环到能力外置的认知地图
 
-三篇文章读下来，我们在 265 行代码里看到了 Agent 的全部核心概念。用一张七层架构图来做最后的回顾：
+三篇文章读下来，我们已经看到了 Agent 从最小循环到能力外置的关键路径。用一张能力地图来做最后的回顾：
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -460,7 +456,7 @@ def run_agent_claudecode(task, use_plan=False):
 │  │  MCP         │  工具扩展层 ──── .agent/mcp.json     │
 │  │  Plan Tool   │  自主规划层 ──── plan() 作为工具      │
 │  ├──────────────┤  第二篇：agent-memory.py               │
-│  │  Memory      │  持久记忆层 ──── agent_memory.md     │
+│  │  Memory      │  持久记忆层（见第二篇，不进入本讲演示）│
 │  │  Planning    │  任务分解层 ──── create_plan()       │
 │  │  Multi-step  │  多步编排层 ──── 步骤间上下文共享     │
 │  ├──────────────┤  第一篇：agent-essence.py                    │
@@ -493,7 +489,7 @@ def run_agent_claudecode(task, use_plan=False):
 |------|------|---------|-----------|
 | agent-essence.py | 100 | 工具 + 循环 | Agent 的最小本质 |
 | agent-memory.py | 182 | 记忆 + 规划 | Agent 的时间维度——记住过去、规划未来 |
-| agent-skills-mcp.py | 265 | Rules + Skills + MCP | Agent 的空间维度——扩展知识与工具 |
+| agent-skills-mcp.py | 演示版 | Rules + Skills + MCP | Agent 的空间维度——扩展知识与工具 |
 
 如果你跟着这三篇文章走了下来，你已经理解了 Agent 最核心的架构要素。但还有一个问题我们没有触及：当任务复杂到一个 Agent 忙不过来时怎么办？能不能让 Agent 自己找帮手？
 
@@ -501,7 +497,7 @@ def run_agent_claudecode(task, use_plan=False):
 
 > *"The question is not what you look at, but what you see."* — Henry David Thoreau
 >
-> nanoAgent README 的这句引言，放在这里再合适不过。看过这 265 行代码之后，当你再打开 OpenClaw、Claude Code、Cursor 或任何 Agent 产品时，你看到的不再是"魔法"，而是——一个循环、几个工具、一段记忆、一份规则。
+> nanoAgent README 的这句引言，放在这里再合适不过。看过这段代码之后，当你再打开 OpenClaw、Claude Code、Cursor 或任何 Agent 产品时，你看到的不再是"魔法"，而是——一个循环、几个工具、一份规则、一个技能目录和一组外部工具配置。
 
 ---
 
