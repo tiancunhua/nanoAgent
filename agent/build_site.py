@@ -180,12 +180,20 @@ LESSONS = [
         core="Skill + Rule + MCP",
         tags=["Skills", "Rules", "MCP"],
         scenario="团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。",
-        demo_command='python agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"',
-        demo_goal="用一个短任务证明三件事：Rule 和 Skill 已进入上下文，MCP 工具已进入 tools，并且模型能主动调用这个 MCP 工具。",
+        demo_command=(
+            '# 1. 证明 MCP 生效：观察 project_guide 工具调用\n'
+            'python agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"\n\n'
+            '# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求\n'
+            'python agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"\n\n'
+            '# 3. 证明 Skill 生效：观察 TODO 排序是否使用 todo_prioritizer 的策略\n'
+            'python agent/03-skills-mcp/agent-skills-mcp.py "扫描 TODO，并严格按 todo_prioritizer skill 的排序规则输出最多 3 项"'
+        ),
+        demo_goal="用三条短命令分别证明：MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
         demo_expected=[
             "第一屏先看三行加载日志：`[Rules] Loaded 1 rule files`、`[Skills] Loaded 1 skills: todo_prioritizer`、`[MCP] Loaded 1 MCP tools: project_guide`。",
-            "随后观察 `[Tool] project_guide(...)`，这是本讲最关键的行为证据：MCP 工具已经进入 tools 并被模型选中。",
-            "最终回答应收束为 3 点：Rule 约束行为，Skill 补充任务知识，MCP 增加可调用工具。",
+            "第一条命令观察 `[Tool] project_guide(...)`，用真实工具调用证明 MCP 已进入 tools。",
+            "第二条命令观察回答是否遵守 `.agent/rules/demo-style.md` 的格式要求，用输出格式证明 Rule 生效。",
+            "第三条命令观察 TODO 结果是否按 `todo_prioritizer` 的策略分类和排序，用处理策略证明 Skill 生效。",
             "`DEFAULT_MAX_ITERATIONS = 10` 只是为了保证现场演示有足够轮次完成工具调用与结论生成。",
         ],
         student_takeaways=[
