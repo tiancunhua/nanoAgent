@@ -176,51 +176,56 @@ def run_team(task):
     team.disband()
 ```
 
-用一个具体例子来说明。假设输入 "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"：
+用一个具体例子来说明。假设输入一个固定的发布评审演示命令：
+
+```bash
+python3 -u agent/05-teams/agent-teams.py "固定 3 人发布评审团队演示：登录接口发布前评审。要求所有成员不要读写文件，只输出短清单；重点观察 [创建]、[广播]、最终审查、[解散]。"
+```
 
 ```
-[PM] 分析任务，组建团队...
 [团队] 3 人:
-  1. alice — backend developer → 用 FastAPI 创建 TODO 后端 API
-  2. bob — frontend developer → 创建 HTML 前端页面
-  3. carol — test engineer → 验证前后端能正常工作
+  1. alice — api developer → 登录接口交付摘要
+  2. bob — security reviewer → 安全风险与建议
+  3. chris — release reviewer → 发布验收标准
 
 ============================================================
   第 1 阶段: 招募团队
 ============================================================
-  [创建] alice (backend developer)
-  [创建] bob (frontend developer)
-  [创建] carol (test engineer)
+  [创建] alice (api developer)
+  [创建] bob (security reviewer)
+  [创建] chris (release reviewer)
 
 ============================================================
   第 2 阶段: 协作开发
 ============================================================
 
 ── [1/3] alice 开始工作 ──
-  [alice] write({"path": "app.py", ...})
-  [alice] → 已创建 app.py，包含 GET/POST/DELETE 三个接口...
-  [广播] alice → 全体: 我完成了任务。摘要: 已创建 app.py...
+  [alice] → 1. 登录接口已交付
+             2. 支持账号密码验证
+             3. 返回 Token 令牌
+  [广播] alice → 全体: 我完成了任务。摘要: 登录接口已交付...
 
 ── [2/3] bob 开始工作 ──
-  （bob 的 inbox 里有 alice 的广播，他知道后端接口长什么样）
-  [bob] write({"path": "index.html", ...})
-  [bob] → 已创建 index.html，调用了 alice 定义的 API 接口...
-  [广播] bob → 全体: 我完成了任务。摘要: 已创建 index.html...
+  （bob 的 inbox 里有 alice 的广播）
+  [bob] → 1. 密码必须加盐哈希存储
+           2. Token 需设置有效期
+  [广播] bob → 全体: 我完成了任务。摘要: 安全风险与建议...
 
-── [3/3] carol 开始工作 ──
-  （carol 的 inbox 里有 alice 和 bob 的广播）
-  [carol] read({"path": "app.py"})
-  [carol] read({"path": "index.html"})
-  [carol] bash({"command": "python -c 'import app; print(\"OK\")'"})
-  [carol] → 后端代码语法正确，前端页面已创建，接口调用地址匹配...
-  [广播] carol → 全体: 我完成了任务。摘要: 验证通过...
+── [3/3] chris 开始工作 ──
+  （chris 的 inbox 里有 alice 和 bob 的广播）
+  [chris] → 1. 登录接口可用
+             2. 密码加盐哈希
+             3. Token 安全有效期
+  [广播] chris → 全体: 我完成了任务。摘要: 发布验收标准...
 
 ============================================================
-  第 3 阶段: carol 做最终审查
+  第 3 阶段: chris 做最终审查
 ============================================================
-  （carol 被第二次调用 chat()，她还记得第一次测试的结果）
-  [carol] → 最终审查：后端 app.py 包含 3 个接口（GET/POST/DELETE），
-            前端 index.html 已正确引用后端地址，代码验证通过，可以交付。
+  （chris 被第二次调用 chat()，他还记得自己的验收标准和队友广播）
+  [chris] → 结论：不通过，需补充安全证据
+            依据：alice 交付摘要未证明哈希与有效期
+            风险：密码或 Token 安全缺口
+            下一步：补充实现证据后重新审查
 ```
 
 注意 **carol 被调用了两次 `chat()`** ：第一次做测试，第二次做审查。第二次时她还记得第一次做了什么——这就是"持久记忆"的价值。SubAgent 做不到这一点，因为每次调用都是一个全新的、失忆的函数。

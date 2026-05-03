@@ -363,12 +363,15 @@ LESSONS = [
         core="持久 Agent + 通信通道",
         tags=["Team", "Inbox", "Lifecycle"],
         scenario="希望团队里有一位“开发”和一位“审查”长期存在：每个新任务都跑同样的流程，开发完成后自动转给审查，审查的意见再反馈回开发。SubAgent 那种一次性角色已经不够用了。",
-        demo_command='python agent/05-teams/agent-teams.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
+        demo_command=(
+            'python3 -u agent/05-teams/agent-teams.py "固定 3 人发布评审团队演示：登录接口发布前评审。'
+            '要求所有成员不要读写文件，只输出短清单；重点观察 [创建]、[广播]、最终审查、[解散]。"'
+        ),
         demo_goal="将团队协作呈现为一种可落地的软件结构，而非抽象概念。",
         demo_expected=[
-            "启动时由 `plan_team()` 拆解出成员与分工。",
-            "每个 Agent 都保留自己的 `messages` 与记忆，不会执行一次就消失。",
-            "成员完成任务后通过 `broadcast()` 通知队友，由 reviewer 做最终检查。",
+            "启动后直接看到固定三人团队：`alice` 负责交付摘要，`bob` 负责安全审查，`chris` 负责发布验收。",
+            "每个成员完成后都会出现 `[广播]`，说明团队不是各说各话，而是通过 `inbox` 传递成果。",
+            "`chris` 会先输出验收标准，再在第 3 阶段基于团队广播做最终审查，体现持久记忆与 reviewer 复盘价值。",
         ],
         student_takeaways=[
             "理解 Team 相对 SubAgent 增加的是持久身份与通信。",
@@ -390,7 +393,7 @@ LESSONS = [
             "消息过多时会再次触发上下文压力。",
             "缺少 reviewer 时，难以体现协作带来的质量提升。",
         ],
-        workshop_prompt="可将多智能体团队类比为带 reviewer 的协作流水线，便于记忆。",
+        workshop_prompt="用发布前评审流水线演示：开发交付、安全审查、发布 reviewer 复盘，团队价值会更明显。",
         md_path=ROOT / "05-teams/agent-teams.md",
         code_path=ROOT / "05-teams/agent-teams.py",
         snippets=[

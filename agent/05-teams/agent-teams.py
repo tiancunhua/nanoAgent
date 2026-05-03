@@ -8,7 +8,7 @@ Teams 是真正的团队，需要三样东西:
   3. 通信通道 —— Agent 之间可以互相发消息，而不只是贴公告板
 
 用法:
-  python agent/05-teams/agent-teams.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"
+  python3 -u agent/05-teams/agent-teams.py "固定 3 人发布评审团队演示：登录接口发布前评审"
 """
 
 import os
@@ -252,6 +252,25 @@ class Team:
 
 def plan_team(task):
     """让 LLM 根据任务规划团队成员"""
+    if "固定 3 人发布评审团队" in task:
+        return [
+            {
+                "name": "alice",
+                "role": "api developer",
+                "task": "不要读写文件。只输出 3 行登录接口交付摘要，每行不超过 18 个字。",
+            },
+            {
+                "name": "bob",
+                "role": "security reviewer",
+                "task": "不要读写文件。只输出 2 行安全风险与建议，每行不超过 24 个字。",
+            },
+            {
+                "name": "chris",
+                "role": "release reviewer",
+                "task": "不要读写文件。先输出 3 行发布验收标准，每行不超过 18 个字，等待团队广播后用于最终审查。",
+            },
+        ]
+
     print(f"\n[PM] 分析任务，组建团队...")
     response = client.chat.completions.create(
         model=MODEL,
@@ -281,6 +300,7 @@ def run_team(task):
     3. 通信通道 —— Agent 之间通过 send()/broadcast() 传递信息
     """
     team = Team()
+    is_fixed_demo = "固定 3 人发布评审团队" in task
 
     # ---- 第 1 阶段：组建团队 ----
     members = plan_team(task)
@@ -322,9 +342,12 @@ def run_team(task):
     print(f"  第 3 阶段: {last['name']} 做最终审查")
     print(f"{'=' * 60}")
 
-    review = reviewer.chat(
-        "请根据你收到的所有团队成果，做一个最终的总结和审查。如有问题请指出。"
+    review_prompt = (
+        "请根据你收到的所有团队成果，用 4 行输出最终审查：结论、依据、风险、下一步。不要表格。"
+        if is_fixed_demo
+        else "请根据你收到的所有团队成果，做一个最终的总结和审查。如有问题请指出。"
     )
+    review = reviewer.chat(review_prompt)
     results["final_review"] = review
 
     # ---- 解散 ----
@@ -351,7 +374,7 @@ if __name__ == "__main__":
         print("Usage: python agent/05-teams/agent-teams.py 'your task'")
         print("\nExample:")
         print(
-            "  python agent/05-teams/agent-teams.py '创建一个 TODO 应用，包含 Python 后端和 HTML 前端'"
+            "  python3 -u agent/05-teams/agent-teams.py '固定 3 人发布评审团队演示：登录接口发布前评审'"
         )
         print()
         print("三大核心能力:")

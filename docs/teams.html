@@ -48,7 +48,7 @@
           <p>SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。</p>
           <div class="chip-row">
             <span class="chip">9 分钟</span>
-            <span class="chip">362 行代码</span>
+            <span class="chip">385 行代码</span>
             <span class="chip">持久 Agent + 通信通道</span>
           </div>
         </div>
@@ -271,8 +271,8 @@
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python agent/05-teams/agent-teams.py &quot;创建一个 TODO 应用，包含 Python 后端和 HTML 前端&quot;</code></pre>
-            <ul class="lesson-list"><li>启动时由 <code class="inline">plan_team()</code> 拆解出成员与分工。</li><li>每个 Agent 都保留自己的 <code class="inline">messages</code> 与记忆，不会执行一次就消失。</li><li>成员完成任务后通过 <code class="inline">broadcast()</code> 通知队友，由 reviewer 做最终检查。</li></ul>
+            <pre class="demo-command"><code>python3 -u agent/05-teams/agent-teams.py &quot;固定 3 人发布评审团队演示：登录接口发布前评审。要求所有成员不要读写文件，只输出短清单；重点观察 [创建]、[广播]、最终审查、[解散]。&quot;</code></pre>
+            <ul class="lesson-list"><li>启动后直接看到固定三人团队：<code class="inline">alice</code> 负责交付摘要，<code class="inline">bob</code> 负责安全审查，<code class="inline">chris</code> 负责发布验收。</li><li>每个成员完成后都会出现 <code class="inline">[广播]</code>，说明团队不是各说各话，而是通过 <code class="inline">inbox</code> 传递成果。</li><li><code class="inline">chris</code> 会先输出验收标准，再在第 3 阶段基于团队广播做最终审查，体现持久记忆与 reviewer 复盘价值。</li></ul>
           </div>
         </section>
 
@@ -280,7 +280,7 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>可将多智能体团队类比为带 reviewer 的协作流水线，便于记忆。</p>
+            <p>用发布前评审流水线演示：开发交付、安全审查、发布 reviewer 复盘，团队价值会更明显。</p>
           </div>
           <ol class="lesson-steps"><li>将 <code class="inline">plan_team()</code> 固定为两开发加一审查的三人团队。</li><li>在执行过程中手动插入一次 <code class="inline">send()</code>，对照点对点消息与广播的差异。</li><li>让 reviewer 再次执行 <code class="inline">chat()</code>，体会持久记忆如何支撑二次审查。</li></ol>
         </section>
