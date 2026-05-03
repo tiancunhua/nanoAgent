@@ -308,12 +308,17 @@ LESSONS = [
         core="独立上下文 + 角色委派",
         tags=["SubAgent", "Delegation", "Role Prompt"],
         scenario="一个项目同时要做后端、前端、还要写文档，主 Agent 一边在改 Python 一边在改 HTML，上下文越拉越长，最后什么都做不好。把后端的活交给一个专门写后端的子代理，主 Agent 才能集中做协调。",
-        demo_command='python agent/04-subagent/agent-subagent.py "创建一个 TODO 应用，包含 Python 后端和 HTML 前端"',
+        demo_command=(
+            'python agent/04-subagent/agent-subagent.py "不要直接完成任务。请调用 subagent 工具两次，两个子代理都不要读写文件：'
+            '1）role=Python API 设计师，task=为 TODO 应用设计 3 个后端接口，只返回接口清单；'
+            '2）role=前端交互设计师，task=为 TODO 应用设计 3 个界面交互，只返回交互清单。'
+            '最后主 Agent 用纯文本 4 行汇总，不要表格：后端交付、前端交付、为什么适合委派、主 Agent 没做什么。"'
+        ),
         demo_goal="委派并不神秘，本质就是把另一个 Agent 也封装成工具。",
         demo_expected=[
-            "主 Agent 调用 `subagent(...)`，传入明确的角色与任务。",
-            "子代理拥有独立的 `sub_messages`，不会复制主代理的全部上下文。",
-            "子代理返回结果摘要，而非完整的内部历史。",
+            "终端会连续出现两次 `[Tool] subagent(...)`，说明主 Agent 真的把任务委派出去了。",
+            "两段日志会分别显示 `[SubAgent:Python API 设计师]` 与 `[SubAgent:前端交互设计师]`，角色边界一眼可见。",
+            "最终回答只做 4 行汇总，不展开子代理内部历史，突出“主 Agent 负责协调，SubAgent 负责专门任务”。",
         ],
         student_takeaways=[
             "理解 SubAgent 的关键在于独立上下文，而非额外启动一个模型实例。",
@@ -335,7 +340,7 @@ LESSONS = [
             "允许无限递归委派，成本与复杂度都会失控。",
             "子代理角色过于宽泛时，它只是换了名字的主代理。",
         ],
-        workshop_prompt="使用一个前后端双角色案例进行演示，委派的价值会立即显现。",
+        workshop_prompt="使用 API 设计与前端交互两个轻量角色演示，避免文件生成噪音，让委派过程更清楚。",
         md_path=ROOT / "04-subagent/agent-subagent.md",
         code_path=ROOT / "04-subagent/agent-subagent.py",
         snippets=[

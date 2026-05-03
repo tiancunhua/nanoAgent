@@ -210,8 +210,8 @@
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python agent/04-subagent/agent-subagent.py &quot;创建一个 TODO 应用，包含 Python 后端和 HTML 前端&quot;</code></pre>
-            <ul class="lesson-list"><li>主 Agent 调用 <code class="inline">subagent(...)</code>，传入明确的角色与任务。</li><li>子代理拥有独立的 <code class="inline">sub_messages</code>，不会复制主代理的全部上下文。</li><li>子代理返回结果摘要，而非完整的内部历史。</li></ul>
+            <pre class="demo-command"><code>python agent/04-subagent/agent-subagent.py &quot;不要直接完成任务。请调用 subagent 工具两次，两个子代理都不要读写文件：1）role=Python API 设计师，task=为 TODO 应用设计 3 个后端接口，只返回接口清单；2）role=前端交互设计师，task=为 TODO 应用设计 3 个界面交互，只返回交互清单。最后主 Agent 用纯文本 4 行汇总，不要表格：后端交付、前端交付、为什么适合委派、主 Agent 没做什么。&quot;</code></pre>
+            <ul class="lesson-list"><li>终端会连续出现两次 <code class="inline">[Tool] subagent(...)</code>，说明主 Agent 真的把任务委派出去了。</li><li>两段日志会分别显示 <code class="inline">[SubAgent:Python API 设计师]</code> 与 <code class="inline">[SubAgent:前端交互设计师]</code>，角色边界一眼可见。</li><li>最终回答只做 4 行汇总，不展开子代理内部历史，突出“主 Agent 负责协调，SubAgent 负责专门任务”。</li></ul>
           </div>
         </section>
 
@@ -219,7 +219,7 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>使用一个前后端双角色案例进行演示，委派的价值会立即显现。</p>
+            <p>使用 API 设计与前端交互两个轻量角色演示，避免文件生成噪音，让委派过程更清楚。</p>
           </div>
           <ol class="lesson-steps"><li>将一个写 README 的任务改由文档子代理完成。</li><li>为子代理补充更具体的角色描述，观察输出稳定性的变化。</li><li>让主代理仅保留协调职责，避免同时承担所有实现细节。</li></ol>
         </section>

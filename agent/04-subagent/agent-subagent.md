@@ -237,39 +237,37 @@ sub_tools = [t for t in tools if t["function"]["name"] != "subagent"]
 假设用户输入：
 
 ```bash
-python agent/04-subagent/agent-subagent.py "创建一个简单的 TODO 应用，包含 Python 后端和 HTML 前端"
+python agent/04-subagent/agent-subagent.py "不要直接完成任务。请调用 subagent 工具两次，两个子代理都不要读写文件：1）role=Python API 设计师，task=为 TODO 应用设计 3 个后端接口，只返回接口清单；2）role=前端交互设计师，task=为 TODO 应用设计 3 个界面交互，只返回交互清单。最后主 Agent 用纯文本 4 行汇总，不要表格：后端交付、前端交付、为什么适合委派、主 Agent 没做什么。"
 ```
 
 终端输出大致如下：
 
 ```
-[Tool] subagent({"role": "Python backend developer", "task": "创建一个 FastAPI ..."})
+[Tool] subagent({"role": "Python API 设计师", "task": "为 TODO 应用设计 3 个后端接口..."})
 
 ==================================================
-[SubAgent:Python backend developer] 开始: 创建一个 FastAPI 后端...
+[SubAgent:Python API 设计师] 开始: 为 TODO 应用设计 3 个后端接口...
 ==================================================
-  [SubAgent:Python backend developer] write({"path": "app.py", ...})
-  [SubAgent:Python backend developer] bash({"command": "pip install fastapi"})
-[SubAgent:Python backend developer] 完成
+[SubAgent:Python API 设计师] 完成
 
-[Tool] subagent({"role": "frontend developer", "task": "创建一个 HTML 前端..."})
+[Tool] subagent({"role": "前端交互设计师", "task": "为 TODO 应用设计 3 个界面交互..."})
 
 ==================================================
-[SubAgent:frontend developer] 开始: 创建一个 HTML 前端...
+[SubAgent:前端交互设计师] 开始: 为 TODO 应用设计 3 个界面交互...
 ==================================================
-  [SubAgent:frontend developer] write({"path": "index.html", ...})
-[SubAgent:frontend developer] 完成
+[SubAgent:前端交互设计师] 完成
 
-已完成 TODO 应用的创建：
-- app.py: FastAPI 后端，包含 GET/POST/DELETE 接口
-- index.html: 前端页面，包含添加和删除功能
+后端交付：3 个 API 接口清单。
+前端交付：3 个交互流程清单。
+为什么适合委派：后端接口与前端交互是不同专业视角。
+主 Agent 没做什么：没有直接设计细节，只负责分派和汇总。
 ```
 
 注意两个关键现象：
 
-**主 Agent 自己一行代码都没写。** 它只做了两件事：调用 subagent 委派后端任务，再调用 subagent 委派前端任务，最后汇总结果。
+**主 Agent 不直接完成专业细节。** 它只做了两件事：调用 subagent 委派 API 设计任务，再调用 subagent 委派前端交互任务，最后汇总结果。
 
-**两个 SubAgent 各管各的。** 后端 SubAgent 在写 app.py 时，前端 SubAgent 还不存在。前端 SubAgent 启动时，有自己全新的上下文，不会被后端的细节干扰。
+**两个 SubAgent 各管各的。** API 子代理只看到自己的接口设计任务，前端子代理只看到自己的交互设计任务。它们不会共享同一个 `messages`，所以不会把两个专业视角搅在一起。
 
 ---
 
