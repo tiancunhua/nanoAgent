@@ -280,6 +280,19 @@ def load_skills():
         return []
 
 
+def format_skill_for_prompt(skill):
+    lines = [f"- {skill['name']}: {skill.get('description', '')}"]
+    when_to_use = skill.get("when_to_use")
+    if when_to_use:
+        lines.append(f"  When to use: {when_to_use}")
+    steps = skill.get("steps", [])
+    if steps:
+        lines.append("  Steps:")
+        for step in steps:
+            lines.append(f"  - {step}")
+    return "\n".join(lines)
+
+
 def load_mcp_tools():
     if not os.path.exists(MCP_CONFIG):
         return []
@@ -374,8 +387,7 @@ def run_agent_claudecode(task, use_plan=False):
         print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
         context_parts.append(
-            f"\n# Skills\n"
-            + "\n".join([f"- {s['name']}: {s.get('description', '')}" for s in skills])
+            f"\n# Skills\n" + "\n".join(format_skill_for_prompt(skill) for skill in skills)
         )
         skill_names = [skill["name"] for skill in skills]
         print(f"[Skills] Loaded {len(skills)} skills: {', '.join(skill_names)}")

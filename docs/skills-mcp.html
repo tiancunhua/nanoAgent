@@ -48,7 +48,7 @@
           <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">420 行代码</span>
+            <span class="chip">432 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -168,9 +168,9 @@
               <div class="code-card-head">
                 <div>
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
-                  <h3>这段代码从项目目录读取 Rule、Skill 与 MCP 工具，是能力外置的入口。</h3>
+                  <h3>这段代码从项目目录读取 Rule、Skill 与 MCP 工具，并将 Skill 的使用时机和步骤整理进 prompt。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L251-L297">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L251-L310">看 GitHub 行号</a>
               </div>
               <pre class="code-block"><code class="language-python"> 251 def load_rules():
  252     rules = []
@@ -204,21 +204,34 @@
  280         return []
  281
  282
- 283 def load_mcp_tools():
- 284     if not os.path.exists(MCP_CONFIG):
- 285         return []
- 286     try:
- 287         with open(MCP_CONFIG, &quot;r&quot;) as f:
- 288             config = json.load(f)
- 289             mcp_tools = []
- 290             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
- 291                 if server_config.get(&quot;disabled&quot;, False):
- 292                     continue
- 293                 for tool in server_config.get(&quot;tools&quot;, []):
- 294                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
- 295             return mcp_tools
- 296     except:
- 297         return []</code></pre>
+ 283 def format_skill_for_prompt(skill):
+ 284     lines = [f&quot;- {skill[&#x27;name&#x27;]}: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;]
+ 285     when_to_use = skill.get(&quot;when_to_use&quot;)
+ 286     if when_to_use:
+ 287         lines.append(f&quot;  When to use: {when_to_use}&quot;)
+ 288     steps = skill.get(&quot;steps&quot;, [])
+ 289     if steps:
+ 290         lines.append(&quot;  Steps:&quot;)
+ 291         for step in steps:
+ 292             lines.append(f&quot;  - {step}&quot;)
+ 293     return &quot;\n&quot;.join(lines)
+ 294
+ 295
+ 296 def load_mcp_tools():
+ 297     if not os.path.exists(MCP_CONFIG):
+ 298         return []
+ 299     try:
+ 300         with open(MCP_CONFIG, &quot;r&quot;) as f:
+ 301             config = json.load(f)
+ 302             mcp_tools = []
+ 303             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
+ 304                 if server_config.get(&quot;disabled&quot;, False):
+ 305                     continue
+ 306                 for tool in server_config.get(&quot;tools&quot;, []):
+ 307                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
+ 308             return mcp_tools
+ 309     except:
+ 310         return []</code></pre>
             </article>
 
             <article class="code-card">
@@ -227,32 +240,31 @@
                   <p class="lesson-index">进入上下文与工具列表的方式</p>
                   <h3>关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L361-L384">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L374-L396">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 361 def run_agent_claudecode(task, use_plan=False):
- 362     global plan_mode, current_plan
- 363     print(&quot;[Init] Loading ClaudeCode features...&quot;)
- 364     rule_count = count_rule_files()
- 365     rules = load_rules()
- 366     skills = load_skills()
- 367     mcp_tools = load_mcp_tools()
- 368     all_tools = base_tools + mcp_tools
- 369     context_parts = [
- 370         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 371     ]
- 372     if rules:
- 373         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 374         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
- 375     if skills:
- 376         context_parts.append(
- 377             f&quot;\n# Skills\n&quot;
- 378             + &quot;\n&quot;.join([f&quot;- {s[&#x27;name&#x27;]}: {s.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot; for s in skills])
- 379         )
- 380         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 381         print(f&quot;[Skills] Loaded {len(skills)} skills: {&#x27;, &#x27;.join(skill_names)}&quot;)
- 382     if mcp_tools:
- 383         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
- 384         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
+              <pre class="code-block"><code class="language-python"> 374 def run_agent_claudecode(task, use_plan=False):
+ 375     global plan_mode, current_plan
+ 376     print(&quot;[Init] Loading ClaudeCode features...&quot;)
+ 377     rule_count = count_rule_files()
+ 378     rules = load_rules()
+ 379     skills = load_skills()
+ 380     mcp_tools = load_mcp_tools()
+ 381     all_tools = base_tools + mcp_tools
+ 382     context_parts = [
+ 383         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 384     ]
+ 385     if rules:
+ 386         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 387         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 388     if skills:
+ 389         context_parts.append(
+ 390             f&quot;\n# Skills\n&quot; + &quot;\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
+ 391         )
+ 392         skill_names = [skill[&quot;name&quot;] for skill in skills]
+ 393         print(f&quot;[Skills] Loaded {len(skills)} skills: {&#x27;, &#x27;.join(skill_names)}&quot;)
+ 394     if mcp_tools:
+ 395         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 396         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
             </article>
 
           </div>
@@ -273,14 +285,14 @@
                 <div>
                   <p class="lesson-index">Rule 配置</p>
                   <h3>.agent/rules/demo-style.md</h3>
-                  <p>约束回答格式和 TODO 输出边界。</p>
+                  <p>约束回答格式和修复优先级边界。</p>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/rules/demo-style.md">看源文件</a>
               </div>
               <pre class="code-block"><code># Demo Style
 
-- 回答开头先说明本轮加载了 Rule、Skill、MCP 三类外置能力。
-- TODO 修复顺序最多保留 3 项，优先级从安全风险、阻塞运行、核心功能到文档示例。
+- 回答开头只说明本轮加载了 Rule、Skill、MCP 三类外置能力，不展开工具名。
+- 修复优先级最多保留 3 项，顺序从安全风险、阻塞运行、核心功能到文档示例。
 - 如果调用了 MCP 工具，在结论里说明它返回了什么。</code></pre>
             </article>
 
@@ -289,18 +301,18 @@
                 <div>
                   <p class="lesson-index">Skill 配置</p>
                   <h3>.agent/skills/todo-prioritizer.json</h3>
-                  <p>补充 TODO 排序知识和执行步骤。</p>
+                  <p>补充修复项排序知识和执行步骤。</p>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/skills/todo-prioritizer.json">看源文件</a>
               </div>
               <pre class="code-block"><code>{
   &quot;name&quot;: &quot;todo_prioritizer&quot;,
-  &quot;description&quot;: &quot;给 TODO 修复顺序排序：先处理安全风险和阻塞运行的问题，再处理核心功能，最后处理文档或示例中的 TODO。&quot;,
-  &quot;when_to_use&quot;: &quot;当任务要求扫描 TODO、整理修复顺序或给出下一步行动建议时使用。&quot;,
+  &quot;description&quot;: &quot;给候选修复项排序：安全风险第一，阻塞运行第二，核心功能第三，文档或示例最后；如果只允许输出 3 项，舍弃文档或示例项，并保持输出简洁。&quot;,
+  &quot;when_to_use&quot;: &quot;当任务要求整理修复顺序、挑选优先级或从多个候选问题中选出下一步行动时使用。&quot;,
   &quot;steps&quot;: [
-    &quot;先区分真实代码 TODO 与文章示例 TODO。&quot;,
-    &quot;优先处理会影响运行、安全或数据正确性的 TODO。&quot;,
-    &quot;输出不超过 3 个优先级，并说明排序理由。&quot;
+    &quot;先识别每个候选项属于安全风险、阻塞运行、核心功能、文档示例中的哪一类。&quot;,
+    &quot;按安全风险、阻塞运行、核心功能、文档示例的顺序排序。&quot;,
+    &quot;如果题目要求最多 3 项，只输出前三项；每项用“优先级 - 类别 - 事项”的短格式，最后用一句话说明被舍弃项。&quot;
   ]
 }</code></pre>
             </article>
@@ -348,9 +360,9 @@ python agent/03-skills-mcp/agent-skills-mcp.py &quot;请先确认本轮加载了
 # 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求
 python agent/03-skills-mcp/agent-skills-mcp.py &quot;请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule&quot;
 
-# 3. 证明 Skill 生效：观察 TODO 排序是否使用 todo_prioritizer 的策略
-python agent/03-skills-mcp/agent-skills-mcp.py &quot;扫描 TODO，并严格按 todo_prioritizer skill 的排序规则输出最多 3 项&quot;</code></pre>
-            <ul class="lesson-list"><li>第一屏先看三行加载日志：<code class="inline">[Rules] Loaded 1 rule files</code>、<code class="inline">[Skills] Loaded 1 skills: todo_prioritizer</code>、<code class="inline">[MCP] Loaded 1 MCP tools: project_guide</code>。</li><li>第一条命令观察 <code class="inline">[Tool] project_guide(...)</code>，用真实工具调用证明 MCP 已进入 tools。</li><li>第二条命令观察回答是否遵守 <code class="inline">.agent/rules/demo-style.md</code> 的格式要求，用输出格式证明 Rule 生效。</li><li>第三条命令观察 TODO 结果是否按 <code class="inline">todo_prioritizer</code> 的策略分类和排序，用处理策略证明 Skill 生效。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 只是为了保证现场演示有足够轮次完成工具调用与结论生成。</li></ul>
+# 3. 证明 Skill 生效：给一个小清单，观察是否按风险优先排序
+python agent/03-skills-mcp/agent-skills-mcp.py &quot;请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。&quot;</code></pre>
+            <ul class="lesson-list"><li>第一屏先看三行加载日志：<code class="inline">[Rules] Loaded 1 rule files</code>、<code class="inline">[Skills] Loaded 1 skills: todo_prioritizer</code>、<code class="inline">[MCP] Loaded 1 MCP tools: project_guide</code>。</li><li>第一条命令观察 <code class="inline">[Tool] project_guide(...)</code>，用真实工具调用证明 MCP 已进入 tools。</li><li>第二条命令观察回答是否遵守 <code class="inline">.agent/rules/demo-style.md</code> 的格式要求，用输出格式证明 Rule 生效。</li><li>第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 只是为了保证现场演示有足够轮次完成工具调用与结论生成。</li></ul>
           </div>
         </section>
 
@@ -360,7 +372,7 @@ python agent/03-skills-mcp/agent-skills-mcp.py &quot;扫描 TODO，并严格按 
             <h2>自己试一轮</h2>
             <p>使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。</p>
           </div>
-          <ol class="lesson-steps"><li>打开 <code class="inline">.agent/rules/demo-style.md</code>，改一条输出要求，再运行一次任务。</li><li>打开 <code class="inline">.agent/skills/todo-prioritizer.json</code>，调整 TODO 排序规则，观察结论变化。</li><li>打开 <code class="inline">.agent/mcp.json</code>，将 <code class="inline">project_guide</code> 改名或禁用，观察 <code class="inline">[MCP]</code> 日志和工具列表变化。</li></ol>
+          <ol class="lesson-steps"><li>打开 <code class="inline">.agent/rules/demo-style.md</code>，改一条输出要求，再运行一次任务。</li><li>打开 <code class="inline">.agent/skills/todo-prioritizer.json</code>，调整排序规则，再运行同一个 4 项清单观察结果变化。</li><li>打开 <code class="inline">.agent/mcp.json</code>，将 <code class="inline">project_guide</code> 改名或禁用，观察 <code class="inline">[MCP]</code> 日志和工具列表变化。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">

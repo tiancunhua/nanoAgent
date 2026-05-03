@@ -185,15 +185,15 @@ LESSONS = [
             'python agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"\n\n'
             '# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求\n'
             'python agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"\n\n'
-            '# 3. 证明 Skill 生效：观察 TODO 排序是否使用 todo_prioritizer 的策略\n'
-            'python agent/03-skills-mcp/agent-skills-mcp.py "扫描 TODO，并严格按 todo_prioritizer skill 的排序规则输出最多 3 项"'
+            '# 3. 证明 Skill 生效：给一个小清单，观察是否按风险优先排序\n'
+            'python agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"'
         ),
         demo_goal="用三条短命令分别证明：MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
         demo_expected=[
             "第一屏先看三行加载日志：`[Rules] Loaded 1 rule files`、`[Skills] Loaded 1 skills: todo_prioritizer`、`[MCP] Loaded 1 MCP tools: project_guide`。",
             "第一条命令观察 `[Tool] project_guide(...)`，用真实工具调用证明 MCP 已进入 tools。",
             "第二条命令观察回答是否遵守 `.agent/rules/demo-style.md` 的格式要求，用输出格式证明 Rule 生效。",
-            "第三条命令观察 TODO 结果是否按 `todo_prioritizer` 的策略分类和排序，用处理策略证明 Skill 生效。",
+            "第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。",
             "`DEFAULT_MAX_ITERATIONS = 10` 只是为了保证现场演示有足够轮次完成工具调用与结论生成。",
         ],
         student_takeaways=[
@@ -203,7 +203,7 @@ LESSONS = [
         ],
         practice_steps=[
             "打开 `.agent/rules/demo-style.md`，改一条输出要求，再运行一次任务。",
-            "打开 `.agent/skills/todo-prioritizer.json`，调整 TODO 排序规则，观察结论变化。",
+            "打开 `.agent/skills/todo-prioritizer.json`，调整排序规则，再运行同一个 4 项清单观察结果变化。",
             "打开 `.agent/mcp.json`，将 `project_guide` 改名或禁用，观察 `[MCP]` 日志和工具列表变化。",
         ],
         talk_points=[
@@ -230,13 +230,13 @@ LESSONS = [
             Snippet(
                 title="Rules / Skills / MCP 的加载",
                 start=251,
-                end=297,
-                focus="这段代码从项目目录读取 Rule、Skill 与 MCP 工具，是能力外置的入口。",
+                end=310,
+                focus="这段代码从项目目录读取 Rule、Skill 与 MCP 工具，并将 Skill 的使用时机和步骤整理进 prompt。",
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=361,
-                end=384,
+                start=374,
+                end=396,
                 focus="关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 `all_tools`。",
             ),
         ],
@@ -926,13 +926,13 @@ def build_demo_config_showcase(lesson: Lesson) -> str:
         (
             "Rule 配置",
             ".agent/rules/demo-style.md",
-            "约束回答格式和 TODO 输出边界。",
+            "约束回答格式和修复优先级边界。",
             REPO_ROOT / ".agent/rules/demo-style.md",
         ),
         (
             "Skill 配置",
             ".agent/skills/todo-prioritizer.json",
-            "补充 TODO 排序知识和执行步骤。",
+            "补充修复项排序知识和执行步骤。",
             REPO_ROOT / ".agent/skills/todo-prioritizer.json",
         ),
         (
