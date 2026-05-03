@@ -266,6 +266,82 @@
             <h2>再看它怎么跑</h2>
             <p>用三条短命令分别证明：MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。</p>
           </div>
+          <div class="config-showcase">
+            <p class="lesson-index">先看具体配置</p>
+            <div class="config-grid">
+
+            <article class="config-panel">
+              <div class="config-panel-head">
+                <div>
+                  <p class="lesson-index">Rule 配置</p>
+                  <h3>.agent/rules/demo-style.md</h3>
+                  <p>约束回答格式和 TODO 输出边界。</p>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/rules/demo-style.md">看源文件</a>
+              </div>
+              <pre class="code-block"><code># Demo Style
+
+- 回答开头先说明本轮加载了 Rule、Skill、MCP 三类外置能力。
+- TODO 修复顺序最多保留 3 项，优先级从安全风险、阻塞运行、核心功能到文档示例。
+- 如果调用了 MCP 工具，在结论里说明它返回了什么。</code></pre>
+            </article>
+
+            <article class="config-panel">
+              <div class="config-panel-head">
+                <div>
+                  <p class="lesson-index">Skill 配置</p>
+                  <h3>.agent/skills/todo-prioritizer.json</h3>
+                  <p>补充 TODO 排序知识和执行步骤。</p>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/skills/todo-prioritizer.json">看源文件</a>
+              </div>
+              <pre class="code-block"><code>{
+  &quot;name&quot;: &quot;todo_prioritizer&quot;,
+  &quot;description&quot;: &quot;给 TODO 修复顺序排序：先处理安全风险和阻塞运行的问题，再处理核心功能，最后处理文档或示例中的 TODO。&quot;,
+  &quot;when_to_use&quot;: &quot;当任务要求扫描 TODO、整理修复顺序或给出下一步行动建议时使用。&quot;,
+  &quot;steps&quot;: [
+    &quot;先区分真实代码 TODO 与文章示例 TODO。&quot;,
+    &quot;优先处理会影响运行、安全或数据正确性的 TODO。&quot;,
+    &quot;输出不超过 3 个优先级，并说明排序理由。&quot;
+  ]
+}</code></pre>
+            </article>
+
+            <article class="config-panel">
+              <div class="config-panel-head">
+                <div>
+                  <p class="lesson-index">MCP 配置</p>
+                  <h3>.agent/mcp.json</h3>
+                  <p>把 project_guide 追加到工具列表。</p>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/mcp.json">看源文件</a>
+              </div>
+              <pre class="code-block"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;demo&quot;: {
+      &quot;disabled&quot;: false,
+      &quot;tools&quot;: [
+        {
+          &quot;name&quot;: &quot;project_guide&quot;,
+          &quot;description&quot;: &quot;Return a short explanation of how Rule, Skill, and MCP are wired into this demo project.&quot;,
+          &quot;parameters&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+              &quot;topic&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;description&quot;: &quot;The demo topic to explain.&quot;
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}</code></pre>
+            </article>
+
+            </div>
+          </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code># 1. 证明 MCP 生效：观察 project_guide 工具调用

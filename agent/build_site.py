@@ -918,6 +918,58 @@ def build_essence_figure() -> str:
     """
 
 
+def build_demo_config_showcase(lesson: Lesson) -> str:
+    if lesson.slug != "skills-mcp":
+        return ""
+
+    configs = [
+        (
+            "Rule 配置",
+            ".agent/rules/demo-style.md",
+            "约束回答格式和 TODO 输出边界。",
+            REPO_ROOT / ".agent/rules/demo-style.md",
+        ),
+        (
+            "Skill 配置",
+            ".agent/skills/todo-prioritizer.json",
+            "补充 TODO 排序知识和执行步骤。",
+            REPO_ROOT / ".agent/skills/todo-prioritizer.json",
+        ),
+        (
+            "MCP 配置",
+            ".agent/mcp.json",
+            "把 project_guide 追加到工具列表。",
+            REPO_ROOT / ".agent/mcp.json",
+        ),
+    ]
+
+    panels = []
+    for title, label, note, path in configs:
+        panels.append(
+            f"""
+            <article class="config-panel">
+              <div class="config-panel-head">
+                <div>
+                  <p class="lesson-index">{html.escape(title)}</p>
+                  <h3>{html.escape(label)}</h3>
+                  <p>{html.escape(note)}</p>
+                </div>
+                <a class="source-link" href="{github_blob_url(path)}">看源文件</a>
+              </div>
+              <pre class="code-block"><code>{html.escape(path.read_text(encoding="utf-8").strip())}</code></pre>
+            </article>
+            """
+        )
+
+    return f"""
+          <div class="config-showcase">
+            <p class="lesson-index">先看具体配置</p>
+            <div class="config-grid">
+              {"".join(panels)}
+            </div>
+          </div>"""
+
+
 def build_home_page() -> str:
     lesson_cards = []
     for lesson in LESSONS:
@@ -1130,6 +1182,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         else '<a class="pager-link" href="summary.html"><span>下一篇</span><strong>总结篇 · 从七讲到延伸阅读</strong></a>'
     )
     visual_html = build_essence_figure() if lesson.slug == "essence" else ""
+    demo_config_html = build_demo_config_showcase(lesson)
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -1223,7 +1276,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
             <p>{format_inline(lesson.demo_goal)}</p>
-          </div>
+          </div>{demo_config_html}
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code>{html.escape(lesson.demo_command)}</code></pre>

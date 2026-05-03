@@ -526,6 +526,42 @@ button:focus-visible {
   border: 1px solid rgba(178, 76, 42, 0.14);
 }
 
+.config-showcase {
+  margin-bottom: 18px;
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.config-panel {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(178, 76, 42, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 248, 236, 0.52);
+}
+
+.config-panel h3,
+.config-panel p {
+  margin: 0;
+}
+
+.config-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.config-panel .code-block {
+  max-height: 340px;
+  margin: 0;
+}
+
 .demo-command,
 .code-block {
   overflow-x: auto;
@@ -637,6 +673,10 @@ code.inline {
 
   .article-sidebar {
     position: static;
+  }
+
+  .config-grid {
+    grid-template-columns: 1fr;
   }
 
   .article-main {
