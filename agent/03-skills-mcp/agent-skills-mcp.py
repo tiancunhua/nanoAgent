@@ -176,10 +176,10 @@ def bash(command):
         return f"Error: {str(e)}"
 
 
-def project_guide(topic="Agent demo"):
+def demo_release_policy(topic="发布演示"):
     return (
-        f"Project guide for {topic}: Rules and Skills are injected into the prompt; "
-        "MCP tools are appended to the tools list and become callable by name."
+        f"{topic} 的 MCP 发布策略：本次只做演示，不修改文件；"
+        "发布前先保数据安全，再保应用能启动，最后处理界面文案。"
     )
 
 
@@ -190,7 +190,7 @@ available_functions = {
     "glob": glob,
     "grep": grep,
     "bash": bash,
-    "project_guide": project_guide,
+    "demo_release_policy": demo_release_policy,
 }
 
 

@@ -50,14 +50,15 @@ def load_rules():
         return ""
 ```
 
-Rule 是项目级约束。演示里的最小 Rule 是：
+Rule 是项目级约束。演示里的最小 Rule 很短，只管输出形态：
 
 ```markdown
 # Demo Style
 
-- 回答开头只说明本轮加载了 Rule、Skill、MCP 三类外置能力，不展开工具名。
-- 修复优先级最多保留 3 项，顺序从安全风险、阻塞运行、核心功能到文档示例。
-- 如果调用了 MCP 工具，在结论里说明它返回了什么。
+- 最终回答固定输出 3 行，行首分别是：`Rule证据：`、`Skill证据：`、`MCP证据：`。
+- 不输出表格，不展开长解释，每行控制在 60 个字以内。
+- `Skill证据：` 这一行必须使用 `排序：X > Y > Z` 的形式。
+- 如果调用了 MCP 工具，`MCP证据：` 这一行要引用工具返回的“只做演示，不修改文件”。
 ```
 
 它不是工具，模型不会“调用” Rule。它的作用方式更直接：启动时拼进 system prompt，让模型从一开始就看到这些约束。
@@ -84,26 +85,25 @@ def load_skills():
         return []
 ```
 
-Skill 更像“做事手册”。演示里的 `todo_prioritizer` 不是让模型多一个函数，而是告诉模型：遇到候选修复项时，应该如何排序。
+Skill 更像“做事手册”。演示里的 `release_triage` 不是让模型多一个函数，而是告诉模型：发布前有多个问题时，应该先修哪个、后修哪个。
 
 现在 Skill 使用 Markdown 格式：
 
 ```markdown
 ---
-name: todo_prioritizer
-description: 给候选修复项排序：安全风险第一，阻塞运行第二，核心功能第三，文档或示例最后。
-when_to_use: 当任务要求整理修复顺序、挑选优先级或从多个候选问题中选出下一步行动时使用。
-triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先修
+name: release_triage
+description: 给发布前问题排序：数据安全第一，无法启动第二，界面文案最后。
+when_to_use: 当任务要求整理发布前问题、判断修复顺序或输出发布检查优先级时使用。
+triggers: release_triage, 发布前检查, 发布排序, 修复顺序, 优先级
 ---
 
-# Todo Prioritizer
+# Release Triage
 
 ## Priority Order
 
-1. 安全风险
-2. 阻塞运行
-3. 核心功能
-4. 文档或示例
+1. 数据安全：删除、权限、泄露、不可恢复。
+2. 无法启动：启动报错、构建失败、接口 500。
+3. 界面文案：颜色、按钮、说明文字、README。
 ```
 
 Markdown 文件会被解析成三部分：frontmatter 里的名称和说明、正文里的操作步骤、以及文件路径。
@@ -183,7 +183,7 @@ Rule 和 Skill 进入 prompt，MCP 工具进入 tools 列表。这个差异很�
 all_tools = base_tools + mcp_tools
 ```
 
-对模型来说，MCP 加载出来的 `project_guide` 和内置的 `read`、`write`、`bash` 一样，都是可以选择调用的工具。
+对模型来说，MCP 加载出来的 `demo_release_policy` 和内置的 `read`、`write`、`bash` 一样，都是可以选择调用的工具。
 
 ---
 
@@ -226,48 +226,32 @@ MCP            → tools
 
 ## 六、实际运行效果
 
-### 1. 看加载日志，并证明 MCP 生效
+### 推荐演示：一条命令同时看 Rule、Skill、MCP
 
 ```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "调用 project_guide，用一句话说明 Rule、Skill、MCP 如何接入 Agent"
+python3 agent/03-skills-mcp/agent-skills-mcp.py "请先调用 demo_release_policy 获取发布策略。然后按 release_triage 对这三个发布前问题排序：A 应用启动报错；B 删除数据没有二次确认；C 按钮颜色不统一。最后严格按 Rule 要求输出三行。"
 ```
 
 观察点：
 
 ```text
 [Rules] Loaded 1 rule files
-[Skills] Loaded 1 skill files: todo_prioritizer
-[MCP] Loaded 1 MCP tools: project_guide
-[Tool] project_guide(...)
+[Skills] Loaded 1 skill files: release_triage
+[MCP] Loaded 1 MCP tools: demo_release_policy
+[Tool] demo_release_policy(...)
 ```
 
-前三行证明外置配置已经被加载；只要看到 `[Tool] project_guide(...)`，就能证明 MCP 工具已经进入 tools 列表，并被模型实际调用。
+前三行证明外置配置已经被加载；看到 `[Tool] demo_release_policy(...)`，就能证明 MCP 工具已经进入 tools 列表，并被模型实际调用。
 
-### 2. 证明 Rule 生效
-
-```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "不要调用任何工具。请按本项目 Rule 的要求回答：Rule 是否已加载？"
-```
-
-观察点：回答会按 `.agent/rules/demo-style.md` 的要求，先说明本轮加载了 Rule、Skill、MCP 三类外置能力。
-
-### 3. 证明 Skill 生效
-
-```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "按优先级排序：A README 错别字；B 删除接口缺少权限校验；C 应用启动报错；D 搜索分页重复。只输出前三项和舍弃项。"
-```
-
-观察回答内容：
+再看最终回答，效果会非常直观：
 
 ```text
-1. 优先级 - 安全风险 - 删除用户接口缺少权限校验
-2. 优先级 - 阻塞运行 - 应用启动时报错无法运行
-3. 优先级 - 核心功能 - 搜索结果分页偶尔重复
-
-舍弃项：README 示例命令有错别字（文档或示例类，优先级最低）。
+Rule证据：最终回答按三行固定格式输出。
+Skill证据：排序：B > A > C，先保数据安全。
+MCP证据：策略要求只演示、不修改文件。
 ```
 
-这里可以重点看 Skill：模型不是在扫仓库，也不是靠临场发挥，而是在使用外部 Markdown 里定义好的排序方法。
+这里三件事同时发生：Rule 改变输出格式，Skill 改变排序逻辑，MCP 提供一条可调用的外部发布策略。
 
 ---
 

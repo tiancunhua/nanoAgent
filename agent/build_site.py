@@ -179,22 +179,19 @@ LESSONS = [
         summary="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。",
         core="Skill + Rule + MCP",
         tags=["Skills", "Rules", "MCP"],
-        scenario="团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。",
+        scenario="发布前有三个小问题：删除数据没确认、应用启动报错、按钮颜色不统一。我们不改 Python 代码，只改 Rule、Skill、MCP 配置，就能让 Agent 按固定格式回答、按发布风险排序，并调用外部发布策略。",
         demo_command=(
-            '# 1. 看加载日志，并证明 MCP 生效\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "调用 project_guide，用一句话说明 Rule、Skill、MCP 如何接入 Agent"\n\n'
-            '# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "不要调用任何工具。请按本项目 Rule 的要求回答：Rule 是否已加载？"\n\n'
-            '# 3. 证明 Skill 生效：观察排序是否按 todo_prioritizer\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "按优先级排序：A README 错别字；B 删除接口缺少权限校验；C 应用启动报错；D 搜索分页重复。只输出前三项和舍弃项。"'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请先调用 demo_release_policy 获取发布策略。'
+            '然后按 release_triage 对这三个发布前问题排序：A 应用启动报错；B 删除数据没有二次确认；C 按钮颜色不统一。'
+            '最后严格按 Rule 要求输出三行。"'
         ),
-        demo_goal="用三条短命令分别证明：配置会被加载，MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
+        demo_goal="用一条短命令同时证明：Rule 改变输出格式，Skill 改变排序逻辑，MCP 提供可调用的外部策略。",
         demo_expected=[
-            "第一屏先看三类日志：`[Rules] Loaded ...`、`[Skills] Loaded 1 skill files: todo_prioritizer`、`[MCP] Loaded ...`。",
-            "第一条命令观察 `[Tool] project_guide(...)`，用真实工具调用证明 MCP 已进入 tools。",
-            "第二条命令观察回答是否遵守 `.agent/rules/demo-style.md` 的格式要求，用输出格式证明 Rule 生效。",
-            "第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。",
-            "`DEFAULT_MAX_ITERATIONS = 10` 只是为了保证现场演示有足够轮次完成工具调用与结论生成。",
+            "第一屏先看三类日志：`[Rules] Loaded ...`、`[Skills] Loaded 1 skill files: release_triage`、`[MCP] Loaded ...`。",
+            "观察 `[Tool] demo_release_policy(...)`，用真实工具调用证明 MCP 已进入 tools。",
+            "最终回答应出现 `Rule证据 / Skill证据 / MCP证据` 三行，用输出格式证明 Rule 生效。",
+            "排序应为 `B > A > C`：删除数据没确认高于启动报错，按钮颜色排最后，用结果证明 Skill 生效。",
+            "MCP 证据行应提到“只做演示、不修改文件”或发布策略，用工具返回内容证明 MCP 生效。",
         ],
         student_takeaways=[
             "知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。",
@@ -203,11 +200,11 @@ LESSONS = [
         ],
         practice_steps=[
             "打开 `.agent/rules/demo-style.md`，改一条输出要求，再运行一次任务。",
-            "打开 `.agent/skills/todo-prioritizer/SKILL.md`，调整排序规则，再运行同一个 4 项清单观察结果变化。",
-            "打开 `.agent/mcp.json`，将 `project_guide` 改名或禁用，观察 `[MCP]` 日志和工具列表变化。",
+            "打开 `.agent/skills/release-triage/SKILL.md`，把“无法启动”放到第一位，再运行同一个命令观察排序变化。",
+            "打开 `.agent/mcp.json`，将 `demo_release_policy` 改名或禁用，观察 `[MCP]` 日志和工具列表变化。",
         ],
         talk_points=[
-            "最小 Rule 用来约束输出行为，最小 Skill 用来补充任务知识，最小 MCP 用来扩展可调用工具。",
+            "最小 Rule 用来约束输出格式，最小 Skill 用来补充排序方法，最小 MCP 用来扩展可调用工具。",
             "Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。",
             "`DEFAULT_MAX_ITERATIONS = 10` 是演示友好值，能避免复杂搜索在结论前过早中断。",
         ],
@@ -934,19 +931,19 @@ def build_demo_config_showcase(lesson: Lesson) -> str:
         (
             "Rule 配置",
             ".agent/rules/demo-style.md",
-            "约束回答格式和修复优先级边界。",
+            "约束最终回答固定输出三行。",
             REPO_ROOT / ".agent/rules/demo-style.md",
         ),
         (
             "Skill 配置",
-            ".agent/skills/todo-prioritizer/SKILL.md",
-            "用 Markdown 描述修复项排序知识和执行步骤。",
-            REPO_ROOT / ".agent/skills/todo-prioritizer/SKILL.md",
+            ".agent/skills/release-triage/SKILL.md",
+            "用 Markdown 描述发布前问题的排序方法。",
+            REPO_ROOT / ".agent/skills/release-triage/SKILL.md",
         ),
         (
             "MCP 配置",
             ".agent/mcp.json",
-            "把 project_guide 追加到工具列表。",
+            "把 demo_release_policy 追加到工具列表。",
             REPO_ROOT / ".agent/mcp.json",
         ),
     ]

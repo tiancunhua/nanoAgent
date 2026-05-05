@@ -138,7 +138,7 @@
             <p class="eyebrow">Scenario</p>
             <h2>什么时候会用到</h2>
           </div>
-          <p class="scenario-text">团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。</p>
+          <p class="scenario-text">发布前有三个小问题：删除数据没确认、应用启动报错、按钮颜色不统一。我们不改 Python 代码，只改 Rule、Skill、MCP 配置，就能让 Agent 按固定格式回答、按发布风险排序，并调用外部发布策略。</p>
         </section>
 
         <section class="lesson-section" id="code">
@@ -308,7 +308,7 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Live Demo</p>
             <h2>再看它怎么跑</h2>
-            <p>用三条短命令分别证明：配置会被加载，MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。</p>
+            <p>用一条短命令同时证明：Rule 改变输出格式，Skill 改变排序逻辑，MCP 提供可调用的外部策略。</p>
           </div>
           <div class="config-showcase">
             <p class="lesson-index">先看具体配置</p>
@@ -319,62 +319,57 @@
                 <div>
                   <p class="lesson-index">Rule 配置</p>
                   <h3>.agent/rules/demo-style.md</h3>
-                  <p>约束回答格式和修复优先级边界。</p>
+                  <p>约束最终回答固定输出三行。</p>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/rules/demo-style.md">看源文件</a>
               </div>
               <pre class="code-block"><code># Demo Style
 
-- 回答开头只说明本轮加载了 Rule、Skill、MCP 三类外置能力，不展开工具名。
-- 修复优先级最多保留 3 项，顺序从安全风险、阻塞运行、核心功能到文档示例。
-- 如果调用了 MCP 工具，在结论里说明它返回了什么。</code></pre>
+- 最终回答固定输出 3 行，行首分别是：`Rule证据：`、`Skill证据：`、`MCP证据：`。
+- 不输出表格，不展开长解释，每行控制在 60 个字以内。
+- `Skill证据：` 这一行必须使用 `排序：X &gt; Y &gt; Z` 的形式。
+- 如果调用了 MCP 工具，`MCP证据：` 这一行要引用工具返回的“只做演示，不修改文件”。</code></pre>
             </article>
 
             <article class="config-panel">
               <div class="config-panel-head">
                 <div>
                   <p class="lesson-index">Skill 配置</p>
-                  <h3>.agent/skills/todo-prioritizer/SKILL.md</h3>
-                  <p>用 Markdown 描述修复项排序知识和执行步骤。</p>
+                  <h3>.agent/skills/release-triage/SKILL.md</h3>
+                  <p>用 Markdown 描述发布前问题的排序方法。</p>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/skills/todo-prioritizer/SKILL.md">看源文件</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/skills/release-triage/SKILL.md">看源文件</a>
               </div>
               <pre class="code-block"><code>---
-name: todo_prioritizer
-description: 给候选修复项排序：安全风险第一，阻塞运行第二，核心功能第三，文档或示例最后；如果只允许输出 3 项，舍弃文档或示例项，并保持输出简洁。
-when_to_use: 当任务要求整理修复顺序、挑选优先级或从多个候选问题中选出下一步行动时使用。
-triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先修
+name: release_triage
+description: 给发布前问题排序：数据安全第一，无法启动第二，界面文案最后。
+when_to_use: 当任务要求整理发布前问题、判断修复顺序或输出发布检查优先级时使用。
+triggers: release_triage, 发布前检查, 发布排序, 修复顺序, 优先级
 ---
 
-# Todo Prioritizer
+# Release Triage
 
 ## Use When
 
-当任务要求整理修复顺序、挑选优先级，或从多个候选问题中选出下一步行动时使用。
+当任务要求整理发布前问题、判断修复顺序，或输出发布检查优先级时使用。
 
 ## Priority Order
 
-1. 安全风险
-2. 阻塞运行
-3. 核心功能
-4. 文档或示例
+1. 数据安全：删除、权限、泄露、不可恢复。
+2. 无法启动：启动报错、构建失败、接口 500。
+3. 界面文案：颜色、按钮、说明文字、README。
 
 ## Steps
 
-1. 先识别每个候选项属于安全风险、阻塞运行、核心功能、文档示例中的哪一类。
-2. 按安全风险、阻塞运行、核心功能、文档示例的顺序排序。
-3. 如果题目要求最多 3 项，只输出前三项。
-4. 每项用“优先级 - 类别 - 事项”的短格式。
-5. 最后用一句话说明被舍弃项为什么靠后。
+1. 先判断每个候选项属于数据安全、无法启动、界面文案中的哪一类。
+2. 按数据安全、无法启动、界面文案的顺序排序。
+3. 输出简短排序，例如：`B &gt; A &gt; C`。
+4. 用一句话说明这个顺序来自发布前检查 Skill。
 
 ## Output Example
 
 ```text
-1. 优先级 - 安全风险 - 删除用户接口缺少权限校验
-2. 优先级 - 阻塞运行 - 应用启动时报错无法运行
-3. 优先级 - 核心功能 - 搜索结果分页偶尔重复
-
-舍弃项：README 示例命令有错别字（文档或示例类，优先级最低）。
+B &gt; A &gt; C，因为先保数据安全，再保能启动，最后处理界面文案。
 ```</code></pre>
             </article>
 
@@ -383,7 +378,7 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
                 <div>
                   <p class="lesson-index">MCP 配置</p>
                   <h3>.agent/mcp.json</h3>
-                  <p>把 project_guide 追加到工具列表。</p>
+                  <p>把 demo_release_policy 追加到工具列表。</p>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/.agent/mcp.json">看源文件</a>
               </div>
@@ -393,14 +388,14 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
       &quot;disabled&quot;: false,
       &quot;tools&quot;: [
         {
-          &quot;name&quot;: &quot;project_guide&quot;,
-          &quot;description&quot;: &quot;Return a short explanation of how Rule, Skill, and MCP are wired into this demo project.&quot;,
+          &quot;name&quot;: &quot;demo_release_policy&quot;,
+          &quot;description&quot;: &quot;Return the fixed release policy for the demo. Use this when asked for MCP evidence, release policy, or external project information.&quot;,
           &quot;parameters&quot;: {
             &quot;type&quot;: &quot;object&quot;,
             &quot;properties&quot;: {
               &quot;topic&quot;: {
                 &quot;type&quot;: &quot;string&quot;,
-                &quot;description&quot;: &quot;The demo topic to explain.&quot;
+                &quot;description&quot;: &quot;The release demo topic.&quot;
               }
             }
           }
@@ -415,15 +410,8 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code># 1. 看加载日志，并证明 MCP 生效
-python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;调用 project_guide，用一句话说明 Rule、Skill、MCP 如何接入 Agent&quot;
-
-# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求
-python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;不要调用任何工具。请按本项目 Rule 的要求回答：Rule 是否已加载？&quot;
-
-# 3. 证明 Skill 生效：观察排序是否按 todo_prioritizer
-python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;按优先级排序：A README 错别字；B 删除接口缺少权限校验；C 应用启动报错；D 搜索分页重复。只输出前三项和舍弃项。&quot;</code></pre>
-            <ul class="lesson-list"><li>第一屏先看三类日志：<code class="inline">[Rules] Loaded ...</code>、<code class="inline">[Skills] Loaded 1 skill files: todo_prioritizer</code>、<code class="inline">[MCP] Loaded ...</code>。</li><li>第一条命令观察 <code class="inline">[Tool] project_guide(...)</code>，用真实工具调用证明 MCP 已进入 tools。</li><li>第二条命令观察回答是否遵守 <code class="inline">.agent/rules/demo-style.md</code> 的格式要求，用输出格式证明 Rule 生效。</li><li>第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 只是为了保证现场演示有足够轮次完成工具调用与结论生成。</li></ul>
+            <pre class="demo-command"><code>python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;请先调用 demo_release_policy 获取发布策略。然后按 release_triage 对这三个发布前问题排序：A 应用启动报错；B 删除数据没有二次确认；C 按钮颜色不统一。最后严格按 Rule 要求输出三行。&quot;</code></pre>
+            <ul class="lesson-list"><li>第一屏先看三类日志：<code class="inline">[Rules] Loaded ...</code>、<code class="inline">[Skills] Loaded 1 skill files: release_triage</code>、<code class="inline">[MCP] Loaded ...</code>。</li><li>观察 <code class="inline">[Tool] demo_release_policy(...)</code>，用真实工具调用证明 MCP 已进入 tools。</li><li>最终回答应出现 <code class="inline">Rule证据 / Skill证据 / MCP证据</code> 三行，用输出格式证明 Rule 生效。</li><li>排序应为 <code class="inline">B &gt; A &gt; C</code>：删除数据没确认高于启动报错，按钮颜色排最后，用结果证明 Skill 生效。</li><li>MCP 证据行应提到“只做演示、不修改文件”或发布策略，用工具返回内容证明 MCP 生效。</li></ul>
           </div>
         </section>
 
@@ -433,7 +421,7 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;按优先级排序：A REA
             <h2>自己试一轮</h2>
             <p>使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。</p>
           </div>
-          <ol class="lesson-steps"><li>打开 <code class="inline">.agent/rules/demo-style.md</code>，改一条输出要求，再运行一次任务。</li><li>打开 <code class="inline">.agent/skills/todo-prioritizer/SKILL.md</code>，调整排序规则，再运行同一个 4 项清单观察结果变化。</li><li>打开 <code class="inline">.agent/mcp.json</code>，将 <code class="inline">project_guide</code> 改名或禁用，观察 <code class="inline">[MCP]</code> 日志和工具列表变化。</li></ol>
+          <ol class="lesson-steps"><li>打开 <code class="inline">.agent/rules/demo-style.md</code>，改一条输出要求，再运行一次任务。</li><li>打开 <code class="inline">.agent/skills/release-triage/SKILL.md</code>，把“无法启动”放到第一位，再运行同一个命令观察排序变化。</li><li>打开 <code class="inline">.agent/mcp.json</code>，将 <code class="inline">demo_release_policy</code> 改名或禁用，观察 <code class="inline">[MCP]</code> 日志和工具列表变化。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
@@ -449,7 +437,7 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;按优先级排序：A REA
             <p class="eyebrow">Key Points</p>
             <h2>三个核心要点</h2>
           </div>
-          <ul class="lesson-list"><li>最小 Rule 用来约束输出行为，最小 Skill 用来补充任务知识，最小 MCP 用来扩展可调用工具。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 是演示友好值，能避免复杂搜索在结论前过早中断。</li></ul>
+          <ul class="lesson-list"><li>最小 Rule 用来约束输出格式，最小 Skill 用来补充排序方法，最小 MCP 用来扩展可调用工具。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 是演示友好值，能避免复杂搜索在结论前过早中断。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
