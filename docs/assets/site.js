@@ -28,20 +28,33 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", updateProgress);
   }
 
-  document.querySelectorAll(".demo-box").forEach((box) => {
-    const pre = box.querySelector(".demo-command");
-    const label = box.querySelector(".lesson-index");
-    if (!pre || !label) return;
+  function parseCmdBlocks(text) {
+    const paragraphs = text.split(/\n[ \t]*\n/).map((p) => p.trim()).filter(Boolean);
 
+    if (paragraphs.length >= 2) {
+      return paragraphs.map((p) => {
+        const lines = p.split("\n");
+        const label = lines
+          .filter((l) => /^#/.test(l.trim()))
+          .map((l) => l.replace(/^#\s*\d*\.?\s*/, "").trim())
+          .join(" ");
+        const command = lines.filter((l) => !/^#/.test(l.trim()) && l.trim()).join("\n");
+        return { label, command };
+      });
+    }
+
+    const cmdLines = text.split("\n").filter((l) => l.trim() && !/^#/.test(l.trim()));
+    if (cmdLines.length <= 1) return [{ label: "", command: text }];
+    return cmdLines.map((l) => ({ label: "", command: l }));
+  }
+
+  function makeCopyBtn(textToCopy) {
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.setAttribute("aria-label", "复制命令");
     btn.textContent = "复制";
-    label.appendChild(btn);
-
     btn.addEventListener("click", () => {
-      const text = (pre.querySelector("code") || pre).innerText;
-      navigator.clipboard.writeText(text).then(() => {
+      navigator.clipboard.writeText(textToCopy).then(() => {
         btn.textContent = "✓ 已复制";
         btn.classList.add("is-copied");
         setTimeout(() => {
@@ -50,6 +63,47 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
       });
     });
+    return btn;
+  }
+
+  document.querySelectorAll(".demo-box").forEach((box) => {
+    const pre = box.querySelector(".demo-command");
+    const labelEl = box.querySelector(".lesson-index");
+    if (!pre || !labelEl) return;
+
+    const rawText = (pre.querySelector("code") || pre).textContent.trim();
+    const blocks = parseCmdBlocks(rawText);
+
+    if (blocks.length === 1) {
+      labelEl.appendChild(makeCopyBtn(rawText));
+    } else {
+      const fragment = document.createDocumentFragment();
+      blocks.forEach(({ label, command }) => {
+        const subBlock = document.createElement("div");
+        subBlock.className = "demo-sub-block";
+
+        const head = document.createElement("div");
+        head.className = "demo-sub-head";
+        if (label) {
+          const span = document.createElement("span");
+          span.className = "demo-sub-label";
+          span.textContent = label;
+          head.appendChild(span);
+        }
+        head.appendChild(makeCopyBtn(command));
+        subBlock.appendChild(head);
+
+        const subPre = document.createElement("pre");
+        subPre.className = "demo-command";
+        const code = document.createElement("code");
+        code.textContent = command;
+        subPre.appendChild(code);
+        subBlock.appendChild(subPre);
+
+        fragment.appendChild(subBlock);
+      });
+      pre.replaceWith(fragment);
+    }
   });
 
   const tocLinks = [...document.querySelectorAll(".toc-link[href^='#']")];
