@@ -178,8 +178,9 @@ def bash(command):
 
 def project_guide(topic="Agent demo"):
     return (
-        f"Project guide for {topic}: Rules and Skills are injected into the prompt; "
-        "MCP tools are appended to the tools list and become callable by name."
+        f"Project guide for {topic}: Rules and the Skill Registry are injected into "
+        "the prompt; model-selected Skill details are injected later. MCP tools are "
+        "appended to the tools list and become callable by name."
     )
 
 
@@ -229,7 +230,7 @@ def load_skills():
         return []
     try:
         # 这里先只扫描 Skill 文件，不急着把完整内容都交给大模型。
-        # 后面会分成“摘要注册”和“命中后加载详情”两个阶段写入 prompt。
+        # 后面会先给模型摘要，再由模型决定是否需要展开完整 Skill。
         skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
             Path(SKILLS_DIR).glob("*.md")
         )
@@ -244,7 +245,7 @@ def parse_markdown_skill(path):
     content = path.read_text(encoding="utf-8")
     metadata = {}
     body = content
-    # frontmatter 是给路由用的轻量信息；body 才是命中后加载的完整 Skill。
+    # frontmatter 是给模型判断用的轻量信息；body 是后续可展开的完整 Skill。
     if content.startswith("---\n"):
         end = content.find("\n---", 4)
         if end != -1:
@@ -286,17 +287,73 @@ def format_skill_summary_for_prompt(skill):
     return "\n".join(lines)
 
 
-def skill_matches_task(skill, task):
-    # 演示里用明确的字符串匹配模拟“Skill 路由”。
-    # 真实框架也可以让模型根据 Registry 判断是否需要打开某个 Skill。
-    task_lower = task.lower()
-    if skill["name"].lower() in task_lower:
-        return True
-    return any(trigger in task_lower for trigger in skill.get("triggers", []))
+def parse_selected_skill_names(raw_content, known_names):
+    text = (raw_content or "").strip()
+    parsed = []
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        start = text.find("[")
+        end = text.rfind("]")
+        if start != -1 and end > start:
+            try:
+                parsed = json.loads(text[start : end + 1])
+            except json.JSONDecodeError:
+                parsed = []
+    if isinstance(parsed, dict):
+        parsed = parsed.get("skills", []) or parsed.get("selected_skills", [])
+    if not isinstance(parsed, list):
+        parsed = []
+
+    known_lookup = {name.lower(): name for name in known_names}
+    selected = []
+    for item in parsed:
+        skill_name = known_lookup.get(str(item).strip().lower())
+        if skill_name and skill_name not in selected:
+            selected.append(skill_name)
+    if not selected:
+        # 有些模型会输出一句解释而不是纯 JSON。这里仍然只解析模型输出，
+        # 不根据用户任务做 Python 侧匹配。
+        lowered_text = text.lower()
+        for name in known_names:
+            if name.lower() in lowered_text:
+                selected.append(name)
+    return selected
+
+
+def select_skills_with_model(task, skills):
+    if not skills:
+        return []
+    registry = "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
+    # 这里不是 Python 代码替模型做选择，而是发起一次轻量模型决策：
+    # 模型只看到 Skill Registry 和用户任务，然后返回本轮要展开的 Skill 名称。
+    response = client.chat.completions.create(
+        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You decide which skills should be progressively loaded. "
+                    "If the task explicitly names a skill, include that skill. "
+                    "Only output a JSON array of skill names. Output [] if no skill "
+                    "is needed."
+                ),
+            },
+            {
+                "role": "user",
+                "content": f"# Skill Registry\n{registry}\n\n# User Task\n{task}",
+            },
+        ],
+    )
+    raw_selection = response.choices[0].message.content
+    selected_names = parse_selected_skill_names(
+        raw_selection, [skill["name"] for skill in skills]
+    )
+    return [skill for skill in skills if skill["name"] in selected_names]
 
 
 def format_skill_detail_for_prompt(skill):
-    # 第二阶段：任务命中后，才把完整 SKILL.md 正文追加到 prompt。
+    # 第二阶段：模型选择该 Skill 后，才把完整 SKILL.md 正文追加到 prompt。
     # 这样上下文不会被所有 Skill 挤满，也能清楚观察“渐进式加载”发生了。
     return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
 
@@ -358,9 +415,6 @@ def run_agent_with_external_capabilities(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
-    # matched_skills 表示“本轮任务真正需要展开的 Skill”。
-    # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
-    matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
     mcp_tools = load_mcp_tools()
     all_tools = base_tools + mcp_tools
     context_parts = [
@@ -380,17 +434,18 @@ def run_agent_with_external_capabilities(task):
             f"[Skills] Registered {len(skills)} skill summaries: "
             f"{', '.join(skill_names)}"
         )
-    if matched_skills:
-        # 再按本轮任务命中的结果，追加完整 Skill 详情。
+    selected_skills = select_skills_with_model(task, skills)
+    if selected_skills:
+        # 再按模型对本轮任务的选择结果，追加完整 Skill 详情。
         context_parts.append(
             f"\n# Loaded Skill Details\n"
             + "\n\n".join(
-                format_skill_detail_for_prompt(skill) for skill in matched_skills
+                format_skill_detail_for_prompt(skill) for skill in selected_skills
             )
         )
-        skill_names = [skill["name"] for skill in matched_skills]
+        skill_names = [skill["name"] for skill in selected_skills]
         print(
-            f"[Skills] Progressive load {len(matched_skills)} skill details: "
+            f"[Skills] Model selected {len(selected_skills)} skill details: "
             f"{', '.join(skill_names)}"
         )
     if mcp_tools:

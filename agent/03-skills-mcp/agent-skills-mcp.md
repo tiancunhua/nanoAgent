@@ -11,7 +11,7 @@
 本讲只讲三件事：
 
 1. **Rules**：把项目规则写成文件，启动时注入 prompt。
-2. **Skills**：把可复用的任务方法写成 Markdown，先注册摘要，任务命中后再加载完整内容。
+2. **Skills**：把可复用的任务方法写成 Markdown，先注册摘要，再由大模型选择是否加载完整内容。
 3. **MCP**：把外部工具定义写成配置，启动时追加到 tools 列表。
 
 这就是能力外置。
@@ -75,7 +75,7 @@ def load_skills():
         return []
     try:
         # 这里先只扫描 Skill 文件，不急着把完整内容都交给大模型。
-        # 后面会分成“摘要注册”和“命中后加载详情”两个阶段写入 prompt。
+        # 后面会先给模型摘要，再由模型决定是否需要展开完整 Skill。
         skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
             Path(SKILLS_DIR).glob("*.md")
         )
@@ -108,7 +108,7 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
 4. 文档或示例
 ```
 
-这里有一个关键点：**不是启动时把完整 Skill 都塞进 prompt**，而是先加载一份很短的 Skill Registry。
+这里有一个关键点：**不是启动时把完整 Skill 都塞进 prompt**，而是先给大模型一份很短的 Skill Registry，让它判断本轮任务需不需要展开某个 Skill。
 
 ```python
 def format_skill_summary_for_prompt(skill):
@@ -124,25 +124,50 @@ def format_skill_summary_for_prompt(skill):
     return "\n".join(lines)
 ```
 
-如果用户任务命中了 Skill 名称或 triggers，再加载完整的 `SKILL.md`：
+接下来不是 Python 代码做固定选择，而是大模型根据 Registry 和用户任务做一次轻量决策：
 
 ```python
-def skill_matches_task(skill, task):
-    # 演示里用明确的字符串匹配模拟“Skill 路由”。
-    # 真实框架也可以让模型根据 Registry 判断是否需要打开某个 Skill。
-    task_lower = task.lower()
-    if skill["name"].lower() in task_lower:
-        return True
-    return any(trigger in task_lower for trigger in skill.get("triggers", []))
+def select_skills_with_model(task, skills):
+    if not skills:
+        return []
+    registry = "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
+    # 这里不是 Python 代码替模型做选择，而是发起一次轻量模型决策：
+    # 模型只看到 Skill Registry 和用户任务，然后返回本轮要展开的 Skill 名称。
+    response = client.chat.completions.create(
+        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You decide which skills should be progressively loaded. "
+                    "If the task explicitly names a skill, include that skill. "
+                    "Only output a JSON array of skill names. Output [] if no skill "
+                    "is needed."
+                ),
+            },
+            {
+                "role": "user",
+                "content": f"# Skill Registry\n{registry}\n\n# User Task\n{task}",
+            },
+        ],
+    )
+    raw_selection = response.choices[0].message.content
+    selected_names = parse_selected_skill_names(
+        raw_selection, [skill["name"] for skill in skills]
+    )
+    return [skill for skill in skills if skill["name"] in selected_names]
+```
 
+Python 代码随后只校验模型返回的 Skill 名称，并把对应 Markdown 拼回 prompt：
 
+```python
 def format_skill_detail_for_prompt(skill):
-    # 第二阶段：任务命中后，才把完整 SKILL.md 正文追加到 prompt。
+    # 第二阶段：模型选择该 Skill 后，才把完整 SKILL.md 正文追加到 prompt。
     # 这样上下文不会被所有 Skill 挤满，也能清楚观察“渐进式加载”发生了。
     return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
 ```
 
-这就是渐进式加载：平时只给模型目录，真正需要时再把做法手册展开。演示时也更容易观察：第三条命令会多打一行 `[Skills] Progressive load ...`。
+这就是渐进式加载：平时只给模型目录，由模型判断需要哪本手册；需要时再把对应 Markdown 展开。演示时也更容易观察：第三条命令会多打一行 `[Skills] Model selected ...`。
 
 ---
 
@@ -168,7 +193,7 @@ def load_mcp_tools():
         return []
 ```
 
-Rule、Skill 摘要、命中的 Skill 详情进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
+Rule、Skill 摘要、模型选择的 Skill 详情进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
 
 ```python
 all_tools = base_tools + mcp_tools
@@ -185,9 +210,6 @@ def run_agent_with_external_capabilities(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
-    # matched_skills 表示“本轮任务真正需要展开的 Skill”。
-    # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
-    matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
     mcp_tools = load_mcp_tools()
     all_tools = base_tools + mcp_tools
 
@@ -208,17 +230,18 @@ def run_agent_with_external_capabilities(task):
             f"[Skills] Registered {len(skills)} skill summaries: "
             f"{', '.join(skill_names)}"
         )
-    if matched_skills:
-        # 再按本轮任务命中的结果，追加完整 Skill 详情。
+    selected_skills = select_skills_with_model(task, skills)
+    if selected_skills:
+        # 再按模型对本轮任务的选择结果，追加完整 Skill 详情。
         context_parts.append(
             f"\n# Loaded Skill Details\n"
             + "\n\n".join(
-                format_skill_detail_for_prompt(skill) for skill in matched_skills
+                format_skill_detail_for_prompt(skill) for skill in selected_skills
             )
         )
-        skill_names = [skill["name"] for skill in matched_skills]
+        skill_names = [skill["name"] for skill in selected_skills]
         print(
-            f"[Skills] Progressive load {len(matched_skills)} skill details: "
+            f"[Skills] Model selected {len(selected_skills)} skill details: "
             f"{', '.join(skill_names)}"
         )
     if mcp_tools:
@@ -229,8 +252,8 @@ def run_agent_with_external_capabilities(task):
 最终结构可以记成一句话：
 
 ```text
-Rules + Skill Registry + Loaded Skill Details → system prompt
-MCP                                           → tools
+Rules + Skill Registry + Model-selected Skill Details → system prompt
+MCP                                                   → tools
 ```
 
 ---
@@ -272,10 +295,10 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skil
 
 ```text
 [Skills] Registered 1 skill summaries: todo_prioritizer
-[Skills] Progressive load 1 skill details: todo_prioritizer
+[Skills] Model selected 1 skill details: todo_prioritizer
 ```
 
-第一行说明 Agent 先看到了 Skill 摘要；第二行说明任务命中了 `todo_prioritizer`，所以完整的 `.agent/skills/todo-prioritizer/SKILL.md` 才被加载进 prompt。
+第一行说明大模型先看到了 Skill 摘要；第二行说明大模型选择本轮需要 `todo_prioritizer`，所以完整的 `.agent/skills/todo-prioritizer/SKILL.md` 才被加载进 prompt。
 
 再观察回答内容：
 
