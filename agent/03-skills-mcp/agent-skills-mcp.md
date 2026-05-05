@@ -11,7 +11,7 @@
 本讲只讲三件事：
 
 1. **Rules**：把项目规则写成文件，启动时注入 prompt。
-2. **Skills**：把可复用的任务方法写成配置，启动时注入 prompt。
+2. **Skills**：把可复用的任务方法写成 Markdown，先注册摘要，任务命中后再加载完整内容。
 3. **MCP**：把外部工具定义写成配置，启动时追加到 tools 列表。
 
 这就是能力外置。
@@ -25,7 +25,7 @@
 | 问题 | 外置方式 |
 |------|----------|
 | 不同项目有不同规范 | 用 `.agent/rules/*.md` |
-| 不同任务有不同做法 | 用 `.agent/skills/*.json` |
+| 不同任务有不同做法 | 用 `.agent/skills/*/SKILL.md` |
 | 不同环境要接不同工具 | 用 `.agent/mcp.json` |
 
 第三讲的重点不是让 Agent 更“聪明”，而是让能力变得可替换、可观察、可配置。
@@ -64,7 +64,7 @@ Rule 是项目级约束。演示里的最小 Rule 是：
 
 ---
 
-## 三、Skill：任务方法进入 prompt
+## 三、Skill：任务方法渐进式进入 prompt
 
 ```python
 SKILLS_DIR = ".agent/skills"
@@ -74,9 +74,11 @@ def load_skills():
     if not os.path.exists(SKILLS_DIR):
         return []
     try:
-        for skill_file in Path(SKILLS_DIR).glob("*.json"):
-            with open(skill_file, "r") as f:
-                skills.append(json.load(f))
+        skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
+            Path(SKILLS_DIR).glob("*.md")
+        )
+        for skill_file in skill_files:
+            skills.append(parse_markdown_skill(skill_file))
         return skills
     except:
         return []
@@ -84,21 +86,55 @@ def load_skills():
 
 Skill 更像“做事手册”。演示里的 `todo_prioritizer` 不是让模型多一个函数，而是告诉模型：遇到候选修复项时，应该如何排序。
 
+现在 Skill 使用 Markdown 格式：
+
+```markdown
+---
+name: todo_prioritizer
+description: 给候选修复项排序：安全风险第一，阻塞运行第二，核心功能第三，文档或示例最后。
+when_to_use: 当任务要求整理修复顺序、挑选优先级或从多个候选问题中选出下一步行动时使用。
+triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先修
+---
+
+# Todo Prioritizer
+
+## Priority Order
+
+1. 安全风险
+2. 阻塞运行
+3. 核心功能
+4. 文档或示例
+```
+
+这里有一个关键点：**不是启动时把完整 Skill 都塞进 prompt**，而是先加载一份很短的 Skill Registry。
+
 ```python
-def format_skill_for_prompt(skill):
+def format_skill_summary_for_prompt(skill):
     lines = [f"- {skill['name']}: {skill.get('description', '')}"]
     when_to_use = skill.get("when_to_use")
     if when_to_use:
         lines.append(f"  When to use: {when_to_use}")
-    steps = skill.get("steps", [])
-    if steps:
-        lines.append("  Steps:")
-        for step in steps:
-            lines.append(f"  - {step}")
+    if skill.get("triggers"):
+        lines.append(f"  Triggers: {', '.join(skill['triggers'])}")
+    lines.append(f"  Detail file: {skill['path']}")
     return "\n".join(lines)
 ```
 
-这里刻意把 `when_to_use` 和 `steps` 也放进 prompt。这样演示时效果更明显：同一个四项清单，模型会按 Skill 里的顺序选出安全风险、阻塞运行、核心功能，并舍弃文档示例。
+如果用户任务命中了 Skill 名称或 triggers，再加载完整的 `SKILL.md`：
+
+```python
+def skill_matches_task(skill, task):
+    task_lower = task.lower()
+    if skill["name"].lower() in task_lower:
+        return True
+    return any(trigger in task_lower for trigger in skill.get("triggers", []))
+
+
+def format_skill_detail_for_prompt(skill):
+    return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
+```
+
+这就是渐进式加载：平时只给模型目录，真正需要时再把做法手册展开。演示时也更容易观察：第三条命令会多打一行 `[Skills] Progressive load ...`。
 
 ---
 
@@ -124,7 +160,7 @@ def load_mcp_tools():
         return []
 ```
 
-Rule 和 Skill 进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
+Rule、Skill 摘要、命中的 Skill 详情进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
 
 ```python
 all_tools = base_tools + mcp_tools
@@ -142,6 +178,7 @@ def run_agent_claudecode(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
+    matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
     mcp_tools = load_mcp_tools()
     all_tools = base_tools + mcp_tools
 
@@ -153,10 +190,26 @@ def run_agent_claudecode(task):
         print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
         context_parts.append(
-            f"\n# Skills\n" + "\n".join(format_skill_for_prompt(skill) for skill in skills)
+            f"\n# Skill Registry\n"
+            + "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
         )
         skill_names = [skill["name"] for skill in skills]
-        print(f"[Skills] Loaded {len(skills)} skills: {', '.join(skill_names)}")
+        print(
+            f"[Skills] Registered {len(skills)} skill summaries: "
+            f"{', '.join(skill_names)}"
+        )
+    if matched_skills:
+        context_parts.append(
+            f"\n# Loaded Skill Details\n"
+            + "\n\n".join(
+                format_skill_detail_for_prompt(skill) for skill in matched_skills
+            )
+        )
+        skill_names = [skill["name"] for skill in matched_skills]
+        print(
+            f"[Skills] Progressive load {len(matched_skills)} skill details: "
+            f"{', '.join(skill_names)}"
+        )
     if mcp_tools:
         tool_names = [tool["function"]["name"] for tool in mcp_tools]
         print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
@@ -165,8 +218,8 @@ def run_agent_claudecode(task):
 最终结构可以记成一句话：
 
 ```text
-Rules + Skills → system prompt
-MCP             → tools
+Rules + Skill Registry + Loaded Skill Details → system prompt
+MCP                                           → tools
 ```
 
 ---
@@ -183,7 +236,7 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪�
 
 ```text
 [Rules] Loaded 1 rule files
-[Skills] Loaded 1 skills: todo_prioritizer
+[Skills] Registered 1 skill summaries: todo_prioritizer
 [MCP] Loaded 1 MCP tools: project_guide
 [Tool] project_guide(...)
 ```
@@ -198,13 +251,22 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求�
 
 观察点：回答开头会先声明本轮加载了 Rule、Skill、MCP 三类外置能力，并说明遵守了 `.agent/rules/demo-style.md`。
 
-### 3. 证明 Skill 生效
+### 3. 证明 Skill 渐进式加载
 
 ```bash
 python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"
 ```
 
-预期结果：
+先观察启动日志：
+
+```text
+[Skills] Registered 1 skill summaries: todo_prioritizer
+[Skills] Progressive load 1 skill details: todo_prioritizer
+```
+
+第一行说明 Agent 先看到了 Skill 摘要；第二行说明任务命中了 `todo_prioritizer`，所以完整的 `.agent/skills/todo-prioritizer/SKILL.md` 才被加载进 prompt。
+
+再观察回答内容：
 
 ```text
 1. 优先级 - 安全风险 - 删除用户接口缺少权限校验
@@ -214,7 +276,7 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skil
 舍弃项：README 示例命令有错别字（文档或示例类，优先级最低）。
 ```
 
-这里最适合讲 Skill：模型不是在扫仓库，而是在使用外部配置里的排序方法。
+这里最适合讲 Skill：模型不是在扫仓库，也不是靠临场发挥，而是在使用外部 Markdown 里定义好的排序方法。
 
 ---
 

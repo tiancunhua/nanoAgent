@@ -228,25 +228,68 @@ def load_skills():
     if not os.path.exists(SKILLS_DIR):
         return []
     try:
-        for skill_file in Path(SKILLS_DIR).glob("*.json"):
-            with open(skill_file, "r") as f:
-                skills.append(json.load(f))
+        skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
+            Path(SKILLS_DIR).glob("*.md")
+        )
+        for skill_file in skill_files:
+            skills.append(parse_markdown_skill(skill_file))
         return skills
     except:
         return []
 
 
-def format_skill_for_prompt(skill):
+def parse_markdown_skill(path):
+    content = path.read_text(encoding="utf-8")
+    metadata = {}
+    body = content
+    if content.startswith("---\n"):
+        end = content.find("\n---", 4)
+        if end != -1:
+            frontmatter = content[4:end].strip()
+            body = content[end + 4 :].strip()
+            for line in frontmatter.splitlines():
+                if ":" not in line:
+                    continue
+                key, value = line.split(":", 1)
+                metadata[key.strip()] = value.strip()
+    name = metadata.get(
+        "name", path.parent.name if path.name == "SKILL.md" else path.stem
+    )
+    triggers = [
+        trigger.strip().lower()
+        for trigger in metadata.get("triggers", "").split(",")
+        if trigger.strip()
+    ]
+    return {
+        "name": name,
+        "description": metadata.get("description", ""),
+        "when_to_use": metadata.get("when_to_use", ""),
+        "triggers": triggers,
+        "path": str(path),
+        "content": body,
+    }
+
+
+def format_skill_summary_for_prompt(skill):
     lines = [f"- {skill['name']}: {skill.get('description', '')}"]
     when_to_use = skill.get("when_to_use")
     if when_to_use:
         lines.append(f"  When to use: {when_to_use}")
-    steps = skill.get("steps", [])
-    if steps:
-        lines.append("  Steps:")
-        for step in steps:
-            lines.append(f"  - {step}")
+    if skill.get("triggers"):
+        lines.append(f"  Triggers: {', '.join(skill['triggers'])}")
+    lines.append(f"  Detail file: {skill['path']}")
     return "\n".join(lines)
+
+
+def skill_matches_task(skill, task):
+    task_lower = task.lower()
+    if skill["name"].lower() in task_lower:
+        return True
+    return any(trigger in task_lower for trigger in skill.get("triggers", []))
+
+
+def format_skill_detail_for_prompt(skill):
+    return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
 
 
 def load_mcp_tools():
@@ -307,6 +350,7 @@ def run_agent_claudecode(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
+    matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
     mcp_tools = load_mcp_tools()
     all_tools = base_tools + mcp_tools
     context_parts = [
@@ -317,10 +361,26 @@ def run_agent_claudecode(task):
         print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
         context_parts.append(
-            f"\n# Skills\n" + "\n".join(format_skill_for_prompt(skill) for skill in skills)
+            f"\n# Skill Registry\n"
+            + "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
         )
         skill_names = [skill["name"] for skill in skills]
-        print(f"[Skills] Loaded {len(skills)} skills: {', '.join(skill_names)}")
+        print(
+            f"[Skills] Registered {len(skills)} skill summaries: "
+            f"{', '.join(skill_names)}"
+        )
+    if matched_skills:
+        context_parts.append(
+            f"\n# Loaded Skill Details\n"
+            + "\n\n".join(
+                format_skill_detail_for_prompt(skill) for skill in matched_skills
+            )
+        )
+        skill_names = [skill["name"] for skill in matched_skills]
+        print(
+            f"[Skills] Progressive load {len(matched_skills)} skill details: "
+            f"{', '.join(skill_names)}"
+        )
     if mcp_tools:
         tool_names = [tool["function"]["name"] for tool in mcp_tools]
         print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
