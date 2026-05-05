@@ -2,7 +2,7 @@
   <rect width="1200" height="540" rx="32" fill="#FFF9F1"/>
   <rect x="28" y="28" width="1144" height="484" rx="28" fill="#F7ECDD" stroke="#E2C5A6" stroke-width="2"/>
   <text x="72" y="92" fill="#B24C2A" font-family="Arial, PingFang SC, sans-serif" font-size="28" font-weight="700">Agent 最小循环</text>
-  <text x="72" y="128" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">先看循环，再看 Tool。Tool 只是循环里的一个执行节点。</text>
+  <text x="72" y="128" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">循环是核心，Tool 只是其中一个执行节点。</text>
 
   <rect x="74" y="212" width="180" height="92" rx="22" fill="#1F2430"/>
   <text x="112" y="250" fill="#FFF8F0" font-family="Arial, PingFang SC, sans-serif" font-size="24" font-weight="700">用户任务</text>
@@ -37,6 +37,7 @@
   <path d="M468 386L458 362L442 382" fill="#B24C2A"/>
   <text x="694" y="418" fill="#B24C2A" font-family="Arial, PingFang SC, sans-serif" font-size="22" font-weight="700">结果回填到 messages，进入下一轮判断</text>
 
-  <rect x="330" y="72" width="542" height="68" rx="18" fill="#FFFDF8" stroke="#E2C5A6" stroke-width="2"/>
-  <text x="356" y="114" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">真正的关键：不是 Tool 多强，而是 Tool 的执行结果会回到上下文里，推动下一次决策。</text>
+  <rect x="330" y="72" width="542" height="90" rx="18" fill="#FFFDF8" stroke="#E2C5A6" stroke-width="2"/>
+  <text x="356" y="108" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">核心不是 Tool 多强，而是这个回填循环：</text>
+  <text x="356" y="133" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">每轮结果追加到 messages，推动 LLM 继续决策。</text>
 </svg>

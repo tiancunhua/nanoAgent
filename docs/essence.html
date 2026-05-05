@@ -150,7 +150,7 @@
 
     <figure class="lesson-figure">
       <img src="assets/agent-loop-overview.svg" alt="Agent 循环示意图：用户任务进入模型，模型选择工具，工具执行结果回填给模型，再决定下一步。">
-      <figcaption>先记住这一点：Agent 的核心不是某一个 Tool，而是“模型决策、工具执行、结果回填、再次决策”这个循环。</figcaption>
+      <figcaption>Tool 不是 Agent 的核心，循环才是——每轮工具结果回填 messages，驱动 LLM 进行下一次决策。</figcaption>
     </figure>
 
           <div class="code-group">
