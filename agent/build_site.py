@@ -181,19 +181,18 @@ LESSONS = [
         tags=["Skills", "Rules", "MCP"],
         scenario="团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。",
         demo_command=(
-            '# 1. 证明 MCP 生效：观察 project_guide 工具调用\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"\n\n'
+            '# 1. 看加载日志，并证明 MCP 生效\n'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "调用 project_guide，用一句话说明 Rule、Skill、MCP 如何接入 Agent"\n\n'
             '# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"\n\n'
-            '# 3. 证明 Skill 渐进式加载：模型选择后才加载 SKILL.md 详情\n'
-            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "不要调用任何工具。请按本项目 Rule 的要求回答：Rule 是否已加载？"\n\n'
+            '# 3. 证明 Skill 生效：观察排序是否按 todo_prioritizer\n'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "按优先级排序：A README 错别字；B 删除接口缺少权限校验；C 应用启动报错；D 搜索分页重复。只输出前三项和舍弃项。"'
         ),
-        demo_goal="用三条短命令分别证明：MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
+        demo_goal="用三条短命令分别证明：配置会被加载，MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
         demo_expected=[
-            "第一屏先看三类日志：`[Rules] Loaded ...`、`[Skills] Registered 1 skill summaries: todo_prioritizer`、`[MCP] Loaded ...`。",
+            "第一屏先看三类日志：`[Rules] Loaded ...`、`[Skills] Loaded 1 skill files: todo_prioritizer`、`[MCP] Loaded ...`。",
             "第一条命令观察 `[Tool] project_guide(...)`，用真实工具调用证明 MCP 已进入 tools。",
             "第二条命令观察回答是否遵守 `.agent/rules/demo-style.md` 的格式要求，用输出格式证明 Rule 生效。",
-            "第三条命令会额外出现 `[Skills] Model selected 1 skill details: todo_prioritizer`，证明由大模型选择本轮要展开的 Markdown Skill。",
             "第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。",
             "`DEFAULT_MAX_ITERATIONS = 10` 只是为了保证现场演示有足够轮次完成工具调用与结论生成。",
         ],
@@ -209,7 +208,7 @@ LESSONS = [
         ],
         talk_points=[
             "最小 Rule 用来约束输出行为，最小 Skill 用来补充任务知识，最小 MCP 用来扩展可调用工具。",
-            "Rules、Skill Registry 与模型选择后的 Skill 详情进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。",
+            "Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。",
             "`DEFAULT_MAX_ITERATIONS = 10` 是演示友好值，能避免复杂搜索在结论前过早中断。",
         ],
         pitfalls=[
@@ -231,14 +230,14 @@ LESSONS = [
             Snippet(
                 title="Rules / Skills / MCP 的加载",
                 start=208,
-                end=367,
-                focus="这段代码展示 `load_rules`、Skill Registry 和模型选择 Skill：Rule 直接加载，Skill 先给摘要，再由模型决定是否展开完整 Markdown。",
+                end=302,
+                focus="这段代码展示 `load_rules`、Markdown Skill 加载和 MCP 工具加载：Rule 与 Skill 进入 prompt，MCP 进入 tools。",
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=414,
-                end=453,
-                focus="关键在注入时机：Skill Registry 先进入 prompt，模型选择的 Skill 详情随后进入 prompt，MCP 工具进入 `all_tools`。",
+                start=341,
+                end=362,
+                focus="关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 `all_tools`。",
             ),
         ],
     ),

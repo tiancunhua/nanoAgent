@@ -11,7 +11,7 @@
 本讲只讲三件事：
 
 1. **Rules**：把项目规则写成文件，启动时注入 prompt。
-2. **Skills**：把可复用的任务方法写成 Markdown，先注册摘要，再由大模型选择是否加载完整内容。
+2. **Skills**：把可复用的任务方法写成 Markdown，启动时注入 prompt。
 3. **MCP**：把外部工具定义写成配置，启动时追加到 tools 列表。
 
 这就是能力外置。
@@ -64,7 +64,7 @@ Rule 是项目级约束。演示里的最小 Rule 是：
 
 ---
 
-## 三、Skill：任务方法渐进式进入 prompt
+## 三、Skill：任务方法进入 prompt
 
 ```python
 SKILLS_DIR = ".agent/skills"
@@ -74,8 +74,6 @@ def load_skills():
     if not os.path.exists(SKILLS_DIR):
         return []
     try:
-        # 这里先只扫描 Skill 文件，不急着把完整内容都交给大模型。
-        # 后面会先给模型摘要，再由模型决定是否需要展开完整 Skill。
         skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
             Path(SKILLS_DIR).glob("*.md")
         )
@@ -108,66 +106,52 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
 4. 文档或示例
 ```
 
-这里有一个关键点：**不是启动时把完整 Skill 都塞进 prompt**，而是先给大模型一份很短的 Skill Registry，让它判断本轮任务需不需要展开某个 Skill。
+Markdown 文件会被解析成三部分：frontmatter 里的名称和说明、正文里的操作步骤、以及文件路径。
 
 ```python
-def format_skill_summary_for_prompt(skill):
-    # 第一阶段：只把 Skill Registry 放进 prompt。
-    # 大模型先看到有哪些 Skill、何时使用、详情文件在哪里，但还看不到完整手册。
-    lines = [f"- {skill['name']}: {skill.get('description', '')}"]
+def parse_markdown_skill(path):
+    content = path.read_text(encoding="utf-8")
+    metadata = {}
+    body = content
+    if content.startswith("---\n"):
+        end = content.find("\n---", 4)
+        if end != -1:
+            frontmatter = content[4:end].strip()
+            body = content[end + 4 :].strip()
+            for line in frontmatter.splitlines():
+                if ":" not in line:
+                    continue
+                key, value = line.split(":", 1)
+                metadata[key.strip()] = value.strip()
+    name = metadata.get(
+        "name", path.parent.name if path.name == "SKILL.md" else path.stem
+    )
+    return {
+        "name": name,
+        "description": metadata.get("description", ""),
+        "when_to_use": metadata.get("when_to_use", ""),
+        "path": str(path),
+        "content": body,
+    }
+```
+
+最后把 Skill 整理成 prompt 片段：
+
+```python
+def format_skill_for_prompt(skill):
+    lines = [
+        f"## {skill['name']}",
+        f"Source: {skill['path']}",
+        f"Description: {skill.get('description', '')}",
+    ]
     when_to_use = skill.get("when_to_use")
     if when_to_use:
-        lines.append(f"  When to use: {when_to_use}")
-    if skill.get("triggers"):
-        lines.append(f"  Triggers: {', '.join(skill['triggers'])}")
-    lines.append(f"  Detail file: {skill['path']}")
+        lines.append(f"When to use: {when_to_use}")
+    lines.append(skill["content"])
     return "\n".join(lines)
 ```
 
-接下来不是 Python 代码做固定选择，而是大模型根据 Registry 和用户任务做一次轻量决策：
-
-```python
-def select_skills_with_model(task, skills):
-    if not skills:
-        return []
-    registry = "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
-    # 这里不是 Python 代码替模型做选择，而是发起一次轻量模型决策：
-    # 模型只看到 Skill Registry 和用户任务，然后返回本轮要展开的 Skill 名称。
-    response = client.chat.completions.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You decide which skills should be progressively loaded. "
-                    "If the task explicitly names a skill, include that skill. "
-                    "Only output a JSON array of skill names. Output [] if no skill "
-                    "is needed."
-                ),
-            },
-            {
-                "role": "user",
-                "content": f"# Skill Registry\n{registry}\n\n# User Task\n{task}",
-            },
-        ],
-    )
-    raw_selection = response.choices[0].message.content
-    selected_names = parse_selected_skill_names(
-        raw_selection, [skill["name"] for skill in skills]
-    )
-    return [skill for skill in skills if skill["name"] in selected_names]
-```
-
-Python 代码随后只校验模型返回的 Skill 名称，并把对应 Markdown 拼回 prompt：
-
-```python
-def format_skill_detail_for_prompt(skill):
-    # 第二阶段：模型选择该 Skill 后，才把完整 SKILL.md 正文追加到 prompt。
-    # 这样上下文不会被所有 Skill 挤满，也能清楚观察“渐进式加载”发生了。
-    return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
-```
-
-这就是渐进式加载：平时只给模型目录，由模型判断需要哪本手册；需要时再把对应 Markdown 展开。演示时也更容易观察：第三条命令会多打一行 `[Skills] Model selected ...`。
+这版演示只讲一个更直接的结论：**Skill 是外置的任务方法，启动时进入 prompt，影响模型做事方式。**
 
 ---
 
@@ -193,7 +177,7 @@ def load_mcp_tools():
         return []
 ```
 
-Rule、Skill 摘要、模型选择的 Skill 详情进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
+Rule 和 Skill 进入 prompt，MCP 工具进入 tools 列表。这个差异很重要：
 
 ```python
 all_tools = base_tools + mcp_tools
@@ -220,30 +204,12 @@ def run_agent_with_external_capabilities(task):
         context_parts.append(f"\n# Rules\n{rules}")
         print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
-        # 先注册 Skill 摘要，相当于给模型一张能力目录。
         context_parts.append(
-            f"\n# Skill Registry\n"
-            + "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
+            f"\n# Skills\n"
+            + "\n\n".join(format_skill_for_prompt(skill) for skill in skills)
         )
         skill_names = [skill["name"] for skill in skills]
-        print(
-            f"[Skills] Registered {len(skills)} skill summaries: "
-            f"{', '.join(skill_names)}"
-        )
-    selected_skills = select_skills_with_model(task, skills)
-    if selected_skills:
-        # 再按模型对本轮任务的选择结果，追加完整 Skill 详情。
-        context_parts.append(
-            f"\n# Loaded Skill Details\n"
-            + "\n\n".join(
-                format_skill_detail_for_prompt(skill) for skill in selected_skills
-            )
-        )
-        skill_names = [skill["name"] for skill in selected_skills]
-        print(
-            f"[Skills] Model selected {len(selected_skills)} skill details: "
-            f"{', '.join(skill_names)}"
-        )
+        print(f"[Skills] Loaded {len(skills)} skill files: {', '.join(skill_names)}")
     if mcp_tools:
         tool_names = [tool["function"]["name"] for tool in mcp_tools]
         print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
@@ -252,55 +218,46 @@ def run_agent_with_external_capabilities(task):
 最终结构可以记成一句话：
 
 ```text
-Rules + Skill Registry + Model-selected Skill Details → system prompt
-MCP                                                   → tools
+Rules + Skills → system prompt
+MCP            → tools
 ```
 
 ---
 
 ## 六、实际运行效果
 
-### 1. 证明 MCP 生效
+### 1. 看加载日志，并证明 MCP 生效
 
 ```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"
+python3 agent/03-skills-mcp/agent-skills-mcp.py "调用 project_guide，用一句话说明 Rule、Skill、MCP 如何接入 Agent"
 ```
 
 观察点：
 
 ```text
 [Rules] Loaded 1 rule files
-[Skills] Registered 1 skill summaries: todo_prioritizer
+[Skills] Loaded 1 skill files: todo_prioritizer
 [MCP] Loaded 1 MCP tools: project_guide
 [Tool] project_guide(...)
 ```
 
-只要看到 `[Tool] project_guide(...)`，就能证明 MCP 工具已经进入 tools 列表，并被模型实际调用。
+前三行证明外置配置已经被加载；只要看到 `[Tool] project_guide(...)`，就能证明 MCP 工具已经进入 tools 列表，并被模型实际调用。
 
 ### 2. 证明 Rule 生效
 
 ```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"
+python3 agent/03-skills-mcp/agent-skills-mcp.py "不要调用任何工具。请按本项目 Rule 的要求回答：Rule 是否已加载？"
 ```
 
-观察点：回答开头会先声明本轮加载了 Rule、Skill、MCP 三类外置能力，并说明遵守了 `.agent/rules/demo-style.md`。
+观察点：回答会按 `.agent/rules/demo-style.md` 的要求，先说明本轮加载了 Rule、Skill、MCP 三类外置能力。
 
-### 3. 证明 Skill 渐进式加载
+### 3. 证明 Skill 生效
 
 ```bash
-python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"
+python3 agent/03-skills-mcp/agent-skills-mcp.py "按优先级排序：A README 错别字；B 删除接口缺少权限校验；C 应用启动报错；D 搜索分页重复。只输出前三项和舍弃项。"
 ```
 
-先观察启动日志：
-
-```text
-[Skills] Registered 1 skill summaries: todo_prioritizer
-[Skills] Model selected 1 skill details: todo_prioritizer
-```
-
-第一行说明大模型先看到了 Skill 摘要；第二行说明大模型选择本轮需要 `todo_prioritizer`，所以完整的 `.agent/skills/todo-prioritizer/SKILL.md` 才被加载进 prompt。
-
-再观察回答内容：
+观察回答内容：
 
 ```text
 1. 优先级 - 安全风险 - 删除用户接口缺少权限校验
