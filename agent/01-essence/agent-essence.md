@@ -155,46 +155,48 @@ available_functions = {
 
 这个字典是**工具调度的核心**——当 LLM 说"我要调用 execute_bash"时，代码通过这个字典找到对应的 Python 函数并执行。
 
-### 3.4 Agent 核心循环：最精华的 20 行代码
+### 3.4 Agent 核心循环：整个 Agent 的灵魂
 
 ```python
 def run_agent(user_message, max_iterations=5):
     messages = [
-        {"role": "system", "content": "You are a helpful assistant that can interact with the system. Be concise."},
-        {"role": "user", "content": user_message}
+        {"role": "system", "content": "You are a helpful assistant. Be concise."},
+        {"role": "user", "content": user_message},
     ]
-
     for _ in range(max_iterations):
-        # Step 1: 把完整对话历史 + 工具列表发给 LLM
+        # Step 1：把完整的对话历史（含工具结果）发给 LLM
         response = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             messages=messages,
-            tools=tools
+            tools=tools,
         )
-
         message = response.choices[0].message
         messages.append(message)
 
-        # Step 2: 如果 LLM 没有调用工具 → 任务完成，返回文本回答
+        # Step 2：LLM 没有调用工具 → 任务完成，返回答案
         if not message.tool_calls:
             return message.content
 
-        # Step 3: 如果 LLM 要调用工具 → 逐个执行，把结果追加到对话历史
+        # Step 3：LLM 调用了工具 → 执行，结果追加到 messages，继续循环
         for tool_call in message.tool_calls:
-            function_name = tool_call.function.name
-            function_args = json.loads(tool_call.function.arguments)
-            print(f"[Tool] {function_name}({function_args})")
-            function_response = available_functions[function_name](**function_args)
-            messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "content": function_response
-            })
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+            print(f"[Tool] {name}({args})")
+            result = functions[name](**args)
+            messages.append({"role": "tool", "tool_call_id": tool_call.id, "content": result})
 
     return "Max iterations reached"
 ```
 
-这 20 多行代码是整个 Agent 的灵魂。让我逐步拆解这个循环里发生了什么。
+三个步骤，反复迭代：
+
+**Step 1 — 问 LLM**：把完整的 `messages`（用户任务 + 历史工具调用 + 历史工具结果）全部发给 LLM，让它决定下一步。
+
+**Step 2 — 检查结束条件**：如果 LLM 返回的是纯文本（`tool_calls` 为空），说明它认为任务已完成，直接返回答案，循环结束。
+
+**Step 3 — 执行工具**：如果 LLM 要调用工具，就执行工具、把结果追加到 `messages`，然后回到 Step 1。LLM 在下一轮看到工具结果后，再决定继续调用还是返回答案。
+
+这就是 Agent 的全部秘密：**一个带记忆的 while 循环**。`messages` 列表承担"记忆"的角色——每一次决策、每一次工具调用的结果都被记录下来，成为下一轮决策的输入。
 
 ---
 

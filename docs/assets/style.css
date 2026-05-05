@@ -651,6 +651,36 @@ code.inline {
   color: #3a8a52;
 }
 
+.loop-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.loop-step {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(178, 76, 42, 0.14);
+  background: rgba(255, 248, 236, 0.52);
+}
+
+.loop-step-label {
+  display: block;
+  color: var(--accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.loop-step p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .code-card-head {
   display: flex;
   justify-content: space-between;
@@ -773,5 +803,9 @@ code.inline {
     grid-template-columns: 1fr;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .loop-steps {
+    grid-template-columns: 1fr;
   }
 }

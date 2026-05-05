@@ -159,7 +159,7 @@
               <div class="code-card-head">
                 <div>
                   <p class="lesson-index">最小 Agent 循环</p>
-                  <h3>围绕这二十余行展开：请求模型、获取 tool call、执行工具、回填结果、进入下一轮。</h3>
+                  <h3>三步构成一轮，反复迭代，直到模型不再调用工具。</h3>
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L73-L97">看 GitHub 行号</a>
               </div>
@@ -169,6 +169,7 @@
   76         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
   77     ]
   78     for _ in range(max_iterations):
+             # ── Step 1：把完整 messages（含历史工具结果）发给 LLM ──────────────
   79         response = client.chat.completions.create(
   80             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
   81             messages=messages,
@@ -176,8 +177,10 @@
   83         )
   84         message = response.choices[0].message
   85         messages.append(message)
+             # ── Step 2：tool_calls 为空 → 任务完成，返回答案 ─────────────────
   86         if not message.tool_calls:
   87             return message.content
+             # ── Step 3：有 tool_call → 执行工具，结果追加，进入下一轮 ─────────
   88         for tool_call in message.tool_calls:
   89             name = tool_call.function.name
   90             args = json.loads(tool_call.function.arguments)
@@ -188,6 +191,20 @@
   95                 result = functions[name](**args)
   96             messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: result})
   97     return &quot;Max iterations reached&quot;</code></pre>
+              <div class="loop-steps">
+                <div class="loop-step">
+                  <span class="loop-step-label">Step 1 · 问 LLM</span>
+                  <p>把完整的 <code class="inline">messages</code>（用户任务 + 历史工具调用 + 历史结果）发给模型，让它决定下一步。</p>
+                </div>
+                <div class="loop-step">
+                  <span class="loop-step-label">Step 2 · 检查结束</span>
+                  <p><code class="inline">tool_calls</code> 为空 → 模型认为任务完成，直接返回答案，循环结束。</p>
+                </div>
+                <div class="loop-step">
+                  <span class="loop-step-label">Step 3 · 执行工具</span>
+                  <p>调用对应函数，把结果追加到 <code class="inline">messages</code>，回到 Step 1 再次决策。</p>
+                </div>
+              </div>
             </article>
 
             <article class="code-card">
