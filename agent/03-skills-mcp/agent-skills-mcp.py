@@ -354,8 +354,7 @@ def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
     return "Max iterations reached", messages
 
 
-def run_agent_claudecode(task):
-    print("[Init] Loading ClaudeCode features...")
+def run_agent_with_external_capabilities(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
@@ -410,4 +409,4 @@ if __name__ == "__main__":
         print("\nFeatures: Rules, Skills, MCP")
         sys.exit(1)
     task = " ".join(sys.argv[1:])
-    run_agent_claudecode(task)
+    run_agent_with_external_capabilities(task)

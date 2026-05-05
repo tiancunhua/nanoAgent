@@ -48,7 +48,7 @@
           <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">413 行代码</span>
+            <span class="chip">412 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -275,49 +275,49 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L357-L399">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 357 def run_agent_claudecode(task):
- 358     print(&quot;[Init] Loading ClaudeCode features...&quot;)
- 359     rule_count = count_rule_files()
- 360     rules = load_rules()
- 361     skills = load_skills()
- 362     # matched_skills 表示“本轮任务真正需要展开的 Skill”。
- 363     # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
- 364     matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
- 365     mcp_tools = load_mcp_tools()
- 366     all_tools = base_tools + mcp_tools
- 367     context_parts = [
- 368         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 369     ]
- 370     if rules:
- 371         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 372         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
- 373     if skills:
- 374         # 先注册 Skill 摘要，相当于给模型一张能力目录。
- 375         context_parts.append(
- 376             f&quot;\n# Skill Registry\n&quot;
- 377             + &quot;\n&quot;.join(format_skill_summary_for_prompt(skill) for skill in skills)
- 378         )
- 379         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 380         print(
- 381             f&quot;[Skills] Registered {len(skills)} skill summaries: &quot;
- 382             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
- 383         )
- 384     if matched_skills:
- 385         # 再按本轮任务命中的结果，追加完整 Skill 详情。
- 386         context_parts.append(
- 387             f&quot;\n# Loaded Skill Details\n&quot;
- 388             + &quot;\n\n&quot;.join(
- 389                 format_skill_detail_for_prompt(skill) for skill in matched_skills
- 390             )
- 391         )
- 392         skill_names = [skill[&quot;name&quot;] for skill in matched_skills]
- 393         print(
- 394             f&quot;[Skills] Progressive load {len(matched_skills)} skill details: &quot;
- 395             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
- 396         )
- 397     if mcp_tools:
- 398         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
- 399         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
+              <pre class="code-block"><code class="language-python"> 357 def run_agent_with_external_capabilities(task):
+ 358     rule_count = count_rule_files()
+ 359     rules = load_rules()
+ 360     skills = load_skills()
+ 361     # matched_skills 表示“本轮任务真正需要展开的 Skill”。
+ 362     # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
+ 363     matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
+ 364     mcp_tools = load_mcp_tools()
+ 365     all_tools = base_tools + mcp_tools
+ 366     context_parts = [
+ 367         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 368     ]
+ 369     if rules:
+ 370         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 371         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 372     if skills:
+ 373         # 先注册 Skill 摘要，相当于给模型一张能力目录。
+ 374         context_parts.append(
+ 375             f&quot;\n# Skill Registry\n&quot;
+ 376             + &quot;\n&quot;.join(format_skill_summary_for_prompt(skill) for skill in skills)
+ 377         )
+ 378         skill_names = [skill[&quot;name&quot;] for skill in skills]
+ 379         print(
+ 380             f&quot;[Skills] Registered {len(skills)} skill summaries: &quot;
+ 381             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
+ 382         )
+ 383     if matched_skills:
+ 384         # 再按本轮任务命中的结果，追加完整 Skill 详情。
+ 385         context_parts.append(
+ 386             f&quot;\n# Loaded Skill Details\n&quot;
+ 387             + &quot;\n\n&quot;.join(
+ 388                 format_skill_detail_for_prompt(skill) for skill in matched_skills
+ 389             )
+ 390         )
+ 391         skill_names = [skill[&quot;name&quot;] for skill in matched_skills]
+ 392         print(
+ 393             f&quot;[Skills] Progressive load {len(matched_skills)} skill details: &quot;
+ 394             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
+ 395         )
+ 396     if mcp_tools:
+ 397         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 398         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)
+ 399     messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;\n&quot;.join(context_parts)}]</code></pre>
             </article>
 
           </div>

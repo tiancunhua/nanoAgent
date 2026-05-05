@@ -181,8 +181,7 @@ all_tools = base_tools + mcp_tools
 ## 五、三类配置如何组装
 
 ```python
-def run_agent_claudecode(task):
-    print("[Init] Loading ClaudeCode features...")
+def run_agent_with_external_capabilities(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
