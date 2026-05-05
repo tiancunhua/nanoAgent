@@ -248,21 +248,21 @@ LESSONS = [
         short_title="记忆回放",
         stage="第二步：持久记忆",
         lesson_minutes="8 分钟",
-        summary="本讲聚焦 Memory 本身：Agent 如何将一次任务写入 `agent_memory.md`，又如何在下次运行时将这段历史重新带回上下文。规划仅作为补充。",
+        summary="本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。",
         core="写入记忆 + 回放记忆",
         tags=["Memory", "Persistence", "Context Replay"],
-        scenario="今天让 Agent 写了一份总结，明天再启动它继续往下做——希望它能记得昨天写过什么，而不是每次都从一张白纸开始。这就是 Memory 要解决的问题。",
-        demo_command='python agent/02-memory/agent-memory.py "创建 launch-note.txt，内容是 Agent Memory Demo"\npython agent/02-memory/agent-memory.py "不重新读文件，只根据记忆说明你上一次完成了什么任务"',
+        scenario="第一讲的 Agent 每次启动都是一张白纸。现在希望它完成一次任务后留下记录，下一次运行时不用重新读文件，也能知道上一次做过什么。",
+        demo_command='python3 agent/02-memory/agent-memory.py "创建 launch-note.txt，内容是 Agent Memory Demo"\npython3 agent/02-memory/agent-memory.py "不重新读文件，只根据记忆说明你上一次完成了什么任务"',
         demo_goal="演示 Agent 将执行结果写入记忆文件，并在下次运行时直接回放这段历史。",
         demo_expected=[
             "第一次运行结束后，打开 `agent_memory.md`，确认任务与结果已追加写入。",
             "第二次运行即便不再读取文件，也能基于上一次的历史说明已完成的内容。",
-            "关键不在于 `--plan`，而在 `load_memory()` 与 `save_memory()` 形成闭环。",
+            "关键是 `load_memory()`、`build_messages()`、`save_memory()` 形成 Memory 闭环。",
         ],
         student_takeaways=[
             "能描述 Memory 的三个最小步骤：写入、读取、回放。",
-            "能看懂 `load_memory()`、`save_memory()` 与 `run_agent_plus()` 之间的串接关系。",
-            "理解规划是可选增强，本讲的主线是持久记忆。",
+            "能看懂 `load_memory()`、`save_memory()` 与 `build_messages()` 之间的串接关系。",
+            "能说明第二讲相对第一讲只增加 Memory，不改变工具循环。",
         ],
         practice_steps=[
             "连续运行两次任务，再打开 `agent_memory.md`，观察日志如何逐条追加。",
@@ -272,7 +272,7 @@ LESSONS = [
         talk_points=[
             "最小 Memory 不需要向量库，仅需打通“写入文件”与“下次读回”这条链路。",
             "让 Agent 记住过去的并非文件本身，而是历史被重新注入到 system prompt。",
-            "规划可以稍后展开，但缺少 Memory 时，Agent 每次启动都会从零开始。",
+            "第二讲的递进关系很清楚：第一讲负责能动手，第二讲负责能记住上一次。",
         ],
         pitfalls=[
             "只写入不读取的并非 Memory，仅是日志。",
@@ -285,14 +285,14 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="Memory 写入与读取",
-                start=109,
-                end=127,
+                start=77,
+                end=90,
                 focus="这段代码构成最小 Memory 闭环的前半段：从文件读取历史，再将新结果追加写入。",
             ),
             Snippet(
                 title="将旧记忆重新带回上下文",
-                start=199,
-                end=220,
+                start=93,
+                end=117,
                 focus="关键不在于保存了多少历史，而在新任务启动时是否将旧记忆重新写回 system prompt。",
             ),
         ],

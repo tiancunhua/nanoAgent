@@ -3,11 +3,11 @@ import json
 import subprocess
 import sys
 from datetime import datetime
-from typing import Any
 from openai import OpenAI
 
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL")
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=os.environ.get("OPENAI_BASE_URL"),
 )
 
 MEMORY_FILE = "agent_memory.md"
@@ -17,15 +17,10 @@ tools = [
         "type": "function",
         "function": {
             "name": "execute_bash",
-            "description": "Execute a bash command on the system",
+            "description": "Execute a bash command",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "command": {
-                        "type": "string",
-                        "description": "The bash command to execute",
-                    }
-                },
+                "properties": {"command": {"type": "string"}},
                 "required": ["command"],
             },
         },
@@ -34,12 +29,10 @@ tools = [
         "type": "function",
         "function": {
             "name": "read_file",
-            "description": "Read contents of a file",
+            "description": "Read a file",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "path": {"type": "string", "description": "Path to the file"}
-                },
+                "properties": {"path": {"type": "string"}},
                 "required": ["path"],
             },
         },
@@ -48,12 +41,12 @@ tools = [
         "type": "function",
         "function": {
             "name": "write_file",
-            "description": "Write content to a file",
+            "description": "Write to a file",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "path": {"type": "string", "description": "Path to the file"},
-                    "content": {"type": "string", "description": "Content to write"},
+                    "path": {"type": "string"},
+                    "content": {"type": "string"},
                 },
                 "required": ["path", "content"],
             },
@@ -63,103 +56,54 @@ tools = [
 
 
 def execute_bash(command):
-    try:
-        result = subprocess.run(
-            command, shell=True, capture_output=True, text=True, timeout=30
-        )
-        return result.stdout + result.stderr
-    except Exception as e:
-        return f"Error: {str(e)}"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return result.stdout + result.stderr
 
 
 def read_file(path):
-    try:
-        with open(path, "r") as f:
-            return f.read()
-    except Exception as e:
-        return f"Error: {str(e)}"
+    with open(path, "r") as f:
+        return f.read()
 
 
 def write_file(path, content):
-    try:
-        with open(path, "w") as f:
-            f.write(content)
-        return f"Successfully wrote to {path}"
-    except Exception as e:
-        return f"Error: {str(e)}"
+    with open(path, "w") as f:
+        f.write(content)
+    return f"Wrote to {path}"
 
 
-available_functions = {
-    "execute_bash": execute_bash,
-    "read_file": read_file,
-    "write_file": write_file,
-}
-
-
-def parse_tool_arguments(raw_arguments: str) -> dict[str, Any]:
-    if not raw_arguments:
-        return {}
-    try:
-        parsed = json.loads(raw_arguments)
-        return parsed if isinstance(parsed, dict) else {}
-    except json.JSONDecodeError as error:
-        return {"_argument_error": f"Invalid JSON arguments: {error}"}
+functions = {"execute_bash": execute_bash, "read_file": read_file, "write_file": write_file}
 
 
 def load_memory():
     if not os.path.exists(MEMORY_FILE):
         return ""
-    try:
-        with open(MEMORY_FILE, "r") as f:
-            content = f.read()
-            lines = content.split("\n")
-            return "\n".join(lines[-50:]) if len(lines) > 50 else content
-    except:
-        return ""
+    with open(MEMORY_FILE, "r") as f:
+        lines = f.read().splitlines()
+    return "\n".join(lines[-50:])
 
 
 def save_memory(task, result):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = f"\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n"
-    try:
-        with open(MEMORY_FILE, "a") as f:
-            f.write(entry)
-    except:
-        pass
+    with open(MEMORY_FILE, "a") as f:
+        f.write(entry)
+    print(f"[Memory] Saved to {MEMORY_FILE}")
 
 
-def create_plan(task):
-    print("[Planning] Breaking down task...")
-    response = client.chat.completions.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[
-            {
-                "role": "system",
-                "content": "Break down the task into 3-5 simple, actionable steps. Return as JSON array of strings.",
-            },
-            {"role": "user", "content": f"Task: {task}"},
-        ],
-        response_format={"type": "json_object"},
-    )
-    try:
-        plan_data = json.loads(response.choices[0].message.content)
-        if isinstance(plan_data, dict):
-            steps = plan_data.get("steps", [task])
-        elif isinstance(plan_data, list):
-            steps = plan_data
-        else:
-            steps = [task]
-        print(f"[Plan] {len(steps)} steps created")
-        for i, step in enumerate(steps, 1):
-            print(f"  {i}. {step}")
-        return steps
-    except:
-        return [task]
+def build_messages(user_message):
+    system_prompt = "You are a helpful assistant. Be concise."
+    memory = load_memory()
+    if memory:
+        print(f"[Memory] Loaded {MEMORY_FILE}")
+        system_prompt += f"\n\nPrevious context:\n{memory}"
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_message},
+    ]
 
 
-def run_agent_step(task, messages, max_iterations=5):
-    messages.append({"role": "user", "content": task})
-    actions = []
+def run_agent(user_message, max_iterations=5):
+    messages = build_messages(user_message)
     for _ in range(max_iterations):
         response = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
@@ -169,64 +113,27 @@ def run_agent_step(task, messages, max_iterations=5):
         message = response.choices[0].message
         messages.append(message)
         if not message.tool_calls:
-            return message.content, actions, messages
+            save_memory(user_message, message.content)
+            return message.content
         for tool_call in message.tool_calls:
-            function_payload = getattr(tool_call, "function", None)
-            if function_payload is None:
-                continue
-            function_name = str(getattr(function_payload, "name", ""))
-            raw_arguments = str(getattr(function_payload, "arguments", ""))
-            function_args = parse_tool_arguments(raw_arguments)
-            print(f"[Tool] {function_name}({function_args})")
-            function_impl = available_functions.get(function_name)
-            if function_impl is None:
-                function_response = f"Error: Unknown tool '{function_name}'"
-            elif "_argument_error" in function_args:
-                function_response = f"Error: {function_args['_argument_error']}"
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+            print(f"[Tool] {name}({args})")
+            if name not in functions:
+                result = f"Error: Unknown tool '{name}'"
             else:
-                function_response = function_impl(**function_args)
-                actions.append({"tool": function_name, "args": function_args})
+                result = functions[name](**args)
             messages.append(
-                {
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "content": function_response,
-                }
+                {"role": "tool", "tool_call_id": tool_call.id, "content": result}
             )
-    return "Max iterations reached", actions, messages
-
-
-def run_agent_plus(task, use_plan=False):
-    memory = load_memory()
-    system_prompt = (
-        "You are a helpful assistant that can interact with the system. Be concise."
-    )
-    if memory:
-        system_prompt += f"\n\nPrevious context:\n{memory}"
-    messages = [{"role": "system", "content": system_prompt}]
-    if use_plan:
-        steps = create_plan(task)
-    else:
-        steps = [task]
-    all_results = []
-    for i, step in enumerate(steps, 1):
-        if len(steps) > 1:
-            print(f"\n[Step {i}/{len(steps)}] {step}")
-        result, actions, messages = run_agent_step(step, messages)
-        all_results.append(result)
-        print(f"\n{result}")
-    final_result = "\n".join(all_results)
-    save_memory(task, final_result)
-    return final_result
+    result = "Max iterations reached"
+    save_memory(user_message, result)
+    return result
 
 
 if __name__ == "__main__":
-    use_plan = "--plan" in sys.argv
-    if use_plan:
-        sys.argv.remove("--plan")
     if len(sys.argv) < 2:
-        print("Usage: python agent/02-memory/agent-memory.py [--plan] 'your task here'")
-        print("  --plan: Enable task planning and decomposition")
+        print("Usage: python3 agent/02-memory/agent-memory.py 'your task here'")
         sys.exit(1)
     task = " ".join(sys.argv[1:])
-    run_agent_plus(task, use_plan=use_plan)
+    print(run_agent(task))
