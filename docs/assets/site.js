@@ -30,18 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".demo-box").forEach((box) => {
     const pre = box.querySelector(".demo-command");
-    if (!pre) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "demo-command-wrapper";
-    pre.parentNode.insertBefore(wrapper, pre);
-    wrapper.appendChild(pre);
+    const label = box.querySelector(".lesson-index");
+    if (!pre || !label) return;
 
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.setAttribute("aria-label", "复制命令");
     btn.textContent = "复制";
-    wrapper.appendChild(btn);
+    label.appendChild(btn);
 
     btn.addEventListener("click", () => {
       const text = (pre.querySelector("code") || pre).innerText;
