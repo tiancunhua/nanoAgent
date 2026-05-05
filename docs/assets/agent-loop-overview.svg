@@ -37,7 +37,4 @@
   <path d="M468 386L458 362L442 382" fill="#B24C2A"/>
   <text x="694" y="418" fill="#B24C2A" font-family="Arial, PingFang SC, sans-serif" font-size="22" font-weight="700">结果回填到 messages，进入下一轮判断</text>
 
-  <rect x="330" y="72" width="542" height="90" rx="18" fill="#FFFDF8" stroke="#E2C5A6" stroke-width="2"/>
-  <text x="356" y="108" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">核心不是 Tool 多强，而是这个回填循环：</text>
-  <text x="356" y="133" fill="#5A6472" font-family="Arial, PingFang SC, sans-serif" font-size="18">每轮结果追加到 messages，推动 LLM 继续决策。</text>
 </svg>
