@@ -1,8 +1,8 @@
 # 从零开始理解 Agent（三）：Rules、Skills 与 MCP 如何外置能力
 
-> **「从零开始理解 Agent」系列** —— 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 Agent 背后的核心概念。
+> **「从零开始理解 Agent」系列** —— 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 Agent 背后的核心机制。
 >
-> - [第一篇：底层原理，只有 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
+> - [第一篇：底层原理，约 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
 > - [第二篇：Memory](../02-memory/agent-memory.md) —— 让 Agent 记住上一次
 > - **第三篇：Rules、Skills 与 MCP**（本文）—— 把能力从代码里拿出来
 
@@ -267,7 +267,7 @@ python3 agent/03-skills-mcp/agent-skills-mcp.py "按优先级排序：A README �
 舍弃项：README 示例命令有错别字（文档或示例类，优先级最低）。
 ```
 
-这里最适合讲 Skill：模型不是在扫仓库，也不是靠临场发挥，而是在使用外部 Markdown 里定义好的排序方法。
+这里可以重点看 Skill：模型不是在扫仓库，也不是靠临场发挥，而是在使用外部 Markdown 里定义好的排序方法。
 
 ---
 

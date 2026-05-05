@@ -1,8 +1,8 @@
 # 从零开始理解 Agent（二）：Memory 如何让 Agent 记住上一次
 
-> **「从零开始理解 Agent」系列** —— 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 Agent 背后的核心概念。
+> **「从零开始理解 Agent」系列** —— 通过一个极简开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 Agent 背后的核心机制。
 >
-> - [第一篇：底层原理，只有 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
+> - [第一篇：底层原理，约 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
 > - **第二篇：Memory**（本文）—— 在第一篇基础上增加持久记忆
 > - [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) —— 能力外置
 
@@ -115,7 +115,7 @@ for tool_call in message.tool_calls:
     )
 ```
 
-这就是第二讲最适合现场强调的递进点：**循环没有变，只是循环开始前多读一次记忆，循环结束后多写一次记忆。**
+这是第二讲可以现场强调的递进点：**循环没有变，只是循环开始前多读一次记忆，循环结束后多写一次记忆。**
 
 ---
 
@@ -161,7 +161,7 @@ python3 agent/02-memory/agent-memory.py "不重新读文件，只根据记忆说
 - 错误结果也会被写入，下一轮可能继续污染上下文。
 - 文件越长，注入 prompt 的成本越高。
 
-但正因为简单，它非常适合教学。你能一眼看清 Memory 的完整链路：
+但正因为简单，它非常适合现场分享：Memory 的完整链路可以一眼看清。
 
 ```text
 本轮任务

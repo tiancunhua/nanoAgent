@@ -1,20 +1,20 @@
-# 从零开始理解 Agent（一）：OpenClaw / Claude Code 的底层原理，只有 100 行
+# 从零开始理解 Agent（一）：OpenClaw / Claude Code 的底层原理，约 100 行
 
-> **「从零开始理解 Agent」系列** —— 通过一个不到 300 行的开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。
+> **「从零开始理解 Agent」系列** —— 通过一个不到 300 行的开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的主要机制。
 >
-> - **第一篇：底层原理，只有 100 行**（本文）—— 工具 + 循环
-> - [第二篇：记忆与规划](../02-memory/agent-memory.md) —— 206 行
-> - [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) —— 282 行
-> - [第四篇：SubAgent 子智能体](../04-subagent/agent-subagent.md) —— 192 行
-> - [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) —— 270 行
-> - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 169 行
-> - [第七篇：安全与权限控制](../07-safety/agent-safe.md) —— 219 行
+> - **第一篇：底层原理，约 100 行**（本文）—— 工具 + 循环
+> - [第二篇：Memory](../02-memory/agent-memory.md) —— 让 Agent 记住上一次
+> - [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) —— 把能力从代码里拿出来
+> - [第四篇：SubAgent 子智能体](../04-subagent/agent-subagent.md) —— 临时委派
+> - [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) —— 持久团队
+> - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 控制上下文
+> - [第七篇：安全与权限控制](../07-safety/agent-safe.md) —— 加上工程边界
 
 很多人用过 ChatGPT、Claude 这样的对话式 AI，也听说过 AI Agent 这个概念。最近 OpenClaw、Claude Code 这类 Coding Agent 火遍了整个开发者圈子——它们能自主读代码、改代码、跑测试，完成以前需要人类手动操作的整个开发流程。
 
 但 Agent 到底和普通对话有什么区别？OpenClaw / Claude Code 这类工具的底层原理是什么？Agent 是怎么"使用工具"的？
 
-本文通过逐行解读一个仅 100 行的极简 Agent 实现—— [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent)，带你彻底搞懂这些问题。理解了这 100 行代码，你就理解了 OpenClaw、Claude Code、Cursor Agent 等一切 Coding Agent 的共同底座。
+本文通过逐行解读一个仅 100 行的极简 Agent 实现—— [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent)，把这些问题拆到能直接观察的代码层。理解这条最小闭环后，再看 OpenClaw、Claude Code、Cursor Agent 等 Coding Agent，会更容易抓住它们共同的底座。
 
 ---
 
@@ -38,7 +38,7 @@
 
 ## 二、nanoAgent 全局架构
 
-nanoAgent 的 `agent-essence.py` 只有 100 行，但五脏俱全。整体结构可以拆成四个部分：
+nanoAgent 的 `agent-essence.py` 大约 100 行，但结构已经完整。整体可以拆成四个部分：
 
 ```
 ┌─────────────────────────────────────────┐
@@ -196,7 +196,7 @@ def run_agent(user_message, max_iterations=5):
 
 **Step 3 — 执行工具**：如果 LLM 要调用工具，就执行工具、把结果追加到 `messages`，然后回到 Step 1。LLM 在下一轮看到工具结果后，再决定继续调用还是返回答案。
 
-这就是 Agent 的全部秘密：**一个带记忆的 while 循环**。`messages` 列表承担"记忆"的角色——每一次决策、每一次工具调用的结果都被记录下来，成为下一轮决策的输入。
+这就是 Agent 的核心雏形：**一个带记忆的 while 循环**。`messages` 列表承担"记忆"的角色——每一次决策、每一次工具调用的结果都被记录下来，成为下一轮决策的输入。
 
 ---
 
@@ -300,7 +300,7 @@ for _ in range(max_iterations):  # 默认 5 次
 
 当这个列表在下一轮发送给 LLM 时，LLM 能看到完整的"行动-观察"历史，从而做出更合理的下一步决策。这就是 Agent 和简单对话的本质区别——**Agent 维护了一条包含行动轨迹的上下文链**。
 
-但请注意，这里的 `messages` 只在单次运行中存在。程序退出后，一切归零。Agent 下次运行时完全不记得上次做过什么。**这个"失忆"问题，正是我们在[第二篇](../02-memory/agent-memory.md)要解决的。**
+但请注意，这里的 `messages` 只在单次运行中存在。程序退出后，一切归零。Agent 下次运行时不会自动带回上次做过什么。**这个跨次记忆问题，正是我们在[第二篇](../02-memory/agent-memory.md)要解决的。**
 
 ### 5.3 LLM 是怎么"决定"调用工具的？
 
@@ -336,13 +336,13 @@ messages.append({
 
 ## 六、这个 Agent 还缺什么？
 
-nanoAgent 的极简设计让核心概念一目了然，但如果你仔细想想，会发现它有几个根本性的缺陷：
+nanoAgent 的极简设计让核心机制一目了然，但继续往真实任务走，会看到几个明显边界：
 
-**1. 没有记忆。** 每次运行都是一张白纸。昨天让它创建的文件，今天问它"你昨天干了什么"，它一脸茫然。
+**1. 没有跨次记忆。** 每次运行都是一张白纸。昨天让它创建的文件，今天问它"你昨天干了什么"，它一脸茫然。
 
-**2. 没有规划。** 面对"重构整个项目"这样的复杂任务，它只能走一步看一步，容易迷失在细节中。
+**2. 没有上下文控制。** 本轮 `messages` 会不断增长，任务一长就可能挤满模型的上下文窗口。
 
-**3. 工具是硬编码的。** 只有 3 个工具，想加新工具必须改代码。没有任何扩展机制。
+**3. 工具是硬编码的。** 这个版本只有 3 个工具，想加新工具需要改代码，还没有扩展机制。
 
 **4. 没有行为约束。** 它可以执行 `rm -rf /`，没有任何规则告诉它什么该做、什么不该做。
 
@@ -391,9 +391,9 @@ python agent/01-essence/agent-essence.py "帮我创建一个 hello.py 文件，�
 
 ## 下一篇预告
 
-现在我们有了一个能干活的 Agent，但它像一条金鱼——做完就忘。如何让 Agent 拥有记忆，记住之前做过的事？如何让它面对复杂任务时先规划再执行，而不是蒙头乱撞？
+现在我们有了一个能干活的 Agent，但它像一条金鱼——做完就忘。如何让 Agent 拥有记忆，记住之前做过的事？
 
-这些问题，我们在 [第二篇：记忆与规划](../02-memory/agent-memory.md) 中解答。代码只多了 67 行，但能力产生质变。
+这个问题，我们在 [第二篇：Memory](../02-memory/agent-memory.md) 中继续拆。它不改变第一讲的工具循环，只给这个循环接上一个最小记事本。
 
 ---
 

@@ -1,32 +1,32 @@
 # 从零开始理解 Agent（四）：给 Agent 找个帮手——最简 SubAgent 实现
 
-> **「从零开始理解 Agent」系列** —— 通过一个不到 300 行的开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的全部核心概念。
+> **「从零开始理解 Agent」系列** —— 通过一个不到 300 行的开源项目 [nanoAgent](https://github.com/GitHubxsy/nanoAgent)，逐层拆解 OpenClaw / Claude Code 等 AI Agent 背后的主要机制。
 >
-> - [第一篇：底层原理，只有 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
-> - [第二篇：记忆与规划](../02-memory/agent-memory.md) —— 182 行
-> - [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) —— 265 行
-> - **第四篇：最简 SubAgent 实现**（本文）—— 新开发，192 行
-> - [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) —— 270 行
-> - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 169 行
-> - [第七篇：安全与权限控制](../07-safety/agent-safe.md) —— 219 行
+> - [第一篇：底层原理，约 100 行](../01-essence/agent-essence.md) —— 工具 + 循环
+> - [第二篇：Memory](../02-memory/agent-memory.md) —— 让 Agent 记住上一次
+> - [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) —— 把能力从代码里拿出来
+> - **第四篇：最简 SubAgent 实现**（本文）—— 临时委派
+> - [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) —— 持久团队
+> - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 控制上下文
+> - [第七篇：安全与权限控制](../07-safety/agent-safe.md) —— 加上工程边界
 
-前三篇，我们一路把 Agent 从"会用工具"进化到了"有记忆、会规划、能扩展"。但到目前为止，所有版本都有一个共同特点：**永远只有一个 Agent 在干活**。
+前三篇，我们一路把 Agent 从"会用工具"推进到"能记住上一次、能从项目配置里扩展能力"。但到目前为止，所有版本都有一个共同特点：**永远只有一个 Agent 在干活**。
 
 想象一下这个场景：你让 Agent "搭建一个博客系统，前端用 React，后端用 FastAPI，数据库用 SQLite"。一个 Agent 要同时精通前端、后端、数据库——它可以做到，但很容易顾此失彼，上下文越来越长，后面写前端的时候把前面后端的细节忘了。
 
-现实中我们怎么解决这类问题？**找帮手，分工合作。**
+现实中遇到这类问题，常见做法是：**找帮手，分工合作。**
 
 这就是 SubAgent（子智能体）的核心思想：主 Agent 当项目经理，把子任务委派给拥有不同专业身份的 SubAgent，各管一块，互不干扰。
 
 ---
 
-## 一、一个生活类比秒懂 SubAgent
+## 一、一个协作类比理解 SubAgent
 
 ```
 之前（一个人干所有活）:
 
-  老板 → "小张，你把前端后端数据库全搞定"
-         小张（一个人扛所有）
+  任务发起方 → "把前端后端数据库都处理一下"
+         一个协作者（同一个上下文里处理所有事）
          - 写后端 API...
          - 写前端页面...（等等，后端那个接口叫啥来着？）
          - 建数据库表...（前端那个字段是什么格式？）
@@ -34,22 +34,22 @@
 
 现在（项目经理 + 专人）:
 
-  老板 → 项目经理（主 Agent）
+  任务发起方 → 协调者（主 Agent）
               │
-              ├── "后端用 FastAPI" → 后端工程师（SubAgent A）
-              ├── "前端用 React"   → 前端工程师（SubAgent B）
-              └── "验证能跑通"     → 测试工程师（SubAgent C）
+              ├── "后端用 FastAPI" → 后端协作者（SubAgent A）
+              ├── "前端用 React"   → 前端协作者（SubAgent B）
+              └── "验证能跑通"     → 测试协作者（SubAgent C）
 
-  每个人只管自己的事，干完把结果交给项目经理汇总。
+  每个 SubAgent 只看自己的任务，完成后把摘要交回主 Agent 汇总。
 ```
 
-但要注意一个关键点：这个类比不完全准确。现实中的员工有名字、有工位、有记忆，下次还能找他。**SubAgent 不是这样的。** SubAgent 的生命周期是：
+但要注意一个关键点：这个类比不完全准确。真实协作里，每个人有稳定身份和长期记忆，下次还能继续接上。**SubAgent 不是这样的。** SubAgent 的生命周期是：
 
 ```
 生成 → 接收任务 → 干活（可以调用工具）→ 返回结果摘要 → 消亡
 ```
 
-**一次性的。** 没有持久身份，没有跨调用的记忆。主 Agent 第一次派出的"后端工程师"和第二次派出的"后端工程师"之间没有任何关联——它们是两个完全独立的、用完就扔的临时工。
+**一次性的。** 没有持久身份，没有跨调用的记忆。主 Agent 第一次派出的"后端工程师"和第二次派出的"后端工程师"之间没有任何关联——它们是两个完全独立的一次性执行上下文。
 
 这个"用完即弃"的设计是刻意的：SubAgent 解决的是**单次任务内的分工问题**，不是长期协作问题。它的价值在于给子任务一个干净的上下文和专注的角色，而不是构建一个持久的团队。
 
@@ -61,7 +61,7 @@
 
 为什么这么少？因为前三篇已经把所有基础设施搭好了：工具系统（第一篇）、Agent 循环（第一篇）、工具路由表（第一篇）、记忆（第二篇）。SubAgent 要做的，只是**复用这些基础设施，再启动一个独立的 Agent 循环**。
 
-（由于我们去掉了 Plan 功能来保持代码简洁，整个 `agent-subagent.py` 只有 192 行，核心循环干净到只有 12 行——这让 SubAgent 的逻辑完全没有噪音干扰。）
+这个版本继续保持最小实现：工具层和循环复用前几讲，新增重点只放在 `subagent()` 如何启动一段独立上下文。
 
 ### 2.1 新增一个工具定义
 
@@ -226,7 +226,7 @@ f"You are a {role}. Be concise and focused. Only do what is asked."
 sub_tools = [t for t in tools if t["function"]["name"] != "subagent"]
 ```
 
-这和第三篇中 `plan` 工具排除自身是同样的思路——**防止无限递归**。如果 SubAgent 也能派出自己的 SubAgent，而那个 SubAgent 又派出自己的……就会无限嵌套下去。
+这里的重点是**防止无限递归**。如果 SubAgent 也能派出自己的 SubAgent，而那个 SubAgent 又派出自己的……就会无限嵌套下去。
 
 一行代码，一个过滤，问题解决。
 
@@ -276,20 +276,20 @@ python agent/04-subagent/agent-subagent.py "不要直接完成任务。请调用
 | 场景 | 推荐方案 | 为什么 |
 |------|---------|--------|
 | "统计目录下的文件数" | 第一篇的基础 Agent | 简单任务，不需要额外机制 |
-| "找到所有 TODO 并整理到文件" | 第二篇的 Plan 多步执行 | 步骤之间有依赖（先搜索、再整理、再写入） |
+| "找到所有 TODO 并整理到文件" | 第一篇的基础 Agent 循环 | 步骤之间有依赖，适合让同一个上下文连续推进 |
 | "前端用 React，后端用 FastAPI" | **SubAgent** | 子任务之间相对独立，需要不同专业身份 |
 | "按照项目规范重构代码" | 第三篇的 Rules | 需要行为约束，不需要分工 |
 
-SubAgent 和 Plan 最大的区别：
+SubAgent 和普通单 Agent 循环最大的区别：
 
-| 维度 | Plan（第二篇） | SubAgent（本文） |
+| 维度 | 单 Agent 循环 | SubAgent（本文） |
 |------|--------------|-----------------|
 | 上下文 | 所有步骤**共享** messages | 每个 SubAgent **独立** messages |
 | 身份 | 同一个 Agent，同一个角色 | 每个 SubAgent **不同的专业角色** |
 | 生命周期 | 步骤间 Agent 持续存在 | **生成 → 干活 → 返回摘要 → 消亡**（一次性） |
 | 跨次记忆 | 步骤 2 能看到步骤 1 的全部细节 | SubAgent B 看不到 SubAgent A 做了什么 |
-| 适合 | 步骤之间有依赖 | 子任务之间相对独立 |
-| 类比 | 一个人按步骤做事 | 叫了个跑腿临时工，干完就走 |
+| 适合 | 步骤之间强依赖 | 子任务之间相对独立 |
+| 类比 | 一个人按步骤做事 | 找一个一次性协作者，完成后返回摘要 |
 
 ---
 
@@ -309,7 +309,6 @@ SubAgent 和 Plan 最大的区别：
 │  │  MCP         │  工具扩展层 ──── .agent/mcp.json     │
 │  ├──────────────┤  第二篇                              │
 │  │  Memory      │  持久记忆层 ──── agent_memory.md     │
-│  │  Planning    │  任务分解层 ──── create_plan()       │
 │  ├──────────────┤  第一篇                              │
 │  │  LLM         │  推理决策层 ──── OpenAI API          │
 │  │  Tools       │  工具执行层 ──── bash/read/write     │
@@ -320,21 +319,21 @@ SubAgent 和 Plan 最大的区别：
 
 | 篇 | 文件 | 核心主题 | 一句话总结 |
 |----|------|---------|-----------|
-| 一 | agent-essence.py (100行) | 工具 + 循环 | Agent 的最小本质——LLM 是大脑，代码是手脚 |
-| 二 | agent-memory.py (182行) | 记忆 + 规划 | 时间维度——记住过去、规划未来 |
-| 三 | agent-skills-mcp.py (265行) | Rules + Skills + MCP | 空间维度——扩展知识与工具 |
-| 四 | agent-subagent.py (192行) ⭐新 | SubAgent | 协作维度——给 Agent 找帮手 |
+| 一 | agent-essence.py | 工具 + 循环 | Agent 的最小本质——LLM 是大脑，代码是手脚 |
+| 二 | agent-memory.py | Memory | 时间维度——把上一次结果带回上下文 |
+| 三 | agent-skills-mcp.py | Rules + Skills + MCP | 空间维度——扩展知识与工具 |
+| 四 | agent-subagent.py ⭐新 | SubAgent | 协作维度——给 Agent 找帮手 |
 
-> 注：前三个文件来自 [nanoAgent 原始仓库](https://github.com/GitHubxsy/nanoAgent)。第四个文件是本文新开发的（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/04-subagent/agent-subagent.py)），为了聚焦 SubAgent 核心逻辑，刻意去掉了 Plan 功能，因此行数反而比第三篇少。这不是倒退，而是做减法——**用最干净的代码展示最核心的概念**。
+> 注：前三个文件来自 [nanoAgent 原始仓库](https://github.com/GitHubxsy/nanoAgent)。第四个文件是本文新开发的（[GitHub 源码](https://github.com/GitHubxsy/nanoAgent/blob/main/agent/04-subagent/agent-subagent.py)）。为了聚焦 SubAgent，本文只保留与委派直接相关的代码。
 
-四个维度叠加，就构成了 OpenClaw、Claude Code、Cursor Agent、Devin 等产品的完整架构。
+四个维度叠加起来，就能接近 OpenClaw、Claude Code、Cursor Agent、Devin 等产品中的一部分核心结构。
 
-而贯穿整个系列的核心设计思想只有一个：**一切能力都是"工具"。** 读文件是工具，写文件是工具，搜索是工具，规划是工具（第三篇），甚至**派出一个子智能体也是工具**（本文）。LLM 通过统一的 Function Calling 协议按需调用它们，代码通过统一的路由表（`available_functions`）执行它们。
+而贯穿整个系列的核心设计思想只有一个：**一切能力都可以做成"工具"。** 读文件是工具，写文件是工具，搜索是工具，甚至**派出一个子智能体也是工具**（本文）。LLM 通过统一的 Function Calling 协议按需调用它们，代码通过统一的路由表（`available_functions`）执行它们。
 
-但 SubAgent 的"一次性"本质也带来了局限：它们之间无法通信，不记得上次做了什么，无法被多次调用。当任务需要真正的团队协作——你写完我来接、测出 bug 你去改、改完我再测——就需要把临时工升级为正式员工。
+但 SubAgent 的"一次性"本质也带来了局限：它们之间无法通信，不记得上次做了什么，无法被多次调用。当任务需要持续协作——你写完我来接、测出 bug 再回到开发、改完继续验证——就需要从一次性委派升级为有身份和历史的团队成员。
 
 这就是 [第五篇：多智能体协作与编排](../05-teams/agent-teams.md) 的主题：用两个类（`Agent` + `Team`）实现持久记忆、身份管理和通信通道。
 
 ---
 
-*本文基于 [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent) 的架构扩展。完整系列：[第一篇：底层原理](../01-essence/agent-essence.md) → [第二篇：记忆与规划](../02-memory/agent-memory.md) → [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) → 第四篇：SubAgent（本文） → [第五篇：多智能体协作](../05-teams/agent-teams.md)*
+*本文基于 [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent) 的架构扩展。完整系列：[第一篇：底层原理](../01-essence/agent-essence.md) → [第二篇：Memory](../02-memory/agent-memory.md) → [第三篇：Rules、Skills 与 MCP](../03-skills-mcp/agent-skills-mcp.md) → 第四篇：SubAgent（本文） → [第五篇：多智能体协作](../05-teams/agent-teams.md)*

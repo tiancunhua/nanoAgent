@@ -106,14 +106,14 @@ LESSONS = [
     Lesson(
         slug="essence",
         number="01",
-        title="底层原理，只有 100 行",
+        title="底层原理，约 100 行",
         short_title="最小闭环",
         stage="起步演示",
         lesson_minutes="8 分钟",
         summary="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。",
         core="LLM + 工具 + 循环",
         tags=["工具调用", "Agent Loop", "最小实现"],
-        scenario="把“帮我创建 hello.txt，内容写 Hello Agent”这类任务交给 ChatGPT，它只能给你建议；要让它真正在文件系统里创建出这个文件，就必须在模型外面再裹一层能调用工具、能循环执行的代码。",
+        scenario="把“帮我创建 hello.txt，内容写 Hello Agent”这类任务交给 ChatGPT，它只能给你建议；如果希望它真的在文件系统里创建出这个文件，就需要在模型外面再裹一层能调用工具、能循环执行的代码。",
         demo_command='python agent/01-essence/agent-essence.py "创建 hello.txt，内容是 Hello Agent"',
         demo_goal="现场观察 Agent 不只是输出文字，而是真实地改动了文件系统。",
         demo_expected=[
@@ -141,7 +141,7 @@ LESSONS = [
         ],
         pitfalls=[
             "仅实现 Python 函数而未注册到 `tools`，模型无法感知该能力的存在。",
-            "`execute_bash` 权限过大，后续必须补充安全边界。",
+            "`execute_bash` 权限过大，后续需要补充安全边界。",
             "工具报错同样需要回填给模型，否则模型无法自我修正。",
             "只堆叠工具而不设计循环，最终会退化为普通问答。",
         ],
@@ -165,7 +165,7 @@ LESSONS = [
                 title="工具映射到真实函数",
                 start=54,
                 end=70,
-                focus="Tool 并非抽象概念，最终必须映射到真实函数；模型选中的名字就在这里被执行。",
+                focus="Tool 并非抽象概念，最终会映射到真实函数；模型选中的名字就在这里被执行。",
             ),
         ],
     ),
@@ -212,7 +212,7 @@ LESSONS = [
             "`DEFAULT_MAX_ITERATIONS = 10` 是演示友好值，能避免复杂搜索在结论前过早中断。",
         ],
         pitfalls=[
-            "将全部约束堆入 Rule，会模糊职责边界，模型也更难稳定执行。",
+            "将所有约束都堆入 Rule，会模糊职责边界，模型也更难稳定执行。",
             "Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。",
             "迭代次数调高会改善演示完整度，但也会增加 token 成本与执行时间。",
             "规则、技能、工具描述互相冲突时，模型表现会显著不稳定。",
@@ -332,7 +332,7 @@ LESSONS = [
         ],
         talk_points=[
             "委派的收益来自上下文收敛，并非单纯的并行化。",
-            "角色 prompt 越具体，子代理越接近一个真正的岗位。",
+            "角色 prompt 越具体，子代理越容易形成稳定的任务视角。",
             "返回摘要而非全量历史，是后续控制上下文成本的关键习惯。",
         ],
         pitfalls=[
@@ -441,7 +441,7 @@ LESSONS = [
         ],
         talk_points=[
             "压缩并非为了形式优雅，而是为了避免在真实任务中因上下文溢出而中断。",
-            "最不能丢失的是 system prompt 与当前工作现场。",
+            "需要优先保留的是 system prompt 与当前工作现场。",
             "将旧消息摘要化，本质是借助模型整理自身的历史。",
         ],
         pitfalls=[
@@ -468,10 +468,10 @@ LESSONS = [
         short_title="安全边界",
         stage="工程边界",
         lesson_minutes="5 分钟",
-        summary="最后一讲聚焦 Agent 落地时不可缺少的三道边界：危险命令拦截、人工确认、超长输出截断。",
+        summary="最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。",
         core="黑名单 + 人工确认 + 输出截断",
         tags=["Safety", "Approval", "Guardrails"],
-        scenario="想让 Agent 帮你清理临时文件，但又担心它一句 `rm -rf` 把项目目录也带走，或者读到一个超长文件直接把上下文撑爆。能力越强，越需要在它和系统之间留出一道护栏。",
+        scenario="让 Agent 清理临时文件时，如果它一句 `rm -rf` 把项目目录也带走，或者读到一个超长文件直接把上下文撑爆，问题就会很具体。能力越强，越需要在它和系统之间留出一道护栏。",
         demo_command='python agent/07-safety/agent-safe.py "列出当前目录的文件"',
         demo_goal="建立明确的工程直觉：能力越强，越需要在人机边界处加上护栏。",
         demo_expected=[
@@ -481,18 +481,18 @@ LESSONS = [
         ],
         student_takeaways=[
             "能说清三道防线各自解决的问题。",
-            "理解为何不能将“是否安全”的判断完全交给模型。",
+            "理解为何不宜将“是否安全”的判断完全交给模型。",
             "理解安全与上下文控制是同一件工程责任的两面。",
         ],
         practice_steps=[
             "为 `DANGEROUS_PATTERNS` 增补一条高危命令规则。",
-            "将 `read_file` 限制为仅可读取项目目录，构建最小白名单。",
+            "把 `read_file` 调整为仅可读取项目目录，构建最小允许列表。",
             "尝试读取超长文件，观察截断提示如何返回给模型。",
         ],
         talk_points=[
             "黑名单拦截已知高危动作，人工确认守住最后边界。",
             "输出截断既是安全问题，也是稳定性问题。",
-            "可用的 Agent 必须允许用户随时拒绝某一步。",
+            "更可控的 Agent 应允许用户随时拒绝某一步。",
         ],
         pitfalls=[
             "仅依赖黑名单并不充分，绕过方式始终存在。",
@@ -1228,7 +1228,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
         </div>
 
         <div class="sidebar-card">
-          <h2>课程导航</h2>
+          <h2>分享导航</h2>
           <div class="chapter-rail">{course_nav(lesson.slug)}</div>
         </div>
 
@@ -1431,7 +1431,7 @@ def build_summary_page() -> str:
         </div>
 
         <div class="sidebar-card">
-          <h2>课程导航</h2>
+          <h2>分享导航</h2>
           <div class="chapter-rail">{course_nav("summary")}</div>
         </div>
 
@@ -1470,7 +1470,7 @@ def build_summary_page() -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Closure</p>
             <h2>一小时之后留下什么</h2>
-            <p>如果只记住三件事，应该是下面这些。</p>
+            <p>如果只记住三件事，可以先抓住下面这些。</p>
           </div>
           {render_bullets(SUMMARY_OUTCOMES)}
         </section>
@@ -1490,7 +1490,7 @@ def build_summary_page() -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Full Build</p>
             <h2>完整版 Agent</h2>
-            <p>如果你想把七讲里的组件重新拼回一个可直接运行的原型，这里是最快的入口。</p>
+            <p>想把七讲里的组件重新拼回一个可直接运行的原型，可以从这里进入。</p>
           </div>
           <div class="lesson-grid">
             <article class="lesson-card">
