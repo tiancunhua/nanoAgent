@@ -48,7 +48,7 @@
           <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">400 行代码</span>
+            <span class="chip">413 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -170,90 +170,101 @@
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
                   <h3>这段代码只注册 Skill 摘要，并在任务命中时渐进式加载完整 Markdown Skill。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L226-L307">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L226-L318">看 GitHub 行号</a>
               </div>
               <pre class="code-block"><code class="language-python"> 226 def load_skills():
  227     skills = []
  228     if not os.path.exists(SKILLS_DIR):
  229         return []
  230     try:
- 231         skill_files = sorted(Path(SKILLS_DIR).glob(&quot;*/SKILL.md&quot;)) + sorted(
- 232             Path(SKILLS_DIR).glob(&quot;*.md&quot;)
- 233         )
- 234         for skill_file in skill_files:
- 235             skills.append(parse_markdown_skill(skill_file))
- 236         return skills
- 237     except:
- 238         return []
- 239
- 240
- 241 def parse_markdown_skill(path):
- 242     content = path.read_text(encoding=&quot;utf-8&quot;)
- 243     metadata = {}
- 244     body = content
- 245     if content.startswith(&quot;---\n&quot;):
- 246         end = content.find(&quot;\n---&quot;, 4)
- 247         if end != -1:
- 248             frontmatter = content[4:end].strip()
- 249             body = content[end + 4 :].strip()
- 250             for line in frontmatter.splitlines():
- 251                 if &quot;:&quot; not in line:
- 252                     continue
- 253                 key, value = line.split(&quot;:&quot;, 1)
- 254                 metadata[key.strip()] = value.strip()
- 255     name = metadata.get(
- 256         &quot;name&quot;, path.parent.name if path.name == &quot;SKILL.md&quot; else path.stem
- 257     )
- 258     triggers = [
- 259         trigger.strip().lower()
- 260         for trigger in metadata.get(&quot;triggers&quot;, &quot;&quot;).split(&quot;,&quot;)
- 261         if trigger.strip()
- 262     ]
- 263     return {
- 264         &quot;name&quot;: name,
- 265         &quot;description&quot;: metadata.get(&quot;description&quot;, &quot;&quot;),
- 266         &quot;when_to_use&quot;: metadata.get(&quot;when_to_use&quot;, &quot;&quot;),
- 267         &quot;triggers&quot;: triggers,
- 268         &quot;path&quot;: str(path),
- 269         &quot;content&quot;: body,
- 270     }
- 271
- 272
- 273 def format_skill_summary_for_prompt(skill):
- 274     lines = [f&quot;- {skill[&#x27;name&#x27;]}: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;]
- 275     when_to_use = skill.get(&quot;when_to_use&quot;)
- 276     if when_to_use:
- 277         lines.append(f&quot;  When to use: {when_to_use}&quot;)
- 278     if skill.get(&quot;triggers&quot;):
- 279         lines.append(f&quot;  Triggers: {&#x27;, &#x27;.join(skill[&#x27;triggers&#x27;])}&quot;)
- 280     lines.append(f&quot;  Detail file: {skill[&#x27;path&#x27;]}&quot;)
- 281     return &quot;\n&quot;.join(lines)
- 282
- 283
- 284 def skill_matches_task(skill, task):
- 285     task_lower = task.lower()
- 286     if skill[&quot;name&quot;].lower() in task_lower:
- 287         return True
- 288     return any(trigger in task_lower for trigger in skill.get(&quot;triggers&quot;, []))
- 289
- 290
- 291 def format_skill_detail_for_prompt(skill):
- 292     return f&quot;## {skill[&#x27;name&#x27;]}\nSource: {skill[&#x27;path&#x27;]}\n\n{skill[&#x27;content&#x27;]}&quot;
- 293
- 294
- 295 def load_mcp_tools():
- 296     if not os.path.exists(MCP_CONFIG):
- 297         return []
- 298     try:
- 299         with open(MCP_CONFIG, &quot;r&quot;) as f:
- 300             config = json.load(f)
- 301             mcp_tools = []
- 302             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
- 303                 if server_config.get(&quot;disabled&quot;, False):
- 304                     continue
- 305                 for tool in server_config.get(&quot;tools&quot;, []):
- 306                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
- 307             return mcp_tools</code></pre>
+ 231         # 这里先只扫描 Skill 文件，不急着把完整内容都交给大模型。
+ 232         # 后面会分成“摘要注册”和“命中后加载详情”两个阶段写入 prompt。
+ 233         skill_files = sorted(Path(SKILLS_DIR).glob(&quot;*/SKILL.md&quot;)) + sorted(
+ 234             Path(SKILLS_DIR).glob(&quot;*.md&quot;)
+ 235         )
+ 236         for skill_file in skill_files:
+ 237             skills.append(parse_markdown_skill(skill_file))
+ 238         return skills
+ 239     except:
+ 240         return []
+ 241
+ 242
+ 243 def parse_markdown_skill(path):
+ 244     content = path.read_text(encoding=&quot;utf-8&quot;)
+ 245     metadata = {}
+ 246     body = content
+ 247     # frontmatter 是给路由用的轻量信息；body 才是命中后加载的完整 Skill。
+ 248     if content.startswith(&quot;---\n&quot;):
+ 249         end = content.find(&quot;\n---&quot;, 4)
+ 250         if end != -1:
+ 251             frontmatter = content[4:end].strip()
+ 252             body = content[end + 4 :].strip()
+ 253             for line in frontmatter.splitlines():
+ 254                 if &quot;:&quot; not in line:
+ 255                     continue
+ 256                 key, value = line.split(&quot;:&quot;, 1)
+ 257                 metadata[key.strip()] = value.strip()
+ 258     name = metadata.get(
+ 259         &quot;name&quot;, path.parent.name if path.name == &quot;SKILL.md&quot; else path.stem
+ 260     )
+ 261     triggers = [
+ 262         trigger.strip().lower()
+ 263         for trigger in metadata.get(&quot;triggers&quot;, &quot;&quot;).split(&quot;,&quot;)
+ 264         if trigger.strip()
+ 265     ]
+ 266     return {
+ 267         &quot;name&quot;: name,
+ 268         &quot;description&quot;: metadata.get(&quot;description&quot;, &quot;&quot;),
+ 269         &quot;when_to_use&quot;: metadata.get(&quot;when_to_use&quot;, &quot;&quot;),
+ 270         &quot;triggers&quot;: triggers,
+ 271         &quot;path&quot;: str(path),
+ 272         &quot;content&quot;: body,
+ 273     }
+ 274
+ 275
+ 276 def format_skill_summary_for_prompt(skill):
+ 277     # 第一阶段：只把 Skill Registry 放进 prompt。
+ 278     # 大模型先看到有哪些 Skill、何时使用、详情文件在哪里，但还看不到完整手册。
+ 279     lines = [f&quot;- {skill[&#x27;name&#x27;]}: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;]
+ 280     when_to_use = skill.get(&quot;when_to_use&quot;)
+ 281     if when_to_use:
+ 282         lines.append(f&quot;  When to use: {when_to_use}&quot;)
+ 283     if skill.get(&quot;triggers&quot;):
+ 284         lines.append(f&quot;  Triggers: {&#x27;, &#x27;.join(skill[&#x27;triggers&#x27;])}&quot;)
+ 285     lines.append(f&quot;  Detail file: {skill[&#x27;path&#x27;]}&quot;)
+ 286     return &quot;\n&quot;.join(lines)
+ 287
+ 288
+ 289 def skill_matches_task(skill, task):
+ 290     # 演示里用明确的字符串匹配模拟“Skill 路由”。
+ 291     # 真实框架也可以让模型根据 Registry 判断是否需要打开某个 Skill。
+ 292     task_lower = task.lower()
+ 293     if skill[&quot;name&quot;].lower() in task_lower:
+ 294         return True
+ 295     return any(trigger in task_lower for trigger in skill.get(&quot;triggers&quot;, []))
+ 296
+ 297
+ 298 def format_skill_detail_for_prompt(skill):
+ 299     # 第二阶段：任务命中后，才把完整 SKILL.md 正文追加到 prompt。
+ 300     # 这样上下文不会被所有 Skill 挤满，也能清楚观察“渐进式加载”发生了。
+ 301     return f&quot;## {skill[&#x27;name&#x27;]}\nSource: {skill[&#x27;path&#x27;]}\n\n{skill[&#x27;content&#x27;]}&quot;
+ 302
+ 303
+ 304 def load_mcp_tools():
+ 305     if not os.path.exists(MCP_CONFIG):
+ 306         return []
+ 307     try:
+ 308         with open(MCP_CONFIG, &quot;r&quot;) as f:
+ 309             config = json.load(f)
+ 310             mcp_tools = []
+ 311             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
+ 312                 if server_config.get(&quot;disabled&quot;, False):
+ 313                     continue
+ 314                 for tool in server_config.get(&quot;tools&quot;, []):
+ 315                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
+ 316             return mcp_tools
+ 317     except:
+ 318         return []</code></pre>
             </article>
 
             <article class="code-card">
@@ -262,47 +273,51 @@
                   <p class="lesson-index">进入上下文与工具列表的方式</p>
                   <h3>关键在注入时机：Skill Registry 先进入 prompt，命中的 Skill 详情随后进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L348-L386">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L357-L399">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 348 def run_agent_claudecode(task):
- 349     print(&quot;[Init] Loading ClaudeCode features...&quot;)
- 350     rule_count = count_rule_files()
- 351     rules = load_rules()
- 352     skills = load_skills()
- 353     matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
- 354     mcp_tools = load_mcp_tools()
- 355     all_tools = base_tools + mcp_tools
- 356     context_parts = [
- 357         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 358     ]
- 359     if rules:
- 360         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 361         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
- 362     if skills:
- 363         context_parts.append(
- 364             f&quot;\n# Skill Registry\n&quot;
- 365             + &quot;\n&quot;.join(format_skill_summary_for_prompt(skill) for skill in skills)
- 366         )
- 367         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 368         print(
- 369             f&quot;[Skills] Registered {len(skills)} skill summaries: &quot;
- 370             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
- 371         )
- 372     if matched_skills:
- 373         context_parts.append(
- 374             f&quot;\n# Loaded Skill Details\n&quot;
- 375             + &quot;\n\n&quot;.join(
- 376                 format_skill_detail_for_prompt(skill) for skill in matched_skills
- 377             )
+              <pre class="code-block"><code class="language-python"> 357 def run_agent_claudecode(task):
+ 358     print(&quot;[Init] Loading ClaudeCode features...&quot;)
+ 359     rule_count = count_rule_files()
+ 360     rules = load_rules()
+ 361     skills = load_skills()
+ 362     # matched_skills 表示“本轮任务真正需要展开的 Skill”。
+ 363     # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
+ 364     matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
+ 365     mcp_tools = load_mcp_tools()
+ 366     all_tools = base_tools + mcp_tools
+ 367     context_parts = [
+ 368         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 369     ]
+ 370     if rules:
+ 371         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 372         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 373     if skills:
+ 374         # 先注册 Skill 摘要，相当于给模型一张能力目录。
+ 375         context_parts.append(
+ 376             f&quot;\n# Skill Registry\n&quot;
+ 377             + &quot;\n&quot;.join(format_skill_summary_for_prompt(skill) for skill in skills)
  378         )
- 379         skill_names = [skill[&quot;name&quot;] for skill in matched_skills]
+ 379         skill_names = [skill[&quot;name&quot;] for skill in skills]
  380         print(
- 381             f&quot;[Skills] Progressive load {len(matched_skills)} skill details: &quot;
+ 381             f&quot;[Skills] Registered {len(skills)} skill summaries: &quot;
  382             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
  383         )
- 384     if mcp_tools:
- 385         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
- 386         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
+ 384     if matched_skills:
+ 385         # 再按本轮任务命中的结果，追加完整 Skill 详情。
+ 386         context_parts.append(
+ 387             f&quot;\n# Loaded Skill Details\n&quot;
+ 388             + &quot;\n\n&quot;.join(
+ 389                 format_skill_detail_for_prompt(skill) for skill in matched_skills
+ 390             )
+ 391         )
+ 392         skill_names = [skill[&quot;name&quot;] for skill in matched_skills]
+ 393         print(
+ 394             f&quot;[Skills] Progressive load {len(matched_skills)} skill details: &quot;
+ 395             f&quot;{&#x27;, &#x27;.join(skill_names)}&quot;
+ 396         )
+ 397     if mcp_tools:
+ 398         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 399         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
             </article>
 
           </div>

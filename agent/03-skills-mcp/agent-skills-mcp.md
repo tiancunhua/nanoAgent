@@ -74,6 +74,8 @@ def load_skills():
     if not os.path.exists(SKILLS_DIR):
         return []
     try:
+        # 这里先只扫描 Skill 文件，不急着把完整内容都交给大模型。
+        # 后面会分成“摘要注册”和“命中后加载详情”两个阶段写入 prompt。
         skill_files = sorted(Path(SKILLS_DIR).glob("*/SKILL.md")) + sorted(
             Path(SKILLS_DIR).glob("*.md")
         )
@@ -110,6 +112,8 @@ triggers: todo_prioritizer, 修复顺序, 优先级, 候选修复项, 最该先�
 
 ```python
 def format_skill_summary_for_prompt(skill):
+    # 第一阶段：只把 Skill Registry 放进 prompt。
+    # 大模型先看到有哪些 Skill、何时使用、详情文件在哪里，但还看不到完整手册。
     lines = [f"- {skill['name']}: {skill.get('description', '')}"]
     when_to_use = skill.get("when_to_use")
     if when_to_use:
@@ -124,6 +128,8 @@ def format_skill_summary_for_prompt(skill):
 
 ```python
 def skill_matches_task(skill, task):
+    # 演示里用明确的字符串匹配模拟“Skill 路由”。
+    # 真实框架也可以让模型根据 Registry 判断是否需要打开某个 Skill。
     task_lower = task.lower()
     if skill["name"].lower() in task_lower:
         return True
@@ -131,6 +137,8 @@ def skill_matches_task(skill, task):
 
 
 def format_skill_detail_for_prompt(skill):
+    # 第二阶段：任务命中后，才把完整 SKILL.md 正文追加到 prompt。
+    # 这样上下文不会被所有 Skill 挤满，也能清楚观察“渐进式加载”发生了。
     return f"## {skill['name']}\nSource: {skill['path']}\n\n{skill['content']}"
 ```
 
@@ -178,6 +186,8 @@ def run_agent_claudecode(task):
     rule_count = count_rule_files()
     rules = load_rules()
     skills = load_skills()
+    # matched_skills 表示“本轮任务真正需要展开的 Skill”。
+    # 没命中的 Skill 只保留摘要；命中的 Skill 才会加载完整 Markdown。
     matched_skills = [skill for skill in skills if skill_matches_task(skill, task)]
     mcp_tools = load_mcp_tools()
     all_tools = base_tools + mcp_tools
@@ -189,6 +199,7 @@ def run_agent_claudecode(task):
         context_parts.append(f"\n# Rules\n{rules}")
         print(f"[Rules] Loaded {rule_count} rule files")
     if skills:
+        # 先注册 Skill 摘要，相当于给模型一张能力目录。
         context_parts.append(
             f"\n# Skill Registry\n"
             + "\n".join(format_skill_summary_for_prompt(skill) for skill in skills)
@@ -199,6 +210,7 @@ def run_agent_claudecode(task):
             f"{', '.join(skill_names)}"
         )
     if matched_skills:
+        # 再按本轮任务命中的结果，追加完整 Skill 详情。
         context_parts.append(
             f"\n# Loaded Skill Details\n"
             + "\n\n".join(

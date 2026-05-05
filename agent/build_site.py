@@ -231,13 +231,13 @@ LESSONS = [
             Snippet(
                 title="Rules / Skills / MCP 的加载",
                 start=226,
-                end=307,
+                end=318,
                 focus="这段代码只注册 Skill 摘要，并在任务命中时渐进式加载完整 Markdown Skill。",
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=348,
-                end=386,
+                start=357,
+                end=399,
                 focus="关键在注入时机：Skill Registry 先进入 prompt，命中的 Skill 详情随后进入 prompt，MCP 工具进入 `all_tools`。",
             ),
         ],
