@@ -600,6 +600,39 @@ code.inline {
   margin: 12px 0 16px;
 }
 
+.demo-command-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(247, 240, 231, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(247, 240, 231, 0.65);
+  font-size: 0.78rem;
+  font-family: "Avenir Next", "PingFang SC", "Helvetica Neue", sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #f7f0e7;
+  border-color: rgba(247, 240, 231, 0.4);
+}
+
+.copy-btn.is-copied {
+  background: rgba(80, 160, 100, 0.22);
+  border-color: rgba(80, 160, 100, 0.4);
+  color: #8ecfa0;
+}
+
 .code-card-head {
   display: flex;
   justify-content: space-between;
