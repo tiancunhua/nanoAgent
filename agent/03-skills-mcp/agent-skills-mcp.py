@@ -16,9 +16,6 @@ SKILLS_DIR = ".agent/skills"
 MCP_CONFIG = ".agent/mcp.json"
 DEFAULT_MAX_ITERATIONS = 10
 
-current_plan = []
-plan_mode = False
-
 base_tools = [
     {
         "type": "function",
@@ -106,18 +103,6 @@ base_tools = [
             },
         },
     },
-    {
-        "type": "function",
-        "function": {
-            "name": "plan",
-            "description": "Break down complex task into steps and execute sequentially",
-            "parameters": {
-                "type": "object",
-                "properties": {"task": {"type": "string"}},
-                "required": ["task"],
-            },
-        },
-    },
 ]
 
 
@@ -198,34 +183,6 @@ def project_guide(topic="Agent demo"):
     )
 
 
-def plan(task):
-    global current_plan, plan_mode
-    if plan_mode:
-        return "Error: Cannot plan within a plan"
-    print(f"[Plan] Breaking down: {task}")
-    response = client.chat.completions.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[
-            {
-                "role": "system",
-                "content": "Break task into 3-5 steps. Return JSON with 'steps' array.",
-            },
-            {"role": "user", "content": task},
-        ],
-        response_format={"type": "json_object"},
-    )
-    try:
-        plan_data = json.loads(response.choices[0].message.content)
-        steps = plan_data.get("steps", [task])
-        current_plan = steps
-        print(f"[Plan] Created {len(steps)} steps")
-        for i, step in enumerate(steps, 1):
-            print(f"  {i}. {step}")
-        return f"Plan created with {len(steps)} steps. Executing now..."
-    except:
-        return "Error: Failed to create plan"
-
-
 available_functions = {
     "read": read,
     "write": write,
@@ -234,7 +191,6 @@ available_functions = {
     "grep": grep,
     "bash": bash,
     "project_guide": project_guide,
-    "plan": plan,
 }
 
 
@@ -311,7 +267,6 @@ def load_mcp_tools():
 
 
 def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
-    global current_plan, plan_mode
     for _ in range(max_iterations):
         response = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
@@ -333,30 +288,6 @@ def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
             function_impl = available_functions.get(function_name)
             if "_argument_error" in function_args:
                 function_response = f"Error: {function_args['_argument_error']}"
-            elif function_name == "plan" and function_impl is not None:
-                plan_mode = True
-                function_response = function_impl(**function_args)
-                messages.append(
-                    {
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "content": function_response,
-                    }
-                )
-                if current_plan:
-                    results = []
-                    for i, step in enumerate(current_plan, 1):
-                        print(f"\n[Step {i}/{len(current_plan)}] {step}")
-                        messages.append({"role": "user", "content": step})
-                        result, messages = run_agent_step(
-                            messages,
-                            [t for t in tools if t["function"]["name"] != "plan"],
-                        )
-                        results.append(result)
-                        print(f"\n{result}")
-                    plan_mode = False
-                    current_plan = []
-                    return "\n".join(results), messages
             elif function_impl is not None:
                 function_response = function_impl(**function_args)
             else:
@@ -371,8 +302,7 @@ def run_agent_step(messages, tools, max_iterations=DEFAULT_MAX_ITERATIONS):
     return "Max iterations reached", messages
 
 
-def run_agent_claudecode(task, use_plan=False):
-    global plan_mode, current_plan
+def run_agent_claudecode(task):
     print("[Init] Loading ClaudeCode features...")
     rule_count = count_rule_files()
     rules = load_rules()
@@ -395,38 +325,16 @@ def run_agent_claudecode(task, use_plan=False):
         tool_names = [tool["function"]["name"] for tool in mcp_tools]
         print(f"[MCP] Loaded {len(mcp_tools)} MCP tools: {', '.join(tool_names)}")
     messages = [{"role": "system", "content": "\n".join(context_parts)}]
-    if use_plan:
-        plan_mode = True
-        plan(task)
-        results = []
-        for i, step in enumerate(current_plan, 1):
-            print(f"\n[Step {i}/{len(current_plan)}] {step}")
-            messages.append({"role": "user", "content": step})
-            result, messages = run_agent_step(
-                messages, [t for t in all_tools if t["function"]["name"] != "plan"]
-            )
-            results.append(result)
-            print(f"\n{result}")
-        plan_mode = False
-        current_plan = []
-        final_result = "\n".join(results)
-    else:
-        messages.append({"role": "user", "content": task})
-        final_result, messages = run_agent_step(messages, all_tools)
-        print(f"\n{final_result}")
+    messages.append({"role": "user", "content": task})
+    final_result, messages = run_agent_step(messages, all_tools)
+    print(f"\n{final_result}")
     return final_result
 
 
 if __name__ == "__main__":
-    use_plan = "--plan" in sys.argv
-    if use_plan:
-        sys.argv.remove("--plan")
     if len(sys.argv) < 2:
-        print(
-            "Usage: python agent/03-skills-mcp/agent-skills-mcp.py [--plan] 'your task'"
-        )
-        print("  --plan: Enable task planning")
-        print("\nFeatures: Rules, Skills, MCP, Plan tool")
+        print("Usage: python3 agent/03-skills-mcp/agent-skills-mcp.py 'your task'")
+        print("\nFeatures: Rules, Skills, MCP")
         sys.exit(1)
     task = " ".join(sys.argv[1:])
-    run_agent_claudecode(task, use_plan=use_plan)
+    run_agent_claudecode(task)

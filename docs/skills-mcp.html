@@ -48,7 +48,7 @@
           <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">432 行代码</span>
+            <span class="chip">340 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -170,68 +170,68 @@
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
                   <h3>这段代码从项目目录读取 Rule、Skill 与 MCP 工具，并将 Skill 的使用时机和步骤整理进 prompt。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L251-L310">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L207-L266">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 251 def load_rules():
- 252     rules = []
- 253     if not os.path.exists(RULES_DIR):
- 254         return &quot;&quot;
+              <pre class="code-block"><code class="language-python"> 207 def load_rules():
+ 208     rules = []
+ 209     if not os.path.exists(RULES_DIR):
+ 210         return &quot;&quot;
+ 211     try:
+ 212         for rule_file in sorted(Path(RULES_DIR).glob(&quot;*.md&quot;)):
+ 213             with open(rule_file, &quot;r&quot;) as f:
+ 214                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
+ 215         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
+ 216     except:
+ 217         return &quot;&quot;
+ 218
+ 219
+ 220 def count_rule_files():
+ 221     if not os.path.exists(RULES_DIR):
+ 222         return 0
+ 223     return len(list(Path(RULES_DIR).glob(&quot;*.md&quot;)))
+ 224
+ 225
+ 226 def load_skills():
+ 227     skills = []
+ 228     if not os.path.exists(SKILLS_DIR):
+ 229         return []
+ 230     try:
+ 231         for skill_file in Path(SKILLS_DIR).glob(&quot;*.json&quot;):
+ 232             with open(skill_file, &quot;r&quot;) as f:
+ 233                 skills.append(json.load(f))
+ 234         return skills
+ 235     except:
+ 236         return []
+ 237
+ 238
+ 239 def format_skill_for_prompt(skill):
+ 240     lines = [f&quot;- {skill[&#x27;name&#x27;]}: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;]
+ 241     when_to_use = skill.get(&quot;when_to_use&quot;)
+ 242     if when_to_use:
+ 243         lines.append(f&quot;  When to use: {when_to_use}&quot;)
+ 244     steps = skill.get(&quot;steps&quot;, [])
+ 245     if steps:
+ 246         lines.append(&quot;  Steps:&quot;)
+ 247         for step in steps:
+ 248             lines.append(f&quot;  - {step}&quot;)
+ 249     return &quot;\n&quot;.join(lines)
+ 250
+ 251
+ 252 def load_mcp_tools():
+ 253     if not os.path.exists(MCP_CONFIG):
+ 254         return []
  255     try:
- 256         for rule_file in sorted(Path(RULES_DIR).glob(&quot;*.md&quot;)):
- 257             with open(rule_file, &quot;r&quot;) as f:
- 258                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
- 259         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
- 260     except:
- 261         return &quot;&quot;
- 262
- 263
- 264 def count_rule_files():
- 265     if not os.path.exists(RULES_DIR):
- 266         return 0
- 267     return len(list(Path(RULES_DIR).glob(&quot;*.md&quot;)))
- 268
- 269
- 270 def load_skills():
- 271     skills = []
- 272     if not os.path.exists(SKILLS_DIR):
- 273         return []
- 274     try:
- 275         for skill_file in Path(SKILLS_DIR).glob(&quot;*.json&quot;):
- 276             with open(skill_file, &quot;r&quot;) as f:
- 277                 skills.append(json.load(f))
- 278         return skills
- 279     except:
- 280         return []
- 281
- 282
- 283 def format_skill_for_prompt(skill):
- 284     lines = [f&quot;- {skill[&#x27;name&#x27;]}: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;]
- 285     when_to_use = skill.get(&quot;when_to_use&quot;)
- 286     if when_to_use:
- 287         lines.append(f&quot;  When to use: {when_to_use}&quot;)
- 288     steps = skill.get(&quot;steps&quot;, [])
- 289     if steps:
- 290         lines.append(&quot;  Steps:&quot;)
- 291         for step in steps:
- 292             lines.append(f&quot;  - {step}&quot;)
- 293     return &quot;\n&quot;.join(lines)
- 294
- 295
- 296 def load_mcp_tools():
- 297     if not os.path.exists(MCP_CONFIG):
- 298         return []
- 299     try:
- 300         with open(MCP_CONFIG, &quot;r&quot;) as f:
- 301             config = json.load(f)
- 302             mcp_tools = []
- 303             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
- 304                 if server_config.get(&quot;disabled&quot;, False):
- 305                     continue
- 306                 for tool in server_config.get(&quot;tools&quot;, []):
- 307                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
- 308             return mcp_tools
- 309     except:
- 310         return []</code></pre>
+ 256         with open(MCP_CONFIG, &quot;r&quot;) as f:
+ 257             config = json.load(f)
+ 258             mcp_tools = []
+ 259             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
+ 260                 if server_config.get(&quot;disabled&quot;, False):
+ 261                     continue
+ 262                 for tool in server_config.get(&quot;tools&quot;, []):
+ 263                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
+ 264             return mcp_tools
+ 265     except:
+ 266         return []</code></pre>
             </article>
 
             <article class="code-card">
@@ -240,31 +240,30 @@
                   <p class="lesson-index">进入上下文与工具列表的方式</p>
                   <h3>关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L374-L396">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L305-L326">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 374 def run_agent_claudecode(task, use_plan=False):
- 375     global plan_mode, current_plan
- 376     print(&quot;[Init] Loading ClaudeCode features...&quot;)
- 377     rule_count = count_rule_files()
- 378     rules = load_rules()
- 379     skills = load_skills()
- 380     mcp_tools = load_mcp_tools()
- 381     all_tools = base_tools + mcp_tools
- 382     context_parts = [
- 383         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 384     ]
- 385     if rules:
- 386         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 387         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
- 388     if skills:
- 389         context_parts.append(
- 390             f&quot;\n# Skills\n&quot; + &quot;\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
- 391         )
- 392         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 393         print(f&quot;[Skills] Loaded {len(skills)} skills: {&#x27;, &#x27;.join(skill_names)}&quot;)
- 394     if mcp_tools:
- 395         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
- 396         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
+              <pre class="code-block"><code class="language-python"> 305 def run_agent_claudecode(task):
+ 306     print(&quot;[Init] Loading ClaudeCode features...&quot;)
+ 307     rule_count = count_rule_files()
+ 308     rules = load_rules()
+ 309     skills = load_skills()
+ 310     mcp_tools = load_mcp_tools()
+ 311     all_tools = base_tools + mcp_tools
+ 312     context_parts = [
+ 313         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 314     ]
+ 315     if rules:
+ 316         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 317         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 318     if skills:
+ 319         context_parts.append(
+ 320             f&quot;\n# Skills\n&quot; + &quot;\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
+ 321         )
+ 322         skill_names = [skill[&quot;name&quot;] for skill in skills]
+ 323         print(f&quot;[Skills] Loaded {len(skills)} skills: {&#x27;, &#x27;.join(skill_names)}&quot;)
+ 324     if mcp_tools:
+ 325         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 326         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
             </article>
 
           </div>
@@ -355,13 +354,13 @@
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
             <pre class="demo-command"><code># 1. 证明 MCP 生效：观察 project_guide 工具调用
-python agent/03-skills-mcp/agent-skills-mcp.py &quot;请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent&quot;
+python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent&quot;
 
 # 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求
-python agent/03-skills-mcp/agent-skills-mcp.py &quot;请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule&quot;
+python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule&quot;
 
 # 3. 证明 Skill 生效：给一个小清单，观察是否按风险优先排序
-python agent/03-skills-mcp/agent-skills-mcp.py &quot;请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。&quot;</code></pre>
+python3 agent/03-skills-mcp/agent-skills-mcp.py &quot;请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。&quot;</code></pre>
             <ul class="lesson-list"><li>第一屏先看三行加载日志：<code class="inline">[Rules] Loaded 1 rule files</code>、<code class="inline">[Skills] Loaded 1 skills: todo_prioritizer</code>、<code class="inline">[MCP] Loaded 1 MCP tools: project_guide</code>。</li><li>第一条命令观察 <code class="inline">[Tool] project_guide(...)</code>，用真实工具调用证明 MCP 已进入 tools。</li><li>第二条命令观察回答是否遵守 <code class="inline">.agent/rules/demo-style.md</code> 的格式要求，用输出格式证明 Rule 生效。</li><li>第三条命令只给 4 个候选项：安全风险、阻塞运行、核心功能、文档示例各 1 个；正确结果应优先输出 B、C、D，并舍弃 A。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 只是为了保证现场演示有足够轮次完成工具调用与结论生成。</li></ul>
           </div>
         </section>
@@ -380,7 +379,7 @@ python agent/03-skills-mcp/agent-skills-mcp.py &quot;请使用 todo_prioritizer 
             <p class="eyebrow">Takeaway</p>
             <h2>这一讲会看懂什么</h2>
           </div>
-          <ul class="lesson-list"><li>知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。</li><li>能识别 Rules、Skills、MCP 各自的加载来源，以及它们如何拼装进上下文与工具列表。</li><li>理解工程化 Agent 的关键不在于计划能力，而在于能力与约束的外置。</li></ul>
+          <ul class="lesson-list"><li>知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。</li><li>能识别 Rules、Skills、MCP 各自的加载来源，以及它们如何拼装进上下文与工具列表。</li><li>理解工程化 Agent 的关键不在于继续堆内置逻辑，而在于能力与约束的外置。</li></ul>
         </section>
 
         <section class="lesson-section" id="talk">

@@ -182,11 +182,11 @@ LESSONS = [
         scenario="团队有自己的代码规范、有内部 API、还希望不同项目用不同能力，但又不愿意把这些都硬写进脚本里。能力外置，就是把这些差异从代码里抽到项目目录中。",
         demo_command=(
             '# 1. 证明 MCP 生效：观察 project_guide 工具调用\n'
-            'python agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"\n\n'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请先确认本轮加载了哪些 Rule、Skill、MCP 工具，然后调用 project_guide，用 3 点说明它们分别如何接入 Agent"\n\n'
             '# 2. 证明 Rule 生效：观察回答是否遵守 demo-style 的输出要求\n'
-            'python agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"\n\n'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请按本项目 Rule 的要求回答：Rule 是否已加载？最后说明你遵守了哪条 Rule"\n\n'
             '# 3. 证明 Skill 生效：给一个小清单，观察是否按风险优先排序\n'
-            'python agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"'
+            'python3 agent/03-skills-mcp/agent-skills-mcp.py "请使用 todo_prioritizer skill，先原样输出：本轮加载了 Rule、Skill、MCP 三类外置能力。然后输出 3 行优先级和 1 句舍弃说明：A. README 示例命令有错别字；B. 删除用户接口缺少权限校验；C. 应用启动时报错无法运行；D. 搜索结果分页偶尔重复。格式：优先级 - 类别 - 事项。"'
         ),
         demo_goal="用三条短命令分别证明：MCP 会触发工具调用，Rule 会改变回答格式，Skill 会影响任务处理策略。",
         demo_expected=[
@@ -199,7 +199,7 @@ LESSONS = [
         student_takeaways=[
             "知道 Skill 负责补充知识，Rule 负责约束行为，MCP 负责接入外部工具。",
             "能识别 Rules、Skills、MCP 各自的加载来源，以及它们如何拼装进上下文与工具列表。",
-            "理解工程化 Agent 的关键不在于计划能力，而在于能力与约束的外置。",
+            "理解工程化 Agent 的关键不在于继续堆内置逻辑，而在于能力与约束的外置。",
         ],
         practice_steps=[
             "打开 `.agent/rules/demo-style.md`，改一条输出要求，再运行一次任务。",
@@ -229,14 +229,14 @@ LESSONS = [
             ),
             Snippet(
                 title="Rules / Skills / MCP 的加载",
-                start=251,
-                end=310,
+                start=207,
+                end=266,
                 focus="这段代码从项目目录读取 Rule、Skill 与 MCP 工具，并将 Skill 的使用时机和步骤整理进 prompt。",
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=374,
-                end=396,
+                start=305,
+                end=326,
                 focus="关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 `all_tools`。",
             ),
         ],
