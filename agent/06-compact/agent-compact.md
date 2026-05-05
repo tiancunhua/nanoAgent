@@ -14,7 +14,7 @@
 
 这不是"将来可能遇到的问题"，而是"用 Agent 干稍微复杂点的活就一定会遇到的问题"。
 
-今天我们回到 agent-essence.py 的极简基础上，只加一个函数（约 30 行），实现最简单的上下文压缩。
+今天我们回到 agent-essence.py 的极简基础上，只加一个压缩函数和一个边界辅助函数，实现最简单的上下文压缩。
 
 ---
 
@@ -73,18 +73,17 @@
 │ tool   │ ← 统计结果                    │ 这些旧消息
 │ assist │ ← LLM 调用了 grep             │ 交给 LLM 做摘要
 │ tool   │ ← grep 结果 300 行            │
-│ ...    │ ← 更多历史                   ─┘
-│ assist │ ← LLM 准备写文件             ─┐
-│ tool   │ ← 写入成功                    │ 最近 6 条
-│ assist │ ← LLM 调用 read 验证         │ 保留原样
-│ tool   │ ← 文件内容                    │ （不压缩）
+│ assist │ ← LLM 准备写文件             │
+│ tool   │ ← 写入成功                   ─┘
+│ assist │ ← LLM 调用 read 验证         ─┐
+│ tool   │ ← 文件内容                    │ 最近 4 条
 │ assist │ ← LLM 准备做最后总结         │
 │ user   │ ← 当前操作                   ─┘
 └────────┘
 
         ↓ compact_messages() ↓
 
-压缩后的 messages（9 条，清爽了）:
+压缩后的 messages（7 条，清爽了）:
 ┌────────┐
 │ system │ ← 永远保留（不动）
 ├────────┤
@@ -92,11 +91,9 @@
 │        │    统计了行数，最长的是 utils.py (350行)..."
 │ assist │ ← "明白了，我继续。"
 ├────────┤
-│ assist │ ← LLM 准备写文件             ─┐
-│ tool   │ ← 写入成功                    │ 最近 6 条
-│ assist │ ← LLM 调用 read 验证         │ 完整保留
-│ tool   │ ← 文件内容                    │
-│ assist │ ← LLM 准备做最后总结         │
+│ assist │ ← LLM 调用 read 验证         ─┐
+│ tool   │ ← 文件内容                    │ 最近 4 条
+│ assist │ ← LLM 准备做最后总结         │ 完整保留
 │ user   │ ← 当前操作                   ─┘
 └────────┘
 ```
@@ -107,24 +104,39 @@
 
 ## 四、代码实现：只有一个函数
 
-整个压缩逻辑只有一个函数 `compact_messages()`，约 30 行：
+整个压缩逻辑主要在 `compact_messages()` 里，旁边加一个小辅助函数确保不会切断 tool 调用：
 
 ```python
-COMPACT_THRESHOLD = 20  # 超过 20 条就压缩
-KEEP_RECENT = 6         # 保留最近 6 条不压缩
+COMPACT_THRESHOLD = 8   # 演示用低阈值：几轮工具调用后就能看到压缩
+KEEP_RECENT = 4         # 至少保留最近 4 条；遇到 tool 调用组会向前扩展
+
+def message_role(message):
+    if isinstance(message, dict):
+        return message.get("role", "unknown")
+    return getattr(message, "role", "unknown")
+
+
+def find_recent_start(messages):
+    start = max(1, len(messages) - KEEP_RECENT)
+    # 不要从 tool 消息中间切开；tool 必须紧跟触发它的 assistant tool_call。
+    while start > 1 and message_role(messages[start]) == "tool":
+        start -= 1
+    return start
+
 
 def compact_messages(messages):
     if len(messages) <= COMPACT_THRESHOLD:
         return messages  # 没超阈值，不压缩
 
     system_msg = messages[0]                   # system prompt 永远保留
-    old_messages = messages[1:-KEEP_RECENT]     # 旧消息 → 要被压缩
-    recent_messages = messages[-KEEP_RECENT:]   # 最近的消息 → 保留原样
+    recent_start = find_recent_start(messages)
+    old_messages = messages[1:recent_start]     # 旧消息 → 要被压缩
+    recent_messages = messages[recent_start:]   # 最近的消息 → 保留原样
 
     # 把旧消息拼成文本
     old_text = ""
     for msg in old_messages:
-        role = msg.get("role", "unknown") if isinstance(msg, dict) else getattr(msg, "role", "unknown")
+        role = message_role(msg)
         content = msg.get("content", "") if isinstance(msg, dict) else getattr(msg, "content", "")
         if content:
             old_text += f"[{role}]: {content}\n"
@@ -148,17 +160,20 @@ def compact_messages(messages):
     ]
 ```
 
-### 4.1 分三刀
+### 4.1 分四刀
 
 ```python
 system_msg = messages[0]                   # 第一刀：切出 system prompt
-old_messages = messages[1:-KEEP_RECENT]     # 第二刀：切出旧消息（要压缩的）
-recent_messages = messages[-KEEP_RECENT:]   # 第三刀：切出最近消息（要保留的）
+recent_start = find_recent_start(messages)  # 第二刀：找到安全边界
+old_messages = messages[1:recent_start]     # 第三刀：切出旧消息（要压缩的）
+recent_messages = messages[recent_start:]   # 第四刀：切出最近消息（要保留的）
 ```
 
 为什么 system prompt 要单独保留？因为它包含 Agent 的核心指令，压缩进摘要会丢失"你是谁、你能做什么"的基础设定。
 
-为什么最近 N 条不压缩？因为 Agent 当前正在进行的操作需要精确的上下文——比如上一条工具返回的文件内容、正在写入的文件路径。这些信息一旦被压缩成摘要，LLM 就无法精确引用了。
+为什么最近 N 条不压缩？因为 Agent 当前正在进行的操作需要精确的上下文——比如上一条工具返回的文件内容、正在写入的文件路径。这些信息一旦被压缩成摘要，LLM 就无法精确引用了。这里的 N 是最低保留数；如果边界刚好切到 tool 调用组中间，代码会向前多保留几条，保证消息结构合法。
+
+还有一个小细节：不能从 `tool` 消息中间切开。`tool` 消息必须紧跟触发它的 assistant tool call，所以 `find_recent_start()` 会把边界往前挪到安全位置。
 
 ### 4.2 用 LLM 做摘要
 
@@ -194,7 +209,7 @@ def run_agent(user_message, max_iterations=30):
 
 ## 五、压缩过程的实际观察
 
-以下是测试中观察到的 messages 数量变化（阈值设为 10）：
+以下是测试中观察到的 messages 数量变化（阈值设为 8）：
 
 ```
 轮次 1: messages = 2   (system + user)
@@ -203,11 +218,11 @@ def run_agent(user_message, max_iterations=30):
 轮次 4: messages = 8
 轮次 5: messages = 10
          ↓ 触发压缩！
-轮次 6: messages = 9   (system + 摘要 + ack + 最近6条)
-轮次 7: messages = 11
+压缩后: messages = 7   (system + 摘要 + ack + 最近4条)
+轮次 6: messages = 9
          ↓ 再次触发压缩！
-轮次 8: messages = 9
-轮次 9: 任务完成
+压缩后: messages = 7
+轮次 7: 任务完成
 ```
 
 messages 数量像锯齿波一样：涨到阈值 → 压缩回去 → 继续涨 → 再压缩。**永远不会超过阈值太多，Agent 可以无限工作下去。**

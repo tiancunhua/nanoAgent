@@ -422,11 +422,11 @@ LESSONS = [
         core="摘要旧消息，保留最近窗口",
         tags=["Context Window", "Compaction", "Summarization"],
         scenario="交给 Agent 一个跨几十轮的长任务，会发现它越走越慢、回答越来越含糊——背后是 messages 一直在膨胀，前面所有工具调用结果都被一次次带着走，最终撑爆 context window。",
-        demo_command='python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt"',
+        demo_command='python agent/06-compact/agent-compact.py "请按步骤执行，不要合并成一个 shell 命令：1. 用 execute_bash 列出 agent 目录下的 Python 文件；2. 分别用 read_file 读取 agent/01-essence/agent-essence.py、agent/02-memory/agent-memory.py、agent/06-compact/agent-compact.py；3. 把三个文件的大致行数写入 compact-demo-report.txt。"',
         demo_goal="压缩并非加分项，而是 Agent 完成长任务的关键能力。",
         demo_expected=[
-            "调小阈值后，可在终端清晰看到 `[Compact]` 日志。",
-            "压缩会保留 system prompt 与最近几条消息，仅将旧消息折叠为摘要。",
+            "默认演示阈值已调低到 `COMPACT_THRESHOLD = 8`，分步工具调用后可清晰看到 `[Compact]` 日志。",
+            "压缩会保留 system prompt 与最近几条消息；如果遇到 tool 调用组，会向前扩展边界，避免切断工具响应。",
             "压缩本身也消耗 token，因此是一种工程折中，并非零成本能力。",
         ],
         student_takeaways=[
@@ -435,8 +435,8 @@ LESSONS = [
             "理解“保留要点、舍弃细节”是 Agent 的必要能力。",
         ],
         practice_steps=[
-            "将 `COMPACT_THRESHOLD` 调至 8，触发一次可见的压缩。",
-            "将 `KEEP_RECENT` 从 6 改为 4，对比当前任务衔接的变化。",
+            "先直接运行演示命令，观察默认低阈值如何触发压缩。",
+            "将 `KEEP_RECENT` 从 4 改为 2，对比当前任务衔接的变化。",
             "观察压缩前后 messages 的结构变化，而不只查看日志。",
         ],
         talk_points=[
@@ -449,14 +449,14 @@ LESSONS = [
             "recent window 过短会让 Agent 立即丢失工作上下文。",
             "只截断而不压缩，仍无法支撑复杂长任务。",
         ],
-        workshop_prompt="调小阈值并强制触发一次压缩，是最直观的演示方式。",
+        workshop_prompt="默认低阈值配合分步工具调用，是最直观的压缩演示方式。",
         md_path=ROOT / "06-compact/agent-compact.md",
         code_path=ROOT / "06-compact/agent-compact.py",
         snippets=[
             Snippet(
                 title="上下文压缩函数",
-                start=129,
-                end=190,
+                start=125,
+                end=188,
                 focus="这是上下文压缩的核心实现：将旧历史折叠为摘要，保留当前工作现场。",
             )
         ],
@@ -550,7 +550,7 @@ AGENDA = [
     ("21 - 31", "第 03 讲：Skills / Rules / MCP", "接入 Skill、Rule、MCP 三层能力，区分它们注入到上下文还是工具列表。"),
     ("31 - 39", "第 04 讲：SubAgent", "通过前后端双角色案例，说明复杂任务需要委派的原因。"),
     ("39 - 48", "第 05 讲：Teams", "将委派扩展为长期协作团队，演示 reviewer 复盘机制。"),
-    ("48 - 55", "第 06 讲：上下文压缩", "调低阈值，触发一次完整的压缩流程。"),
+    ("48 - 55", "第 06 讲：上下文压缩", "用低阈值触发一次完整的压缩流程。"),
     ("55 - 60", "第 07 讲：安全防线 + 收尾", "通过危险命令拦截与人工确认，收束工程化边界。"),
 ]
 

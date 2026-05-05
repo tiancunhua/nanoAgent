@@ -13,7 +13,7 @@ agent-compact.py - 最简上下文压缩 Agent
   Agent 继续工作，就像人类"记住要点、忘掉细节"一样。
 
 用法:
-  python agent/06-compact/agent-compact.py "在当前目录下找到所有 Python 文件，统计每个文件的行数，按行数排序，结果写入 report.txt"
+  python agent/06-compact/agent-compact.py "请按步骤执行，不要合并成一个 shell 命令：先列出 agent 目录下的 Python 文件，再分别读取三个示例文件，最后写入 compact-demo-report.txt"
 """
 
 import os
@@ -115,23 +115,37 @@ available_functions = {
 
 # ==================== 上下文压缩（核心新增） ====================
 #
-# 就这一个函数，约 30 行，实现了完整的压缩逻辑。
+# 核心是 compact_messages()；find_recent_start() 用来避免切断 tool 调用组。
 #
 # 原理：
 #   messages = [system, user, assistant, tool, assistant, tool, ...]
 #                 ↓ 压缩后
 #   messages = [system, 摘要(包含之前所有要点), 最近 N 条消息]
 
-COMPACT_THRESHOLD = 20  # messages 超过这个数量就触发压缩
-KEEP_RECENT = 6  # 压缩时保留最近几条消息（不压缩）
+COMPACT_THRESHOLD = 8  # 演示用低阈值：几轮工具调用后就能看到压缩
+KEEP_RECENT = 4  # 至少保留最近几条消息；遇到 tool 调用组会向前扩展
+
+
+def message_role(message):
+    if isinstance(message, dict):
+        return message.get("role", "unknown")
+    return getattr(message, "role", "unknown")
+
+
+def find_recent_start(messages):
+    start = max(1, len(messages) - KEEP_RECENT)
+    # 不要从 tool 消息中间切开；tool 必须紧跟触发它的 assistant tool_call。
+    while start > 1 and message_role(messages[start]) == "tool":
+        start -= 1
+    return start
 
 
 def compact_messages(messages):
     """
     当 messages 过长时，把旧消息压缩成一段摘要。
 
-    压缩前: [system, msg1, msg2, ..., msg15, msg16, msg17, msg18, msg19, msg20]
-    压缩后: [system, summary_of(msg1~msg14), msg15, msg16, msg17, msg18, msg19, msg20]
+    压缩前: [system, msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8]
+    压缩后: [system, summary_of(msg1~msg4), ack, msg5, msg6, msg7, msg8]
     """
     if len(messages) <= COMPACT_THRESHOLD:
         return messages  # 没超阈值，不压缩
@@ -141,17 +155,14 @@ def compact_messages(messages):
     )
 
     system_msg = messages[0]  # system prompt 永远保留
-    old_messages = messages[1:-KEEP_RECENT]  # 需要被压缩的旧消息
-    recent_messages = messages[-KEEP_RECENT:]  # 最近的消息保留原样
+    recent_start = find_recent_start(messages)
+    old_messages = messages[1:recent_start]  # 需要被压缩的旧消息
+    recent_messages = messages[recent_start:]  # 最近的消息保留原样
 
     # 把旧消息拼成文本，交给 LLM 做摘要
     old_text = ""
     for msg in old_messages:
-        role = (
-            msg.get("role", "unknown")
-            if isinstance(msg, dict)
-            else getattr(msg, "role", "unknown")
-        )
+        role = message_role(msg)
         content = (
             msg.get("content", "")
             if isinstance(msg, dict)
@@ -176,7 +187,7 @@ def compact_messages(messages):
     print(
         f"[Compact] {len(old_messages)} 条旧消息 → 1 条摘要 (保留最近 {len(recent_messages)} 条)"
     )
-    print(f"[Compact] 压缩后 messages: {1 + 1 + len(recent_messages)} 条\n")
+    print(f"[Compact] 压缩后 messages: {1 + 2 + len(recent_messages)} 条\n")
 
     # 重新组装：system + 摘要 + 最近消息
     return [
@@ -241,11 +252,11 @@ if __name__ == "__main__":
         print("Usage: python agent/06-compact/agent-compact.py 'your task'")
         print("\nExample:")
         print(
-            "  python agent/06-compact/agent-compact.py '找到所有 Python 文件，统计行数，按行数排序，写入 report.txt'"
+            "  python agent/06-compact/agent-compact.py '请按步骤执行，不要合并成一个 shell 命令：先列出 agent 目录下的 Python 文件，再分别读取三个示例文件，最后写入 compact-demo-report.txt'"
         )
         print()
         print(
-            "当对话超过 20 条消息时，自动压缩旧历史为摘要，Agent 可以持续工作不会撑爆 context window。"
+            "演示阈值是 8 条消息，几轮工具调用后就会自动压缩旧历史为摘要。"
         )
         sys.exit(1)
     result = run_agent(" ".join(sys.argv[1:]))

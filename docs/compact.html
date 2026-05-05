@@ -48,7 +48,7 @@
           <p>本讲跳过理论铺垫，专注于一个核心问题：长任务中 Agent 为何会被自身历史拖垮，以及压缩如何缓解。</p>
           <div class="chip-row">
             <span class="chip">7 分钟</span>
-            <span class="chip">252 行代码</span>
+            <span class="chip">263 行代码</span>
             <span class="chip">摘要旧消息，保留最近窗口</span>
           </div>
         </div>
@@ -156,70 +156,72 @@
                   <p class="lesson-index">上下文压缩函数</p>
                   <h3>这是上下文压缩的核心实现：将旧历史折叠为摘要，保留当前工作现场。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.py#L129-L190">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.py#L125-L188">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 129 def compact_messages(messages):
- 130     &quot;&quot;&quot;
- 131     当 messages 过长时，把旧消息压缩成一段摘要。
- 132
- 133     压缩前: [system, msg1, msg2, ..., msg15, msg16, msg17, msg18, msg19, msg20]
- 134     压缩后: [system, summary_of(msg1~msg14), msg15, msg16, msg17, msg18, msg19, msg20]
- 135     &quot;&quot;&quot;
- 136     if len(messages) &lt;= COMPACT_THRESHOLD:
- 137         return messages  # 没超阈值，不压缩
- 138
- 139     print(
- 140         f&quot;\n[Compact] messages 数量 ({len(messages)}) 超过阈值 ({COMPACT_THRESHOLD})，开始压缩...&quot;
- 141     )
+              <pre class="code-block"><code class="language-python"> 125 COMPACT_THRESHOLD = 8  # 演示用低阈值：几轮工具调用后就能看到压缩
+ 126 KEEP_RECENT = 4  # 至少保留最近几条消息；遇到 tool 调用组会向前扩展
+ 127
+ 128
+ 129 def message_role(message):
+ 130     if isinstance(message, dict):
+ 131         return message.get(&quot;role&quot;, &quot;unknown&quot;)
+ 132     return getattr(message, &quot;role&quot;, &quot;unknown&quot;)
+ 133
+ 134
+ 135 def find_recent_start(messages):
+ 136     start = max(1, len(messages) - KEEP_RECENT)
+ 137     # 不要从 tool 消息中间切开；tool 必须紧跟触发它的 assistant tool_call。
+ 138     while start &gt; 1 and message_role(messages[start]) == &quot;tool&quot;:
+ 139         start -= 1
+ 140     return start
+ 141
  142
- 143     system_msg = messages[0]  # system prompt 永远保留
- 144     old_messages = messages[1:-KEEP_RECENT]  # 需要被压缩的旧消息
- 145     recent_messages = messages[-KEEP_RECENT:]  # 最近的消息保留原样
+ 143 def compact_messages(messages):
+ 144     &quot;&quot;&quot;
+ 145     当 messages 过长时，把旧消息压缩成一段摘要。
  146
- 147     # 把旧消息拼成文本，交给 LLM 做摘要
- 148     old_text = &quot;&quot;
- 149     for msg in old_messages:
- 150         role = (
- 151             msg.get(&quot;role&quot;, &quot;unknown&quot;)
- 152             if isinstance(msg, dict)
- 153             else getattr(msg, &quot;role&quot;, &quot;unknown&quot;)
- 154         )
- 155         content = (
- 156             msg.get(&quot;content&quot;, &quot;&quot;)
- 157             if isinstance(msg, dict)
- 158             else getattr(msg, &quot;content&quot;, &quot;&quot;)
- 159         )
- 160         if content:
- 161             old_text += f&quot;[{role}]: {content}\n&quot;
- 162
- 163     # 调用 LLM 生成摘要
- 164     summary_response = client.chat.completions.create(
- 165         model=MODEL,
- 166         messages=[
- 167             {
- 168                 &quot;role&quot;: &quot;system&quot;,
- 169                 &quot;content&quot;: &quot;Summarize the following conversation history into a concise summary. Keep all important facts, file paths, command results, and decisions. Be concise but don&#x27;t lose critical details.&quot;,
- 170             },
- 171             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: old_text},
- 172         ],
- 173     )
- 174     summary = summary_response.choices[0].message.content
- 175
- 176     print(
- 177         f&quot;[Compact] {len(old_messages)} 条旧消息 → 1 条摘要 (保留最近 {len(recent_messages)} 条)&quot;
- 178     )
- 179     print(f&quot;[Compact] 压缩后 messages: {1 + 1 + len(recent_messages)} 条\n&quot;)
- 180
- 181     # 重新组装：system + 摘要 + 最近消息
- 182     return [
- 183         system_msg,
- 184         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;[Previous conversation summary]: {summary}&quot;},
- 185         {
- 186             &quot;role&quot;: &quot;assistant&quot;,
- 187             &quot;content&quot;: &quot;Understood. I have the context from our previous conversation. Let me continue.&quot;,
- 188         },
- 189         *recent_messages,
- 190     ]</code></pre>
+ 147     压缩前: [system, msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8]
+ 148     压缩后: [system, summary_of(msg1~msg4), ack, msg5, msg6, msg7, msg8]
+ 149     &quot;&quot;&quot;
+ 150     if len(messages) &lt;= COMPACT_THRESHOLD:
+ 151         return messages  # 没超阈值，不压缩
+ 152
+ 153     print(
+ 154         f&quot;\n[Compact] messages 数量 ({len(messages)}) 超过阈值 ({COMPACT_THRESHOLD})，开始压缩...&quot;
+ 155     )
+ 156
+ 157     system_msg = messages[0]  # system prompt 永远保留
+ 158     recent_start = find_recent_start(messages)
+ 159     old_messages = messages[1:recent_start]  # 需要被压缩的旧消息
+ 160     recent_messages = messages[recent_start:]  # 最近的消息保留原样
+ 161
+ 162     # 把旧消息拼成文本，交给 LLM 做摘要
+ 163     old_text = &quot;&quot;
+ 164     for msg in old_messages:
+ 165         role = message_role(msg)
+ 166         content = (
+ 167             msg.get(&quot;content&quot;, &quot;&quot;)
+ 168             if isinstance(msg, dict)
+ 169             else getattr(msg, &quot;content&quot;, &quot;&quot;)
+ 170         )
+ 171         if content:
+ 172             old_text += f&quot;[{role}]: {content}\n&quot;
+ 173
+ 174     # 调用 LLM 生成摘要
+ 175     summary_response = client.chat.completions.create(
+ 176         model=MODEL,
+ 177         messages=[
+ 178             {
+ 179                 &quot;role&quot;: &quot;system&quot;,
+ 180                 &quot;content&quot;: &quot;Summarize the following conversation history into a concise summary. Keep all important facts, file paths, command results, and decisions. Be concise but don&#x27;t lose critical details.&quot;,
+ 181             },
+ 182             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: old_text},
+ 183         ],
+ 184     )
+ 185     summary = summary_response.choices[0].message.content
+ 186
+ 187     print(
+ 188         f&quot;[Compact] {len(old_messages)} 条旧消息 → 1 条摘要 (保留最近 {len(recent_messages)} 条)&quot;</code></pre>
             </article>
 
           </div>
@@ -233,8 +235,8 @@
           </div>
           <div class="demo-box">
             <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python agent/06-compact/agent-compact.py &quot;在当前目录下找到所有 Python 文件，统计每个文件行数并写入 report.txt&quot;</code></pre>
-            <ul class="lesson-list"><li>调小阈值后，可在终端清晰看到 <code class="inline">[Compact]</code> 日志。</li><li>压缩会保留 system prompt 与最近几条消息，仅将旧消息折叠为摘要。</li><li>压缩本身也消耗 token，因此是一种工程折中，并非零成本能力。</li></ul>
+            <pre class="demo-command"><code>python agent/06-compact/agent-compact.py &quot;请按步骤执行，不要合并成一个 shell 命令：1. 用 execute_bash 列出 agent 目录下的 Python 文件；2. 分别用 read_file 读取 agent/01-essence/agent-essence.py、agent/02-memory/agent-memory.py、agent/06-compact/agent-compact.py；3. 把三个文件的大致行数写入 compact-demo-report.txt。&quot;</code></pre>
+            <ul class="lesson-list"><li>默认演示阈值已调低到 <code class="inline">COMPACT_THRESHOLD = 8</code>，分步工具调用后可清晰看到 <code class="inline">[Compact]</code> 日志。</li><li>压缩会保留 system prompt 与最近几条消息；如果遇到 tool 调用组，会向前扩展边界，避免切断工具响应。</li><li>压缩本身也消耗 token，因此是一种工程折中，并非零成本能力。</li></ul>
           </div>
         </section>
 
@@ -242,9 +244,9 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Try It</p>
             <h2>自己试一轮</h2>
-            <p>调小阈值并强制触发一次压缩，是最直观的演示方式。</p>
+            <p>默认低阈值配合分步工具调用，是最直观的压缩演示方式。</p>
           </div>
-          <ol class="lesson-steps"><li>将 <code class="inline">COMPACT_THRESHOLD</code> 调至 8，触发一次可见的压缩。</li><li>将 <code class="inline">KEEP_RECENT</code> 从 6 改为 4，对比当前任务衔接的变化。</li><li>观察压缩前后 messages 的结构变化，而不只查看日志。</li></ol>
+          <ol class="lesson-steps"><li>先直接运行演示命令，观察默认低阈值如何触发压缩。</li><li>将 <code class="inline">KEEP_RECENT</code> 从 4 改为 2，对比当前任务衔接的变化。</li><li>观察压缩前后 messages 的结构变化，而不只查看日志。</li></ol>
         </section>
 
         <section class="lesson-section" id="goals">
