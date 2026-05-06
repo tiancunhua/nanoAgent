@@ -563,17 +563,17 @@ SUMMARY_CLOSURE_CARDS = [
     (
         "01",
         "看懂结构",
-        "Agent 不是一个神秘人格，而是模型、工具、循环、上下文和边界共同组成的执行系统。看到源码时，先找 Harness 在哪里。",
+        "Agent = 模型 + 工具 + 循环 + 上下文 + 边界。看代码时，先找它怎么把目标拆成可执行动作。",
     ),
     (
         "02",
         "判断能力",
-        "能力提升不只来自更大的模型：Rule、Skill、MCP 改的是约束、方法和工具；Memory、Compact 改的是上下文管理；SubAgent、Teams 改的是分工方式。",
+        "Rule 管约束，Skill 管方法，MCP 接工具；Memory 和压缩管上下文，SubAgent 和 Teams 管分工。",
     ),
     (
         "03",
         "继续实践",
-        "分享结束后可以沿两条线继续：想做项目，就看番外和完整 Agent；想补原理，就回到大模型系列。",
+        "想做项目，先跑完整代码；想补原理，再回到大模型系列。",
     ),
 ]
 
@@ -729,7 +729,7 @@ def summary_structured_data() -> List[dict]:
         {
             "@context": "https://schema.org",
             "@type": "Article",
-            "headline": "总结篇：从七讲到延伸阅读",
+            "headline": "收束与延伸：七讲之后怎么继续",
             "description": "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。",
             "dateModified": BUILD_DATE,
             "inLanguage": "zh-CN",
@@ -741,7 +741,7 @@ def summary_structured_data() -> List[dict]:
             [
                 ("首页", page_url("index.html")),
                 ("七讲讲义", page_url("index.html") + "#lessons"),
-                ("总结篇", page_url("summary.html")),
+                ("收束与延伸", page_url("summary.html")),
             ]
         ),
     ]
@@ -840,7 +840,6 @@ def build_resource(path: Path, label: str) -> Resource:
 
 
 AGENT_BONUS_PATHS = [
-    ROOT / "full/nanoAgent-bonus-harness.md",
     ROOT / "08-filesystem/nanoAgent-bonus-filesystem.md",
     ROOT / "09-token/nanoAgent-bonus-token.md",
     ROOT / "10-tool-selection/nanoAgent-bonus-tool-selection.md",
@@ -909,8 +908,8 @@ def course_nav(current_slug: str) -> str:
     items.append(
         f'''
         <a class="chapter-rail-link{summary_class}" href="summary.html">
-          <span class="course-step">总结篇</span>
-          <strong>从七讲到延伸阅读</strong>
+          <span class="course-step">收束</span>
+          <strong>收束与延伸</strong>
           <small>主线收束 · Agent 番外 · 大模型目录</small>
         </a>
         '''
@@ -921,9 +920,9 @@ def course_nav(current_slug: str) -> str:
 def build_footer() -> str:
     return f"""
     <footer class="site-footer">
-      <p>本讲义仅保留最关键的代码、演示与延伸线索；总结篇、番外与完整原文请见下方入口。</p>
+      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
-        <a href="summary.html">总结篇</a>
+        <a href="summary.html">收束与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
         <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
         <a href="{github_blob_url(REPO_ROOT / 'llm/README.md')}">大模型导读</a>
@@ -1044,7 +1043,7 @@ def build_home_page() -> str:
 
     summary_cards = []
     summary_links = [
-        ("summary.html", "查看总结篇"),
+        ("summary.html", "查看收束页"),
         ("summary.html#extras", "查看 Agent 番外"),
         ("summary.html#llm", "查看大模型目录"),
     ]
@@ -1219,7 +1218,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
     next_link = (
         f'<a class="pager-link" href="{next_lesson.slug}.html"><span>下一篇</span><strong>{next_lesson.number}. {html.escape(next_lesson.short_title)}</strong></a>'
         if next_lesson
-        else '<a class="pager-link" href="summary.html"><span>下一篇</span><strong>总结篇 · 从七讲到延伸阅读</strong></a>'
+        else '<a class="pager-link" href="summary.html"><span>下一篇</span><strong>收束与延伸 · 七讲之后怎么继续</strong></a>'
     )
     visual_html = build_essence_figure() if lesson.slug == "essence" else ""
     demo_config_html = build_demo_config_showcase(lesson)
@@ -1441,7 +1440,7 @@ def build_summary_page() -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  {build_head(f"总结篇｜{SITE_SUBTITLE}", "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。", "summary.html", "article", structured_data=summary_structured_data())}
+  {build_head(f"收束与延伸｜{SITE_SUBTITLE}", "用一页回顾七讲主线，并给出 Agent 番外篇与大模型系列目录。", "summary.html", "article", structured_data=summary_structured_data())}
 </head>
 <body class="article-body">
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -1464,8 +1463,8 @@ def build_summary_page() -> str:
     <main class="article-layout" id="main-content">
       <aside class="article-sidebar">
         <div class="sidebar-card">
-          <p class="eyebrow">总结篇</p>
-          <h2 class="lesson-title">从最小闭环到完整 Harness</h2>
+          <p class="eyebrow">Closure</p>
+          <h2 class="lesson-title">从最小闭环到完整结构</h2>
           <p>这一页不再展开新概念，而是把七讲串成一张地图，并给出分享结束后的延伸阅读入口。</p>
           <div class="chip-row">
             <span class="chip">主线收束</span>
@@ -1494,13 +1493,13 @@ def build_summary_page() -> str:
             <span>/</span>
             <a href="index.html#lessons">讲义列表</a>
             <span>/</span>
-            <span>总结篇</span>
+            <span>收束与延伸</span>
           </div>
           <p class="eyebrow">{SITE_SUBTITLE}</p>
-          <h1>总结篇：从七讲到延伸阅读</h1>
-          <p class="lead">七讲主线到这里收束：先把最小闭环搭起来，再逐步补上能力外置、记忆、委派、协作、压缩与安全。接下来要么继续补 Agent 工程细节，要么回到底层大模型原理。</p>
+          <h1>收束与延伸：七讲之后怎么继续</h1>
+          <p class="lead">七讲主线到这里收束：从最小闭环出发，补上能力外置、记忆、委派、协作、压缩与安全。后面可以继续做 Agent 工程，也可以回到底层模型原理。</p>
           <div class="tag-row">
-            <span class="tag">总结篇</span>
+            <span class="tag">收束与延伸</span>
             <span class="tag">Agent 番外</span>
             <span class="tag">大模型目录</span>
           </div>
@@ -1514,7 +1513,7 @@ def build_summary_page() -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">CLOSURE</p>
             <h2>一小时之后留下什么</h2>
-            <p>这一段不再重复每一讲，而是把这一小时收束成一个可继续使用的判断框架：看到一个 Agent 产品或代码库时，先问它怎么动手、怎么记住、怎么分工、怎么控制风险。</p>
+            <p>把七讲收束成四个问题：怎么动手、怎么记住、怎么分工、怎么控风险。</p>
           </div>
           <div class="format-grid">
             {"".join(closure_cards)}
@@ -1602,7 +1601,7 @@ def build_summary_page() -> str:
 
 
 def build_not_found_page() -> str:
-    description = "页面不存在。可返回首页、七讲讲义或总结篇继续阅读。"
+    description = "页面不存在。可返回首页、七讲讲义或收束页继续阅读。"
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1628,10 +1627,10 @@ def build_not_found_page() -> str:
         <div class="hero-copy">
           <p class="eyebrow">404</p>
           <h1>这个页面没有找到</h1>
-          <p class="hero-lead">链接可能已经变更，或者你访问了一个不存在的地址。可以从首页重新进入，也可以直接跳到总结篇继续阅读。</p>
+          <p class="hero-lead">链接可能已经变更，或者你访问了一个不存在的地址。可以从首页重新进入，也可以直接跳到收束页继续阅读。</p>
           <div class="hero-actions">
             <a class="primary-btn" href="index.html">返回首页</a>
-            <a class="secondary-btn" href="summary.html">进入总结篇</a>
+            <a class="secondary-btn" href="summary.html">进入收束页</a>
           </div>
         </div>
         <div class="hero-side">
@@ -1641,7 +1640,7 @@ def build_not_found_page() -> str:
               <span>从最小闭环到安全边界</span>
             </article>
             <article class="fact-card">
-              <strong>总结篇</strong>
+              <strong>收束页</strong>
               <span>七讲地图与延伸目录</span>
             </article>
             <article class="fact-card">

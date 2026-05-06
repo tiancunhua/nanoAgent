@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:site_name" content="从零开始理解agent">
   <meta property="og:title" content="03. Skills、Rules 与 MCP｜60 分钟讲义">
   <meta property="og:description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/skills-mcp.html">
@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-05","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 03 讲","item":"https://githubxsy.github.io/nanoAgent/skills-mcp.html"}]}</script>
 </head>
 <body class="article-body">
@@ -30,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">从零开始理解agent</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
@@ -48,7 +48,7 @@
           <p>本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。</p>
           <div class="chip-row">
             <span class="chip">10 分钟</span>
-            <span class="chip">376 行代码</span>
+            <span class="chip">379 行代码</span>
             <span class="chip">Skill + Rule + MCP</span>
           </div>
         </div>
@@ -99,8 +99,8 @@
             </a>
 
         <a class="chapter-rail-link" href="summary.html">
-          <span class="course-step">总结篇</span>
-          <strong>从七讲到延伸阅读</strong>
+          <span class="course-step">收束</span>
+          <strong>收束与延伸</strong>
           <small>主线收束 · Agent 番外 · 大模型目录</small>
         </a>
         </div>
@@ -158,10 +158,10 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L14-L17">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  14 RULES_DIR = &quot;.agent/rules&quot;
-  15 SKILLS_DIR = &quot;.agent/skills&quot;
-  16 MCP_CONFIG = &quot;.agent/mcp.json&quot;
-  17 DEFAULT_MAX_ITERATIONS = 10</code></pre>
+              <pre class="code-block"><code class="language-python">  14     http_client=httpx.Client(verify=False),
+  15 )
+  16
+  17 RULES_DIR = &quot;.agent/rules&quot;</code></pre>
             </article>
 
             <article class="code-card">
@@ -172,101 +172,101 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L208-L302">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 208     rules = []
- 209     if not os.path.exists(RULES_DIR):
- 210         return &quot;&quot;
- 211     try:
- 212         for rule_file in sorted(Path(RULES_DIR).glob(&quot;*.md&quot;)):
- 213             with open(rule_file, &quot;r&quot;) as f:
- 214                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
- 215         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
- 216     except:
- 217         return &quot;&quot;
- 218
- 219
- 220 def count_rule_files():
- 221     if not os.path.exists(RULES_DIR):
- 222         return 0
- 223     return len(list(Path(RULES_DIR).glob(&quot;*.md&quot;)))
- 224
- 225
- 226 def load_skills():
- 227     skills = []
- 228     if not os.path.exists(SKILLS_DIR):
- 229         return []
- 230     try:
- 231         skill_files = sorted(Path(SKILLS_DIR).glob(&quot;*/SKILL.md&quot;)) + sorted(
- 232             Path(SKILLS_DIR).glob(&quot;*.md&quot;)
- 233         )
- 234         for skill_file in skill_files:
- 235             skills.append(parse_markdown_skill(skill_file))
- 236         return skills
- 237     except:
- 238         return []
- 239
- 240
- 241 def parse_markdown_skill(path):
- 242     content = path.read_text(encoding=&quot;utf-8&quot;)
- 243     metadata = {}
- 244     body = content
- 245     if content.startswith(&quot;---\n&quot;):
- 246         end = content.find(&quot;\n---&quot;, 4)
- 247         if end != -1:
- 248             frontmatter = content[4:end].strip()
- 249             body = content[end + 4 :].strip()
- 250             for line in frontmatter.splitlines():
- 251                 if &quot;:&quot; not in line:
- 252                     continue
- 253                 key, value = line.split(&quot;:&quot;, 1)
- 254                 metadata[key.strip()] = value.strip()
- 255     name = metadata.get(
- 256         &quot;name&quot;, path.parent.name if path.name == &quot;SKILL.md&quot; else path.stem
- 257     )
- 258     triggers = [
- 259         trigger.strip().lower()
- 260         for trigger in metadata.get(&quot;triggers&quot;, &quot;&quot;).split(&quot;,&quot;)
- 261         if trigger.strip()
- 262     ]
- 263     return {
- 264         &quot;name&quot;: name,
- 265         &quot;description&quot;: metadata.get(&quot;description&quot;, &quot;&quot;),
- 266         &quot;when_to_use&quot;: metadata.get(&quot;when_to_use&quot;, &quot;&quot;),
- 267         &quot;triggers&quot;: triggers,
- 268         &quot;path&quot;: str(path),
- 269         &quot;content&quot;: body,
- 270     }
- 271
- 272
- 273 def format_skill_for_prompt(skill):
- 274     lines = [
- 275         f&quot;## {skill[&#x27;name&#x27;]}&quot;,
- 276         f&quot;Source: {skill[&#x27;path&#x27;]}&quot;,
- 277         f&quot;Description: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;,
- 278     ]
- 279     when_to_use = skill.get(&quot;when_to_use&quot;)
- 280     if when_to_use:
- 281         lines.append(f&quot;When to use: {when_to_use}&quot;)
- 282     if skill.get(&quot;triggers&quot;):
- 283         lines.append(f&quot;Triggers: {&#x27;, &#x27;.join(skill[&#x27;triggers&#x27;])}&quot;)
- 284     lines.append(skill[&quot;content&quot;])
- 285     return &quot;\n&quot;.join(lines)
- 286
- 287
- 288 def load_mcp_tools():
- 289     if not os.path.exists(MCP_CONFIG):
- 290         return []
- 291     try:
- 292         with open(MCP_CONFIG, &quot;r&quot;) as f:
- 293             config = json.load(f)
- 294             mcp_tools = []
- 295             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
- 296                 if server_config.get(&quot;disabled&quot;, False):
- 297                     continue
- 298                 for tool in server_config.get(&quot;tools&quot;, []):
- 299                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
- 300             return mcp_tools
- 301     except:
- 302         return []</code></pre>
+              <pre class="code-block"><code class="language-python"> 208
+ 209
+ 210 def load_rules():
+ 211     rules = []
+ 212     if not os.path.exists(RULES_DIR):
+ 213         return &quot;&quot;
+ 214     try:
+ 215         for rule_file in sorted(Path(RULES_DIR).glob(&quot;*.md&quot;)):
+ 216             with open(rule_file, &quot;r&quot;) as f:
+ 217                 rules.append(f&quot;# {rule_file.stem}\n{f.read()}&quot;)
+ 218         return &quot;\n\n&quot;.join(rules) if rules else &quot;&quot;
+ 219     except:
+ 220         return &quot;&quot;
+ 221
+ 222
+ 223 def count_rule_files():
+ 224     if not os.path.exists(RULES_DIR):
+ 225         return 0
+ 226     return len(list(Path(RULES_DIR).glob(&quot;*.md&quot;)))
+ 227
+ 228
+ 229 def load_skills():
+ 230     skills = []
+ 231     if not os.path.exists(SKILLS_DIR):
+ 232         return []
+ 233     try:
+ 234         skill_files = sorted(Path(SKILLS_DIR).glob(&quot;*/SKILL.md&quot;)) + sorted(
+ 235             Path(SKILLS_DIR).glob(&quot;*.md&quot;)
+ 236         )
+ 237         for skill_file in skill_files:
+ 238             skills.append(parse_markdown_skill(skill_file))
+ 239         return skills
+ 240     except:
+ 241         return []
+ 242
+ 243
+ 244 def parse_markdown_skill(path):
+ 245     content = path.read_text(encoding=&quot;utf-8&quot;)
+ 246     metadata = {}
+ 247     body = content
+ 248     if content.startswith(&quot;---\n&quot;):
+ 249         end = content.find(&quot;\n---&quot;, 4)
+ 250         if end != -1:
+ 251             frontmatter = content[4:end].strip()
+ 252             body = content[end + 4 :].strip()
+ 253             for line in frontmatter.splitlines():
+ 254                 if &quot;:&quot; not in line:
+ 255                     continue
+ 256                 key, value = line.split(&quot;:&quot;, 1)
+ 257                 metadata[key.strip()] = value.strip()
+ 258     name = metadata.get(
+ 259         &quot;name&quot;, path.parent.name if path.name == &quot;SKILL.md&quot; else path.stem
+ 260     )
+ 261     triggers = [
+ 262         trigger.strip().lower()
+ 263         for trigger in metadata.get(&quot;triggers&quot;, &quot;&quot;).split(&quot;,&quot;)
+ 264         if trigger.strip()
+ 265     ]
+ 266     return {
+ 267         &quot;name&quot;: name,
+ 268         &quot;description&quot;: metadata.get(&quot;description&quot;, &quot;&quot;),
+ 269         &quot;when_to_use&quot;: metadata.get(&quot;when_to_use&quot;, &quot;&quot;),
+ 270         &quot;triggers&quot;: triggers,
+ 271         &quot;path&quot;: str(path),
+ 272         &quot;content&quot;: body,
+ 273     }
+ 274
+ 275
+ 276 def format_skill_for_prompt(skill):
+ 277     lines = [
+ 278         f&quot;## {skill[&#x27;name&#x27;]}&quot;,
+ 279         f&quot;Source: {skill[&#x27;path&#x27;]}&quot;,
+ 280         f&quot;Description: {skill.get(&#x27;description&#x27;, &#x27;&#x27;)}&quot;,
+ 281     ]
+ 282     when_to_use = skill.get(&quot;when_to_use&quot;)
+ 283     if when_to_use:
+ 284         lines.append(f&quot;When to use: {when_to_use}&quot;)
+ 285     if skill.get(&quot;triggers&quot;):
+ 286         lines.append(f&quot;Triggers: {&#x27;, &#x27;.join(skill[&#x27;triggers&#x27;])}&quot;)
+ 287     lines.append(skill[&quot;content&quot;])
+ 288     return &quot;\n&quot;.join(lines)
+ 289
+ 290
+ 291 def load_mcp_tools():
+ 292     if not os.path.exists(MCP_CONFIG):
+ 293         return []
+ 294     try:
+ 295         with open(MCP_CONFIG, &quot;r&quot;) as f:
+ 296             config = json.load(f)
+ 297             mcp_tools = []
+ 298             for server_name, server_config in config.get(&quot;mcpServers&quot;, {}).items():
+ 299                 if server_config.get(&quot;disabled&quot;, False):
+ 300                     continue
+ 301                 for tool in server_config.get(&quot;tools&quot;, []):
+ 302                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})</code></pre>
             </article>
 
             <article class="code-card">
@@ -277,28 +277,28 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L341-L362">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 341 def run_agent_with_external_capabilities(task):
- 342     rule_count = count_rule_files()
- 343     rules = load_rules()
- 344     skills = load_skills()
- 345     mcp_tools = load_mcp_tools()
- 346     all_tools = base_tools + mcp_tools
- 347     context_parts = [
- 348         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
- 349     ]
- 350     if rules:
- 351         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
- 352         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
- 353     if skills:
- 354         context_parts.append(
- 355             f&quot;\n# Skills\n&quot;
- 356             + &quot;\n\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
- 357         )
- 358         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 359         print(f&quot;[Skills] Loaded {len(skills)} skill files: {&#x27;, &#x27;.join(skill_names)}&quot;)
- 360     if mcp_tools:
- 361         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
- 362         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)</code></pre>
+              <pre class="code-block"><code class="language-python"> 341     return &quot;Max iterations reached&quot;, messages
+ 342
+ 343
+ 344 def run_agent_with_external_capabilities(task):
+ 345     rule_count = count_rule_files()
+ 346     rules = load_rules()
+ 347     skills = load_skills()
+ 348     mcp_tools = load_mcp_tools()
+ 349     all_tools = base_tools + mcp_tools
+ 350     context_parts = [
+ 351         &quot;You are a helpful assistant that can interact with the system. Be concise.&quot;
+ 352     ]
+ 353     if rules:
+ 354         context_parts.append(f&quot;\n# Rules\n{rules}&quot;)
+ 355         print(f&quot;[Rules] Loaded {rule_count} rule files&quot;)
+ 356     if skills:
+ 357         context_parts.append(
+ 358             f&quot;\n# Skills\n&quot;
+ 359             + &quot;\n\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
+ 360         )
+ 361         skill_names = [skill[&quot;name&quot;] for skill in skills]
+ 362         print(f&quot;[Skills] Loaded {len(skills)} skill files: {&#x27;, &#x27;.join(skill_names)}&quot;)</code></pre>
             </article>
 
           </div>
@@ -468,9 +468,9 @@ B &gt; A &gt; C，因为先保数据安全，再保能启动，最后处理界�
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留最关键的代码、演示与延伸线索；总结篇、番外与完整原文请见下方入口。</p>
+      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
-        <a href="summary.html">总结篇</a>
+        <a href="summary.html">收束与延伸</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/README.md">大模型导读</a>

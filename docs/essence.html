@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:site_name" content="从零开始理解agent">
   <meta property="og:title" content="01. 底层原理，约 100 行｜60 分钟讲义">
   <meta property="og:description" content="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/essence.html">
@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"01. 底层原理，约 100 行","description":"没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。","dateModified":"2026-05-05","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/essence.html","keywords":["工具调用","Agent Loop","最小实现"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"01. 底层原理，约 100 行","description":"没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/essence.html","keywords":["工具调用","Agent Loop","最小实现"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 01 讲","item":"https://githubxsy.github.io/nanoAgent/essence.html"}]}</script>
 </head>
 <body class="article-body">
@@ -30,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">从零开始理解agent</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
@@ -48,7 +48,7 @@
           <p>没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。</p>
           <div class="chip-row">
             <span class="chip">8 分钟</span>
-            <span class="chip">103 行代码</span>
+            <span class="chip">105 行代码</span>
             <span class="chip">LLM + 工具 + 循环</span>
           </div>
         </div>
@@ -99,8 +99,8 @@
             </a>
 
         <a class="chapter-rail-link" href="summary.html">
-          <span class="course-step">总结篇</span>
-          <strong>从七讲到延伸阅读</strong>
+          <span class="course-step">收束</span>
+          <strong>收束与延伸</strong>
           <small>主线收束 · Agent 番外 · 大模型目录</small>
         </a>
         </div>
@@ -163,31 +163,31 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L73-L97">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  73 def run_agent(user_message, max_iterations=5):
-  74     messages = [
-  75         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant. Be concise.&quot;},
-  76         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
-  77     ]
-  78     for _ in range(max_iterations):
-  79         response = client.chat.completions.create(
-  80             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
-  81             messages=messages,
-  82             tools=tools,
-  83         )
-  84         message = response.choices[0].message
-  85         messages.append(message)
-  86         if not message.tool_calls:
-  87             return message.content
-  88         for tool_call in message.tool_calls:
-  89             name = tool_call.function.name
-  90             args = json.loads(tool_call.function.arguments)
-  91             print(f&quot;[Tool] {name}({args})&quot;)
-  92             if name not in functions:
-  93                 result = f&quot;Error: Unknown tool &#x27;{name}&#x27;&quot;
-  94             else:
-  95                 result = functions[name](**args)
-  96             messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: result})
-  97     return &quot;Max iterations reached&quot;</code></pre>
+              <pre class="code-block"><code class="language-python">  73
+  74
+  75 def run_agent(user_message, max_iterations=5):
+  76     messages = [
+  77         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant. Be concise.&quot;},
+  78         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
+  79     ]
+  80     for _ in range(max_iterations):
+  81         response = client.chat.completions.create(
+  82             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
+  83             messages=messages,
+  84             tools=tools,
+  85         )
+  86         message = response.choices[0].message
+  87         messages.append(message)
+  88         if not message.tool_calls:
+  89             return message.content
+  90         for tool_call in message.tool_calls:
+  91             name = tool_call.function.name
+  92             args = json.loads(tool_call.function.arguments)
+  93             print(f&quot;[Tool] {name}({args})&quot;)
+  94             if name not in functions:
+  95                 result = f&quot;Error: Unknown tool &#x27;{name}&#x27;&quot;
+  96             else:
+  97                 result = functions[name](**args)</code></pre>
             </article>
 
             <article class="code-card">
@@ -198,47 +198,47 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L11-L51">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  11 tools = [
-  12     {
-  13         &quot;type&quot;: &quot;function&quot;,
-  14         &quot;function&quot;: {
-  15             &quot;name&quot;: &quot;execute_bash&quot;,
-  16             &quot;description&quot;: &quot;Execute a bash command&quot;,
-  17             &quot;parameters&quot;: {
-  18                 &quot;type&quot;: &quot;object&quot;,
-  19                 &quot;properties&quot;: {&quot;command&quot;: {&quot;type&quot;: &quot;string&quot;}},
-  20                 &quot;required&quot;: [&quot;command&quot;],
-  21             },
-  22         },
-  23     },
-  24     {
-  25         &quot;type&quot;: &quot;function&quot;,
-  26         &quot;function&quot;: {
-  27             &quot;name&quot;: &quot;read_file&quot;,
-  28             &quot;description&quot;: &quot;Read a file&quot;,
-  29             &quot;parameters&quot;: {
-  30                 &quot;type&quot;: &quot;object&quot;,
-  31                 &quot;properties&quot;: {&quot;path&quot;: {&quot;type&quot;: &quot;string&quot;}},
-  32                 &quot;required&quot;: [&quot;path&quot;],
-  33             },
-  34         },
-  35     },
-  36     {
-  37         &quot;type&quot;: &quot;function&quot;,
-  38         &quot;function&quot;: {
-  39             &quot;name&quot;: &quot;write_file&quot;,
-  40             &quot;description&quot;: &quot;Write to a file&quot;,
-  41             &quot;parameters&quot;: {
-  42                 &quot;type&quot;: &quot;object&quot;,
-  43                 &quot;properties&quot;: {
-  44                     &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
-  45                     &quot;content&quot;: {&quot;type&quot;: &quot;string&quot;},
-  46                 },
-  47                 &quot;required&quot;: [&quot;path&quot;, &quot;content&quot;],
-  48             },
-  49         },
-  50     },
-  51 ]</code></pre>
+              <pre class="code-block"><code class="language-python">  11 )
+  12
+  13 tools = [
+  14     {
+  15         &quot;type&quot;: &quot;function&quot;,
+  16         &quot;function&quot;: {
+  17             &quot;name&quot;: &quot;execute_bash&quot;,
+  18             &quot;description&quot;: &quot;Execute a bash command&quot;,
+  19             &quot;parameters&quot;: {
+  20                 &quot;type&quot;: &quot;object&quot;,
+  21                 &quot;properties&quot;: {&quot;command&quot;: {&quot;type&quot;: &quot;string&quot;}},
+  22                 &quot;required&quot;: [&quot;command&quot;],
+  23             },
+  24         },
+  25     },
+  26     {
+  27         &quot;type&quot;: &quot;function&quot;,
+  28         &quot;function&quot;: {
+  29             &quot;name&quot;: &quot;read_file&quot;,
+  30             &quot;description&quot;: &quot;Read a file&quot;,
+  31             &quot;parameters&quot;: {
+  32                 &quot;type&quot;: &quot;object&quot;,
+  33                 &quot;properties&quot;: {&quot;path&quot;: {&quot;type&quot;: &quot;string&quot;}},
+  34                 &quot;required&quot;: [&quot;path&quot;],
+  35             },
+  36         },
+  37     },
+  38     {
+  39         &quot;type&quot;: &quot;function&quot;,
+  40         &quot;function&quot;: {
+  41             &quot;name&quot;: &quot;write_file&quot;,
+  42             &quot;description&quot;: &quot;Write to a file&quot;,
+  43             &quot;parameters&quot;: {
+  44                 &quot;type&quot;: &quot;object&quot;,
+  45                 &quot;properties&quot;: {
+  46                     &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
+  47                     &quot;content&quot;: {&quot;type&quot;: &quot;string&quot;},
+  48                 },
+  49                 &quot;required&quot;: [&quot;path&quot;, &quot;content&quot;],
+  50             },
+  51         },</code></pre>
             </article>
 
             <article class="code-card">
@@ -249,23 +249,23 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L54-L70">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  54 def execute_bash(command):
-  55     result = subprocess.run(command, shell=True, capture_output=True, text=True)
-  56     return result.stdout + result.stderr
-  57
-  58
-  59 def read_file(path):
-  60     with open(path, &quot;r&quot;) as f:
-  61         return f.read()
-  62
-  63
-  64 def write_file(path, content):
-  65     with open(path, &quot;w&quot;) as f:
-  66         f.write(content)
-  67     return f&quot;Wrote to {path}&quot;
-  68
-  69
-  70 functions = {&quot;execute_bash&quot;: execute_bash, &quot;read_file&quot;: read_file, &quot;write_file&quot;: write_file}</code></pre>
+              <pre class="code-block"><code class="language-python">  54
+  55
+  56 def execute_bash(command):
+  57     result = subprocess.run(command, shell=True, capture_output=True, text=True)
+  58     return result.stdout + result.stderr
+  59
+  60
+  61 def read_file(path):
+  62     with open(path, &quot;r&quot;) as f:
+  63         return f.read()
+  64
+  65
+  66 def write_file(path, content):
+  67     with open(path, &quot;w&quot;) as f:
+  68         f.write(content)
+  69     return f&quot;Wrote to {path}&quot;
+  70 </code></pre>
             </article>
 
           </div>
@@ -337,9 +337,9 @@
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留最关键的代码、演示与延伸线索；总结篇、番外与完整原文请见下方入口。</p>
+      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
-        <a href="summary.html">总结篇</a>
+        <a href="summary.html">收束与延伸</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub 仓库</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/README_CN.md">系列导读</a>
         <a href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/README.md">大模型导读</a>
