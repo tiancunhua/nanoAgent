@@ -36,7 +36,7 @@ REPO_WEB_BASE = "https://github.com/GitHubxsy/nanoAgent"
 SITE_URL = "https://githubxsy.github.io/nanoAgent"
 SITE_TITLE = "从零开始理解 Agent"
 SITE_SUBTITLE = "60 分钟讲义"
-SITE_DESCRIPTION = "将 nanoAgent 前七篇内容浓缩为一套 60 分钟讲义，并补上总结篇、Agent 番外与大模型系列目录。"
+SITE_DESCRIPTION = "一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。"
 SITE_AUTHOR = "GitHubxsy"
 BUILD_DATE = date.today().isoformat()
 
@@ -1050,33 +1050,47 @@ def build_home_page() -> str:
     </header>
 
     <main id="main-content">
-      <section class="hero-panel">
+      <section class="hero-panel home-hero">
         <div class="hero-copy">
-          <p class="eyebrow">{SITE_SUBTITLE}</p>
-          <h1>从关键代码到完整运行的 Agent</h1>
-          <p class="hero-lead">这是一个面向公开分享的 Agent 技术讲义站点：把前七篇内容重组为一条可讲、可演示、可复现的主线，帮助读者从最小闭环走到安全边界。</p>
-          <p class="mode-note">讲义结构统一：先交代使用场景，再阅读关键代码，然后用终端演示把行为跑出来。</p>
+          <p class="eyebrow">Agent 技术分享 · {SITE_SUBTITLE}</p>
+          <h1>把 Agent 拆成一套能运行的工程系统</h1>
+          <p class="hero-lead">不是概念清单，而是一条从“让模型能动手”到“让系统可控运行”的实战路线。每一讲都用最小代码、真实命令和可复现结果，拆开 Coding Agent 的共同结构。</p>
+          <p class="mode-note">核心路径：Tool Loop → Memory → Rules / Skills / MCP → SubAgent → Teams → Context Compact → Safety</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
+            <a class="secondary-btn" href="#agenda">查看 60 分钟路线</a>
+          </div>
+          <div class="hero-metrics">
+            <span><strong>7</strong> 个可运行脚本</span>
+            <span><strong>60</strong> 分钟实战分享</span>
+            <span><strong>1</strong> 条工程主线</span>
           </div>
         </div>
-        <div class="hero-side">
-          <div class="fact-grid">
-            <article class="fact-card">
-              <strong>60 分钟</strong>
-              <span>完整讲义时长</span>
+        <div class="hero-side hero-map">
+          <div class="hero-map-head">
+            <p class="eyebrow">Learning Route</p>
+            <h2>从能动手到可控运行</h2>
+          </div>
+          <div class="route-stack">
+            <article class="route-step">
+              <span>01</span>
+              <div><strong>Tool Loop</strong><p>让模型选择工具，代码执行动作。</p></div>
             </article>
-            <article class="fact-card">
-              <strong>7 讲</strong>
-              <span>覆盖核心 Agent 能力</span>
+            <article class="route-step">
+              <span>02</span>
+              <div><strong>Memory</strong><p>把上一次结果重新带回上下文。</p></div>
             </article>
-            <article class="fact-card">
-              <strong>代码优先</strong>
-              <span>先看实现，再看行为结果</span>
+            <article class="route-step">
+              <span>03</span>
+              <div><strong>Rules / Skills / MCP</strong><p>把规则、方法和工具从代码里拿出来。</p></div>
             </article>
-            <article class="fact-card">
-              <strong>可直接复现</strong>
-              <span>每讲均附演示命令与动手入口</span>
+            <article class="route-step">
+              <span>04-05</span>
+              <div><strong>SubAgent / Teams</strong><p>从一次性委派走到持久协作。</p></div>
+            </article>
+            <article class="route-step">
+              <span>06-07</span>
+              <div><strong>Compact / Safety</strong><p>控制上下文，也控制真实执行边界。</p></div>
             </article>
           </div>
         </div>
@@ -1085,8 +1099,8 @@ def build_home_page() -> str:
       <section class="section-block" id="format">
         <div class="section-head">
           <p class="eyebrow">Format</p>
-          <h2>讲义结构</h2>
-          <p>讲义不从抽象概念开始，而是以代码为主线，用终端输出把原理落到可观察的结果上。</p>
+          <h2>不是听概念，而是看系统怎么长出来</h2>
+          <p>首页往下不是普通目录，而是完整的分享路线：先明确目标和环境，再按时间推进，最后进入每一讲的代码与演示。</p>
         </div>
         <div class="format-grid">
           <article class="format-card">
