@@ -19,9 +19,14 @@ GitHub: https://github.com/GitHubxsy/nanoAgent
 """
 
 import os, sys, json
+import httpx
 from openai import OpenAI
 
-CLIENT = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL"))
+CLIENT = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False),
+)
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 
 # ============================================================

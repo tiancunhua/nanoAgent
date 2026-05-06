@@ -2,12 +2,14 @@ import os
 import json
 import subprocess
 import sys
+import httpx
 from datetime import datetime
 from openai import OpenAI
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
     base_url=os.environ.get("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False),
 )
 
 MEMORY_FILE = "agent_memory.md"

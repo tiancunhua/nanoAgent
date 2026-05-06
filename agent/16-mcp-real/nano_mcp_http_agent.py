@@ -7,10 +7,15 @@ nano_mcp_http_agent.py - 第一篇的 run_agent 接入 MCP Server
 用法: python agent/16-mcp-real/nano_mcp_http_agent.py "What is 3 + 5?"
 """
 import os, sys, json, requests
+import httpx
 from openai import OpenAI
 
 SERVER_URL = os.environ.get("MCP_SERVER_URL", "http://127.0.0.1:8766/mcp")
-CLIENT = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL"))
+CLIENT = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False),
+)
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 
 # ===== MCP 通信：一个函数搞定 =====
@@ -18,8 +23,11 @@ MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 _id = 0
 def mcp_send(method, params={}):
     global _id; _id += 1
-    resp = requests.post(SERVER_URL, json={
-        "jsonrpc": "2.0", "id": _id, "method": method, "params": params})
+    resp = requests.post(
+        SERVER_URL,
+        json={"jsonrpc": "2.0", "id": _id, "method": method, "params": params},
+        verify=False,
+    )
     return resp.json()["result"]
 
 # ===== 还是第一篇的 run_agent =====

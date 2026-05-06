@@ -15,9 +15,10 @@ agent-command.py — nanoAgent 番外篇：Command
 """
 
 import os, sys, json
+import httpx
 from openai import OpenAI
 
-llm = OpenAI()
+llm = OpenAI(http_client=httpx.Client(verify=False))
 SYSTEM_PROMPT = "You are a helpful assistant with access to tools."
 
 # ---- 工具定义（和第一篇一样） ----

@@ -22,12 +22,15 @@ import subprocess
 import sys
 import re
 import glob as glob_module
+import httpx
 from datetime import datetime
 from pathlib import Path
 from openai import OpenAI
 
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL")
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False),
 )
 
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")

@@ -18,11 +18,13 @@ import subprocess
 import sys
 import random
 import threading
+import httpx
 from openai import OpenAI
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
-    base_url=os.environ.get("OPENAI_BASE_URL")
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False),
 )
 
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
