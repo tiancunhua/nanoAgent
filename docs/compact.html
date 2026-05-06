@@ -156,9 +156,15 @@
                   <p class="lesson-index">上下文压缩函数</p>
                   <h3>这是上下文压缩的核心实现：将旧历史折叠为摘要，保留当前工作现场。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.py#L125-L188">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/06-compact/agent-compact.py#L119-L204">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 125 #                 ↓ 压缩后
+              <pre class="code-block"><code class="language-python"> 119 # ==================== 上下文压缩（核心新增） ====================
+ 120 #
+ 121 # 核心是 compact_messages()；find_recent_start() 用来避免切断 tool 调用组。
+ 122 #
+ 123 # 原理：
+ 124 #   messages = [system, user, assistant, tool, assistant, tool, ...]
+ 125 #                 ↓ 压缩后
  126 #   messages = [system, 摘要(包含之前所有要点), 最近 N 条消息]
  127
  128 COMPACT_THRESHOLD = 8  # 演示用低阈值：几轮工具调用后就能看到压缩
@@ -221,7 +227,23 @@
  185             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: old_text},
  186         ],
  187     )
- 188     summary = summary_response.choices[0].message.content</code></pre>
+ 188     summary = summary_response.choices[0].message.content
+ 189
+ 190     print(
+ 191         f&quot;[Compact] {len(old_messages)} 条旧消息 → 1 条摘要 (保留最近 {len(recent_messages)} 条)&quot;
+ 192     )
+ 193     print(f&quot;[Compact] 压缩后 messages: {1 + 2 + len(recent_messages)} 条\n&quot;)
+ 194
+ 195     # 重新组装：system + 摘要 + 最近消息
+ 196     return [
+ 197         system_msg,
+ 198         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;[Previous conversation summary]: {summary}&quot;},
+ 199         {
+ 200             &quot;role&quot;: &quot;assistant&quot;,
+ 201             &quot;content&quot;: &quot;Understood. I have the context from our previous conversation. Let me continue.&quot;,
+ 202         },
+ 203         *recent_messages,
+ 204     ]</code></pre>
             </article>
 
           </div>

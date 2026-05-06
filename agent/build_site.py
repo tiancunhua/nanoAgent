@@ -47,6 +47,10 @@ class Snippet:
     start: int
     end: int
     focus: str
+    start_marker: str = ""
+    end_marker: str = ""
+    start_offset: int = 0
+    end_offset: int = 0
 
 
 @dataclass
@@ -151,21 +155,27 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="最小 Agent 循环",
-                start=73,
-                end=97,
+                start=75,
+                end=99,
                 focus="围绕这二十余行展开：请求模型、获取 tool call、执行工具、回填结果、进入下一轮。",
+                start_marker="def run_agent(",
+                end_marker='return "Max iterations reached"',
             ),
             Snippet(
                 title="Tool 声明",
-                start=11,
-                end=51,
+                start=13,
+                end=53,
                 focus="这段代码决定了模型能看到哪些能力，以及每个工具需要什么参数。",
+                start_marker="tools = [",
+                end_marker="line:]",
             ),
             Snippet(
                 title="工具映射到真实函数",
-                start=54,
-                end=70,
+                start=56,
+                end=72,
                 focus="Tool 并非抽象概念，最终会映射到真实函数；模型选中的名字就在这里被执行。",
+                start_marker="def execute_bash(command):",
+                end_marker='functions = {"execute_bash"',
             ),
         ],
     ),
@@ -220,21 +230,28 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="演示迭代上限",
-                start=14,
-                end=17,
+                start=17,
+                end=20,
                 focus="第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。",
+                start_marker="RULES_DIR =",
+                end_marker="DEFAULT_MAX_ITERATIONS =",
             ),
             Snippet(
                 title="Rules / Skills / MCP 的加载",
-                start=208,
-                end=302,
+                start=210,
+                end=305,
                 focus="这段代码展示 `load_rules`、Markdown Skill 加载和 MCP 工具加载：Rule 与 Skill 进入 prompt，MCP 进入 tools。",
+                start_marker="def load_rules():",
+                end_marker="def run_agent_step(",
+                end_offset=-2,
             ),
             Snippet(
                 title="进入上下文与工具列表的方式",
-                start=341,
-                end=362,
+                start=344,
+                end=370,
                 focus="关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 `all_tools`。",
+                start_marker="def run_agent_with_external_capabilities",
+                end_marker="return final_result",
             ),
         ],
     ),
@@ -282,15 +299,19 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="Memory 写入与读取",
-                start=77,
-                end=90,
+                start=79,
+                end=92,
                 focus="这段代码构成最小 Memory 闭环的前半段：从文件读取历史，再将新结果追加写入。",
+                start_marker="def load_memory():",
+                end_marker='print(f"[Memory] Saved',
             ),
             Snippet(
                 title="将旧记忆重新带回上下文",
-                start=93,
-                end=117,
+                start=95,
+                end=104,
                 focus="关键不在于保存了多少历史，而在新任务启动时是否将旧记忆重新写回 system prompt。",
+                start_marker="def build_messages(user_message):",
+                end_marker="    ]",
             ),
         ],
     ),
@@ -344,8 +365,10 @@ LESSONS = [
             Snippet(
                 title="将 subagent 封装为工具",
                 start=104,
-                end=142,
+                end=145,
                 focus="独立 `sub_messages` 与禁止递归，是这段实现最值得关注的两点。",
+                start_marker="# ==================== SubAgent 实现",
+                end_marker='return "SubAgent: max iterations reached"',
             )
         ],
     ),
@@ -396,15 +419,19 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="持久化的 Agent 对象",
-                start=150,
-                end=210,
+                start=145,
+                end=223,
                 focus="这段代码解释了团队成员为何能记得队友此前说过的内容。",
+                start_marker="# ==================== 核心 1",
+                end_marker='return "Max iterations reached"',
             ),
             Snippet(
                 title="Team 管理生命周期与通信",
-                start=219,
-                end=247,
+                start=226,
+                end=260,
                 focus="招募、广播、解散——这里是多智能体协作的最小骨架。",
+                start_marker="# ==================== 核心 2",
+                end_marker='print(f"  [解散]',
             ),
         ],
     ),
@@ -452,9 +479,12 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="上下文压缩函数",
-                start=125,
-                end=188,
+                start=119,
+                end=204,
                 focus="这是上下文压缩的核心实现：将旧历史折叠为摘要，保留当前工作现场。",
+                start_marker="# ==================== 上下文压缩",
+                end_marker="# ==================== Agent 核心循环",
+                end_offset=-2,
             )
         ],
     ),
@@ -502,15 +532,20 @@ LESSONS = [
         snippets=[
             Snippet(
                 title="危险命令黑名单与确认机制",
-                start=49,
-                end=107,
+                start=36,
+                end=89,
                 focus="明确黑名单与确认框各自拦截的风险层级。",
+                start_marker="DANGEROUS_PATTERNS =",
+                end_marker="# ==================== 安全防线 3",
+                end_offset=-2,
             ),
             Snippet(
                 title="安全版 execute_bash",
-                start=162,
-                end=186,
+                start=165,
+                end=189,
                 focus="这段函数清晰展示了三道防线的串联方式。",
+                start_marker="def execute_bash(command):",
+                end_marker="return truncate_output(output)",
             ),
         ],
     ),
@@ -867,6 +902,43 @@ def code_lines(path: Path) -> int:
     return len(path.read_text(encoding="utf-8").splitlines())
 
 
+def find_marker_line(lines: List[str], marker: str, start_at: int = 1) -> int:
+    exact_marker = marker.removeprefix("line:")
+    for index in range(max(start_at, 1) - 1, len(lines)):
+        if marker.startswith("line:") and lines[index].strip() == exact_marker:
+            return index + 1
+        if marker in lines[index]:
+            return index + 1
+    raise ValueError(f"Snippet marker not found: {marker}")
+
+
+def resolve_snippet_range(path: Path, snippet: Snippet) -> tuple[int, int]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = snippet.start
+    if snippet.start_marker:
+        start = find_marker_line(lines, snippet.start_marker) + snippet.start_offset
+
+    end = snippet.end
+    if snippet.end_marker:
+        end = (
+            find_marker_line(lines, snippet.end_marker, start_at=start)
+            + snippet.end_offset
+        )
+
+    start = max(1, start)
+    end = min(len(lines), end)
+
+    while start <= end and not lines[start - 1].strip():
+        start += 1
+    while end >= start and not lines[end - 1].strip():
+        end -= 1
+
+    if start > end:
+        raise ValueError(f"Invalid snippet range for {path}: {snippet.title}")
+
+    return start, end
+
+
 def excerpt_code(path: Path, start: int, end: int) -> str:
     lines = path.read_text(encoding="utf-8").splitlines()
     selected = []
@@ -1195,6 +1267,7 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
 
     snippet_cards = []
     for snippet in lesson.snippets:
+        snippet_start, snippet_end = resolve_snippet_range(lesson.code_path, snippet)
         snippet_cards.append(
             f"""
             <article class="code-card">
@@ -1203,9 +1276,9 @@ def build_lesson_page(index: int, lesson: Lesson) -> str:
                   <p class="lesson-index">{html.escape(snippet.title)}</p>
                   <h3>{format_inline(snippet.focus)}</h3>
                 </div>
-                <a class="source-link" href="{github_lines_url(lesson.code_path, snippet.start, snippet.end)}">看 GitHub 行号</a>
+                <a class="source-link" href="{github_lines_url(lesson.code_path, snippet_start, snippet_end)}">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">{html.escape(excerpt_code(lesson.code_path, snippet.start, snippet.end))}</code></pre>
+              <pre class="code-block"><code class="language-python">{html.escape(excerpt_code(lesson.code_path, snippet_start, snippet_end))}</code></pre>
             </article>
             """
         )

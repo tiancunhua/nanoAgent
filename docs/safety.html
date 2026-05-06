@@ -156,9 +156,22 @@
                   <p class="lesson-index">危险命令黑名单与确认机制</p>
                   <h3>明确黑名单与确认框各自拦截的风险层级。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L49-L107">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L36-L89">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  49 ]
+              <pre class="code-block"><code class="language-python">  36 DANGEROUS_PATTERNS = [
+  37     r&quot;\brm\s+(-[a-zA-Z]*f[a-zA-Z]*\s+|.*--no-preserve-root)&quot;,  # rm -rf, rm -f /
+  38     r&quot;\brm\s+(-[a-zA-Z]*r[a-zA-Z]*\s+)?/&quot;,  # rm / 或 rm -r /
+  39     r&quot;\bmkfs\b&quot;,  # 格式化磁盘
+  40     r&quot;\bdd\s+.*of\s*=\s*/dev/&quot;,  # 覆写磁盘
+  41     r&quot;&gt;\s*/dev/sd[a-z]&quot;,  # 重定向到磁盘设备
+  42     r&quot;\bchmod\s+(-R\s+)?777\s+/&quot;,  # chmod 777 /
+  43     r&quot;:\(\)\s*\{&quot;,  # fork bomb :(){ :|:&amp; };
+  44     r&quot;\bcurl\b.*\|\s*(ba)?sh&quot;,  # curl | bash（远程执行）
+  45     r&quot;\bwget\b.*\|\s*(ba)?sh&quot;,  # wget | bash
+  46     r&quot;\bshutdown\b&quot;,  # 关机
+  47     r&quot;\breboot\b&quot;,  # 重启
+  48     r&quot;\binit\s+0&quot;,  # 关机
+  49 ]
   50
   51
   52 def is_dangerous(command):
@@ -198,25 +211,7 @@
   86             print(&quot;用户终止了 Agent。&quot;)
   87             sys.exit(0)
   88         else:
-  89             print(&quot;请输入 Y/N/Q&quot;)
-  90
-  91
-  92 # ==================== 安全防线 3: 输出截断 ====================
-  93 #
-  94 # 工具返回的结果可能巨大（比如 cat 一个 10000 行的文件）。
-  95 # 不截断的话会迅速撑爆 context window（第六篇讲的问题）。
-  96 # 截断是压缩之外的另一道防线：从源头控制输入大小。
-  97
-  98 MAX_OUTPUT_LENGTH = 5000  # 字符数
-  99
- 100
- 101 def truncate_output(text):
- 102     &quot;&quot;&quot;超长输出截断，保留首尾&quot;&quot;&quot;
- 103     if len(text) &lt;= MAX_OUTPUT_LENGTH:
- 104         return text
- 105     half = MAX_OUTPUT_LENGTH // 2
- 106     return (
- 107         text[:half]</code></pre>
+  89             print(&quot;请输入 Y/N/Q&quot;)</code></pre>
             </article>
 
             <article class="code-card">
@@ -225,12 +220,9 @@
                   <p class="lesson-index">安全版 execute_bash</p>
                   <h3>这段函数清晰展示了三道防线的串联方式。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L162-L186">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L165-L189">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 162 ]
- 163
- 164
- 165 def execute_bash(command):
+              <pre class="code-block"><code class="language-python"> 165 def execute_bash(command):
  166     # 防线 1: 黑名单检查
  167     dangerous, pattern = is_dangerous(command)
  168     if dangerous:
@@ -251,7 +243,10 @@
  183     except subprocess.TimeoutExpired:
  184         output = &quot;Error: 命令执行超时（30秒）&quot;
  185     except Exception as e:
- 186         output = f&quot;Error: {str(e)}&quot;</code></pre>
+ 186         output = f&quot;Error: {str(e)}&quot;
+ 187
+ 188     # 防线 3: 输出截断
+ 189     return truncate_output(output)</code></pre>
             </article>
 
           </div>

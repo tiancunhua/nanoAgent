@@ -156,9 +156,14 @@
                   <p class="lesson-index">持久化的 Agent 对象</p>
                   <h3>这段代码解释了团队成员为何能记得队友此前说过的内容。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L150-L210">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L145-L223">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 150 #   - 有 inbox —— 通信通道，接收其他 Agent 发来的消息
+              <pre class="code-block"><code class="language-python"> 145 # ==================== 核心 1: 持久智能体（Agent 类） ====================
+ 146 #
+ 147 # 对比 SubAgent（一个函数调用就消亡），Agent 是一个有状态的对象:
+ 148 #   - 有名字（name）和角色（role）—— 身份
+ 149 #   - 有 messages 列表 —— 记忆，跨多次 chat() 调用持久保持
+ 150 #   - 有 inbox —— 通信通道，接收其他 Agent 发来的消息
  151
  152
  153 class Agent:
@@ -218,7 +223,20 @@
  207                 )
  208                 return message.content
  209
- 210             for tc in message.tool_calls:</code></pre>
+ 210             for tc in message.tool_calls:
+ 211                 fn = tc.function.name
+ 212                 args = json.loads(tc.function.arguments)
+ 213                 print(
+ 214                     f&quot;  [{self.name}] {fn}({json.dumps(args, ensure_ascii=False)[:60]})&quot;
+ 215                 )
+ 216                 result = available_functions.get(fn, lambda **_: &quot;Tool not found&quot;)(
+ 217                     **args
+ 218                 )
+ 219                 self.messages.append(
+ 220                     {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
+ 221                 )
+ 222
+ 223         return &quot;Max iterations reached&quot;</code></pre>
             </article>
 
             <article class="code-card">
@@ -227,16 +245,9 @@
                   <p class="lesson-index">Team 管理生命周期与通信</p>
                   <h3>招募、广播、解散——这里是多智能体协作的最小骨架。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L219-L247">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L226-L260">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 219                 self.messages.append(
- 220                     {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
- 221                 )
- 222
- 223         return &quot;Max iterations reached&quot;
- 224
- 225
- 226 # ==================== 核心 2: 身份与生命周期管理（Team 类） ====================
+              <pre class="code-block"><code class="language-python"> 226 # ==================== 核心 2: 身份与生命周期管理（Team 类） ====================
  227 #
  228 # Team 管理 Agent 的完整生命周期:
  229 #   创建（hire）→ 存活（多次 chat + 互相通信）→ 解散（disband）
@@ -257,7 +268,20 @@
  244         if to_name not in self.agents:
  245             return f&quot;Error: {to_name} not found&quot;
  246         self.agents[to_name].receive(from_name, message)
- 247         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)</code></pre>
+ 247         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)
+ 248
+ 249     def broadcast(self, from_name, message):
+ 250         &quot;&quot;&quot;广播：给团队所有其他人发消息&quot;&quot;&quot;
+ 251         for name, agent in self.agents.items():
+ 252             if name != from_name:
+ 253                 agent.receive(from_name, message)
+ 254         print(f&quot;  [广播] {from_name} → 全体: {message[:60]}...&quot;)
+ 255
+ 256     def disband(self):
+ 257         &quot;&quot;&quot;解散：所有 Agent 生命周期结束&quot;&quot;&quot;
+ 258         names = list(self.agents.keys())
+ 259         self.agents.clear()
+ 260         print(f&quot;  [解散] 团队已解散 ({&#x27;, &#x27;.join(names)})&quot;)</code></pre>
             </article>
 
           </div>

@@ -156,11 +156,9 @@
                   <p class="lesson-index">Memory 写入与读取</p>
                   <h3>这段代码构成最小 Memory 闭环的前半段：从文件读取历史，再将新结果追加写入。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L77-L90">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L79-L92">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  77
-  78
-  79 def load_memory():
+              <pre class="code-block"><code class="language-python">  79 def load_memory():
   80     if not os.path.exists(MEMORY_FILE):
   81         return &quot;&quot;
   82     with open(MEMORY_FILE, &quot;r&quot;) as f:
@@ -171,7 +169,9 @@
   87 def save_memory(task, result):
   88     timestamp = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
   89     entry = f&quot;\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n&quot;
-  90     with open(MEMORY_FILE, &quot;a&quot;) as f:</code></pre>
+  90     with open(MEMORY_FILE, &quot;a&quot;) as f:
+  91         f.write(entry)
+  92     print(f&quot;[Memory] Saved to {MEMORY_FILE}&quot;)</code></pre>
             </article>
 
             <article class="code-card">
@@ -180,11 +180,9 @@
                   <p class="lesson-index">将旧记忆重新带回上下文</p>
                   <h3>关键不在于保存了多少历史，而在新任务启动时是否将旧记忆重新写回 system prompt。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L93-L117">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L95-L104">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  93
-  94
-  95 def build_messages(user_message):
+              <pre class="code-block"><code class="language-python">  95 def build_messages(user_message):
   96     system_prompt = &quot;You are a helpful assistant. Be concise.&quot;
   97     memory = load_memory()
   98     if memory:
@@ -193,20 +191,7 @@
  101     return [
  102         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_prompt},
  103         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
- 104     ]
- 105
- 106
- 107 def run_agent(user_message, max_iterations=5):
- 108     messages = build_messages(user_message)
- 109     for _ in range(max_iterations):
- 110         response = client.chat.completions.create(
- 111             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
- 112             messages=messages,
- 113             tools=tools,
- 114         )
- 115         message = response.choices[0].message
- 116         messages.append(message)
- 117         if not message.tool_calls:</code></pre>
+ 104     ]</code></pre>
             </article>
 
           </div>

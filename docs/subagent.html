@@ -156,7 +156,7 @@
                   <p class="lesson-index">将 subagent 封装为工具</p>
                   <h3>独立 <code class="inline">sub_messages</code> 与禁止递归，是这段实现最值得关注的两点。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.py#L104-L142">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/04-subagent/agent-subagent.py#L104-L145">看 GitHub 行号</a>
               </div>
               <pre class="code-block"><code class="language-python"> 104 # ==================== SubAgent 实现（核心） ====================
  105
@@ -196,7 +196,10 @@
  139             )
  140             result = available_functions[fn](**args)
  141             sub_messages.append(
- 142                 {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}</code></pre>
+ 142                 {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
+ 143             )
+ 144
+ 145     return &quot;SubAgent: max iterations reached&quot;</code></pre>
             </article>
 
           </div>

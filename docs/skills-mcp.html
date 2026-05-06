@@ -156,12 +156,12 @@
                   <p class="lesson-index">演示迭代上限</p>
                   <h3>第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L14-L17">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L17-L20">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  14     http_client=httpx.Client(verify=False),
-  15 )
-  16
-  17 RULES_DIR = &quot;.agent/rules&quot;</code></pre>
+              <pre class="code-block"><code class="language-python">  17 RULES_DIR = &quot;.agent/rules&quot;
+  18 SKILLS_DIR = &quot;.agent/skills&quot;
+  19 MCP_CONFIG = &quot;.agent/mcp.json&quot;
+  20 DEFAULT_MAX_ITERATIONS = 10</code></pre>
             </article>
 
             <article class="code-card">
@@ -170,11 +170,9 @@
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
                   <h3>这段代码展示 <code class="inline">load_rules</code>、Markdown Skill 加载和 MCP 工具加载：Rule 与 Skill 进入 prompt，MCP 进入 tools。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L208-L302">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L210-L305">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 208
- 209
- 210 def load_rules():
+              <pre class="code-block"><code class="language-python"> 210 def load_rules():
  211     rules = []
  212     if not os.path.exists(RULES_DIR):
  213         return &quot;&quot;
@@ -266,7 +264,10 @@
  299                 if server_config.get(&quot;disabled&quot;, False):
  300                     continue
  301                 for tool in server_config.get(&quot;tools&quot;, []):
- 302                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})</code></pre>
+ 302                     mcp_tools.append({&quot;type&quot;: &quot;function&quot;, &quot;function&quot;: tool})
+ 303             return mcp_tools
+ 304     except:
+ 305         return []</code></pre>
             </article>
 
             <article class="code-card">
@@ -275,12 +276,9 @@
                   <p class="lesson-index">进入上下文与工具列表的方式</p>
                   <h3>关键在注入位置：Rules 与 Skills 进入 prompt，MCP 工具进入 <code class="inline">all_tools</code>。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L341-L362">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L344-L370">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 341     return &quot;Max iterations reached&quot;, messages
- 342
- 343
- 344 def run_agent_with_external_capabilities(task):
+              <pre class="code-block"><code class="language-python"> 344 def run_agent_with_external_capabilities(task):
  345     rule_count = count_rule_files()
  346     rules = load_rules()
  347     skills = load_skills()
@@ -298,7 +296,15 @@
  359             + &quot;\n\n&quot;.join(format_skill_for_prompt(skill) for skill in skills)
  360         )
  361         skill_names = [skill[&quot;name&quot;] for skill in skills]
- 362         print(f&quot;[Skills] Loaded {len(skills)} skill files: {&#x27;, &#x27;.join(skill_names)}&quot;)</code></pre>
+ 362         print(f&quot;[Skills] Loaded {len(skills)} skill files: {&#x27;, &#x27;.join(skill_names)}&quot;)
+ 363     if mcp_tools:
+ 364         tool_names = [tool[&quot;function&quot;][&quot;name&quot;] for tool in mcp_tools]
+ 365         print(f&quot;[MCP] Loaded {len(mcp_tools)} MCP tools: {&#x27;, &#x27;.join(tool_names)}&quot;)
+ 366     messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;\n&quot;.join(context_parts)}]
+ 367     messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
+ 368     final_result, messages = run_agent_step(messages, all_tools)
+ 369     print(f&quot;\n{final_result}&quot;)
+ 370     return final_result</code></pre>
             </article>
 
           </div>
