@@ -559,10 +559,22 @@ AGENDA = [
 ]
 
 
-SUMMARY_OUTCOMES = [
-    "把 Agent 重新看成一套系统：模型负责生成，Harness 负责让它真正干活。",
-    "能用“循环、能力外置、记忆、委派、协作、压缩、安全”七个关键词复述整套结构。",
-    "知道接下来往哪继续：想补 Agent 工程细节，就看番外；想补底层原理，就回到大模型系列。",
+SUMMARY_CLOSURE_CARDS = [
+    (
+        "01",
+        "看懂结构",
+        "Agent 不是一个神秘人格，而是模型、工具、循环、上下文和边界共同组成的执行系统。看到源码时，先找 Harness 在哪里。",
+    ),
+    (
+        "02",
+        "判断能力",
+        "能力提升不只来自更大的模型：Rule、Skill、MCP 改的是约束、方法和工具；Memory、Compact 改的是上下文管理；SubAgent、Teams 改的是分工方式。",
+    ),
+    (
+        "03",
+        "继续实践",
+        "分享结束后可以沿两条线继续：想做项目，就看番外和完整 Agent；想补原理，就回到大模型系列。",
+    ),
 ]
 
 
@@ -1405,6 +1417,18 @@ def build_summary_page() -> str:
             """
         )
 
+    closure_cards = []
+    for step, title, note in SUMMARY_CLOSURE_CARDS:
+        closure_cards.append(
+            f"""
+            <article class="format-card format-card-feature">
+              <span class="format-step">{html.escape(step)}</span>
+              <h3>{html.escape(title)}</h3>
+              <p>{html.escape(note)}</p>
+            </article>
+            """
+        )
+
     toc_links = [
         ("closure", "一小时之后留下什么"),
         ("map", "七讲怎么串起来"),
@@ -1488,11 +1512,13 @@ def build_summary_page() -> str:
 
         <section class="lesson-section" id="closure">
           <div class="lesson-section-head">
-            <p class="eyebrow">Closure</p>
+            <p class="eyebrow">CLOSURE</p>
             <h2>一小时之后留下什么</h2>
-            <p>如果只记住三件事，可以先抓住下面这些。</p>
+            <p>这一段不再重复每一讲，而是把这一小时收束成一个可继续使用的判断框架：看到一个 Agent 产品或代码库时，先问它怎么动手、怎么记住、怎么分工、怎么控制风险。</p>
           </div>
-          {render_bullets(SUMMARY_OUTCOMES)}
+          <div class="format-grid">
+            {"".join(closure_cards)}
+          </div>
         </section>
 
         <section class="lesson-section" id="map">
