@@ -488,6 +488,42 @@ button:focus-visible {
   padding: 22px;
 }
 
+.format-card-feature {
+  position: relative;
+  overflow: hidden;
+}
+
+.format-card-feature::after {
+  content: "";
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -42px;
+  top: -48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178, 76, 42, 0.14), transparent 68%);
+  pointer-events: none;
+}
+
+.format-card-feature > * {
+  position: relative;
+  z-index: 1;
+}
+
+.format-step {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  background: #1f2430;
+  color: #fff9f1;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
 .lesson-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }

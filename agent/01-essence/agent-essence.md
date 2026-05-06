@@ -10,11 +10,11 @@
 > - [第六篇：上下文压缩](../06-compact/agent-compact.md) —— 控制上下文
 > - [第七篇：安全与权限控制](../07-safety/agent-safe.md) —— 加上工程边界
 
-很多人用过 ChatGPT、Claude 这样的对话式 AI，也听说过 AI Agent 这个概念。最近 OpenClaw、Claude Code 这类 Coding Agent 火遍了整个开发者圈子——它们能自主读代码、改代码、跑测试，完成以前需要人类手动操作的整个开发流程。
+很多人用过 ChatGPT、Claude 这样的对话式 AI，也听说过 AI Agent 这个概念。最近 OpenClaw、Claude Code 这类 AI agent 火遍了整个开发者圈子——它们能自主读代码、改代码、跑测试，完成以前需要人类手动操作的整个开发流程。
 
 但 Agent 到底和普通对话有什么区别？OpenClaw / Claude Code 这类工具的底层原理是什么？Agent 是怎么"使用工具"的？
 
-本文通过逐行解读一个仅 100 行的极简 Agent 实现—— [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent)，把这些问题拆到能直接观察的代码层。理解这条最小闭环后，再看 OpenClaw、Claude Code、Cursor Agent 等 Coding Agent，会更容易抓住它们共同的底座。
+本文通过逐行解读一个仅 100 行的极简 Agent 实现—— [GitHubxsy/nanoAgent](https://github.com/GitHubxsy/nanoAgent)，把这些问题拆到能直接观察的代码层。理解这条最小闭环后，再看 OpenClaw、Claude Code、Cursor Agent 等 AI agent，会更容易抓住它们共同的底座。
 
 ---
 

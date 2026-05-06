@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>从零开始理解 Agent｜60 分钟讲义</title>
+  <title>从零开始理解agent｜60 分钟讲义</title>
   <meta name="description" content="一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#1f2430">
@@ -11,17 +11,17 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="从零开始理解 Agent">
-  <meta property="og:title" content="从零开始理解 Agent｜60 分钟讲义">
+  <meta property="og:site_name" content="从零开始理解agent">
+  <meta property="og:title" content="从零开始理解agent｜60 分钟讲义">
   <meta property="og:description" content="一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="从零开始理解 Agent｜60 分钟讲义">
+  <meta name="twitter:title" content="从零开始理解agent｜60 分钟讲义">
   <meta name="twitter:description" content="一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent","description":"一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。","inLanguage":"zh-CN","publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"从零开始理解 Agent｜60 分钟讲义","description":"一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。","provider":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"educationalLevel":"Intermediate","inLanguage":"zh-CN","url":"https://githubxsy.github.io/nanoAgent/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent","description":"一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。","inLanguage":"zh-CN","publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"从零开始理解agent｜60 分钟讲义","description":"一套面向技术分享的 Agent 实战路线：用最小代码和真实演示，从 Tool Loop、Memory、能力外置一路走到压缩与安全边界。","provider":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"educationalLevel":"Intermediate","inLanguage":"zh-CN","url":"https://githubxsy.github.io/nanoAgent/"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -29,11 +29,11 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">从零开始理解agent</span>
       </a>
       <nav class="top-nav">
         <a href="#agenda">时间分配</a>
-        <a href="#format">讲义结构</a>
+        <a href="#format">分享结构</a>
         <a href="#lessons">七讲讲义</a>
         <a href="summary.html">总结与延伸</a>
         <a href="https://github.com/GitHubxsy/nanoAgent">GitHub</a>
@@ -44,8 +44,8 @@
       <section class="hero-panel home-hero">
         <div class="hero-copy">
           <p class="eyebrow">Agent 技术分享 · 60 分钟讲义</p>
-          <h1>把 Agent 拆成一套能运行的工程系统</h1>
-          <p class="hero-lead">不是概念清单，而是一条从“让模型能动手”到“让系统可控运行”的实战路线。每一讲都用最小代码、真实命令和可复现结果，拆开 Coding Agent 的共同结构。</p>
+          <h1>从零开始理解agent</h1>
+          <p class="hero-lead">不是概念清单，而是一条从“让模型能动手”到“让系统可控运行”的实战路线。每一讲都用最小代码、真实命令和可复现结果，拆开 AI agent 的共同结构。</p>
           <p class="mode-note">核心路径：Tool Loop → Memory → Rules / Skills / MCP → SubAgent → Teams → Context Compact → Safety</p>
           <div class="hero-actions">
             <a class="primary-btn" href="essence.html">从第 01 讲开始</a>
@@ -90,21 +90,27 @@
       <section class="section-block" id="format">
         <div class="section-head">
           <p class="eyebrow">Format</p>
-          <h2>不是听概念，而是看系统怎么长出来</h2>
-          <p>首页往下不是普通目录，而是完整的分享路线：先明确目标和环境，再按时间推进，最后进入每一讲的代码与演示。</p>
+          <h2>三步把 Agent 讲清楚</h2>
+          <p>FORMAT 章节不再承担说明书角色，而是明确这场分享的节奏：先给场景，再拆代码，最后用终端结果验证。</p>
         </div>
         <div class="format-grid">
-          <article class="format-card">
-            <h3>学习目标</h3>
-            <ul class="lesson-list"><li>理解 Agent 的最小工作闭环，而不止于现成产品的使用层面。</li><li>掌握将单文件 Agent 升级为具备记忆、委派、扩展与安全控制的完整原型的路径。</li><li>通过最小 Demo 与关键代码片段，建立对 Agent 工程结构的判断力。</li></ul>
+          <article class="format-card format-card-feature">
+            <span class="format-step">01</span>
+            <h3>场景切入</h3>
+            <p>每一讲先回答“为什么需要这个机制”，再进入代码。</p>
+            <ul class="lesson-list"><li>用文件创建、发布检查、团队评审等小场景承接概念。</li><li>先建立问题，再看 Agent 为什么需要下一层能力。</li></ul>
           </article>
-          <article class="format-card">
-            <h3>环境准备</h3>
-            <ul class="lesson-list"><li>Python 环境，可运行 <code class="inline">agent/*.py</code> 文件。</li><li>已配置 <code class="inline">OPENAI_API_KEY</code>，并准备一个可用模型。</li><li>终端与代码编辑器即可，无需额外的演示软件。</li></ul>
+          <article class="format-card format-card-feature">
+            <span class="format-step">02</span>
+            <h3>代码拆解</h3>
+            <p>只看决定行为的核心片段，避免陷入整文件细节。</p>
+            <ul class="lesson-list"><li>区分哪些内容进入 prompt，哪些进入 tools，哪些留在 Python。</li><li>把循环、记忆、能力外置、委派和安全都拆成可观察代码。</li></ul>
           </article>
-          <article class="format-card">
-            <h3>结构比例</h3>
-            <ul class="lesson-list"><li>30% 关键代码：聚焦决定行为的核心实现，不展开抽象概念。</li><li>40% 现场演示：用终端输出验证行为，代码与结果一一对应。</li><li>30% 动手延伸：留出可独立复现的小改动入口，方便继续深入。</li></ul>
+          <article class="format-card format-card-feature">
+            <span class="format-step">03</span>
+            <h3>终端验证</h3>
+            <p>用演示命令证明机制生效，而不是停在解释层。</p>
+            <ul class="lesson-list"><li>看日志、工具调用、文件产物和最终回答如何对应代码。</li><li>每讲都保留一个能独立复现的小改动入口。</li></ul>
           </article>
         </div>
       </section>
