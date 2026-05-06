@@ -179,7 +179,7 @@ LESSONS = [
         summary="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。",
         core="Skill + Rule + MCP",
         tags=["Skills", "Rules", "MCP"],
-        scenario="一次发布前检查里，Agent 同时遇到三类外部要求：团队希望结论固定成三行，项目希望问题按风险排序，发布策略又来自外部系统。如果把这些都写进 Python，脚本会越来越硬；第三讲就用“删除数据没确认、应用启动报错、按钮颜色不统一”这个小例子，分别用 Rule 管输出格式、Skill 管排序方法、MCP 管外部策略。",
+        scenario="发布前有三个小问题：删除数据没确认、应用启动报错、按钮颜色不统一。我们不改 Python 代码，只改 Rule、Skill、MCP 配置，就能让 Agent 按固定格式回答、按发布风险排序，并调用外部发布策略。",
         demo_command=(
             'python3 agent/03-skills-mcp/agent-skills-mcp.py "请先调用 demo_release_policy 获取发布策略。'
             '然后按 release_triage 对这三个发布前问题排序：A 应用启动报错；B 删除数据没有二次确认；C 按钮颜色不统一。'

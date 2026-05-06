@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="从零开始理解agent">
+  <meta property="og:site_name" content="从零开始理解 Agent">
   <meta property="og:title" content="02. Memory：让 Agent 记住上一次｜60 分钟讲义">
   <meta property="og:description" content="本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/memory.html">
@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"02. Memory：让 Agent 记住上一次","description":"本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/memory.html","keywords":["Memory","Persistence","Context Replay"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"02. Memory：让 Agent 记住上一次","description":"本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。","dateModified":"2026-05-05","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/memory.html","keywords":["Memory","Persistence","Context Replay"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 02 讲","item":"https://githubxsy.github.io/nanoAgent/memory.html"}]}</script>
 </head>
 <body class="article-body">
@@ -30,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解agent</span>
+        <span class="brand-text">从零开始理解 Agent</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
@@ -48,7 +48,7 @@
           <p>本讲只聚焦 Memory：在第一讲工具循环不变的前提下，增加读取记忆、注入上下文、写回记忆三步。</p>
           <div class="chip-row">
             <span class="chip">8 分钟</span>
-            <span class="chip">141 行代码</span>
+            <span class="chip">139 行代码</span>
             <span class="chip">写入记忆 + 回放记忆</span>
           </div>
         </div>
@@ -158,20 +158,20 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L77-L90">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  77
-  78
-  79 def load_memory():
-  80     if not os.path.exists(MEMORY_FILE):
-  81         return &quot;&quot;
-  82     with open(MEMORY_FILE, &quot;r&quot;) as f:
-  83         lines = f.read().splitlines()
-  84     return &quot;\n&quot;.join(lines[-50:])
-  85
-  86
-  87 def save_memory(task, result):
-  88     timestamp = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
-  89     entry = f&quot;\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n&quot;
-  90     with open(MEMORY_FILE, &quot;a&quot;) as f:</code></pre>
+              <pre class="code-block"><code class="language-python">  77 def load_memory():
+  78     if not os.path.exists(MEMORY_FILE):
+  79         return &quot;&quot;
+  80     with open(MEMORY_FILE, &quot;r&quot;) as f:
+  81         lines = f.read().splitlines()
+  82     return &quot;\n&quot;.join(lines[-50:])
+  83
+  84
+  85 def save_memory(task, result):
+  86     timestamp = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+  87     entry = f&quot;\n## {timestamp}\n**Task:** {task}\n**Result:** {result}\n&quot;
+  88     with open(MEMORY_FILE, &quot;a&quot;) as f:
+  89         f.write(entry)
+  90     print(f&quot;[Memory] Saved to {MEMORY_FILE}&quot;)</code></pre>
             </article>
 
             <article class="code-card">
@@ -182,31 +182,31 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/02-memory/agent-memory.py#L93-L117">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  93
-  94
-  95 def build_messages(user_message):
-  96     system_prompt = &quot;You are a helpful assistant. Be concise.&quot;
-  97     memory = load_memory()
-  98     if memory:
-  99         print(f&quot;[Memory] Loaded {MEMORY_FILE}&quot;)
- 100         system_prompt += f&quot;\n\nPrevious context:\n{memory}&quot;
- 101     return [
- 102         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_prompt},
- 103         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
- 104     ]
- 105
- 106
- 107 def run_agent(user_message, max_iterations=5):
- 108     messages = build_messages(user_message)
- 109     for _ in range(max_iterations):
- 110         response = client.chat.completions.create(
- 111             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
- 112             messages=messages,
- 113             tools=tools,
- 114         )
- 115         message = response.choices[0].message
- 116         messages.append(message)
- 117         if not message.tool_calls:</code></pre>
+              <pre class="code-block"><code class="language-python">  93 def build_messages(user_message):
+  94     system_prompt = &quot;You are a helpful assistant. Be concise.&quot;
+  95     memory = load_memory()
+  96     if memory:
+  97         print(f&quot;[Memory] Loaded {MEMORY_FILE}&quot;)
+  98         system_prompt += f&quot;\n\nPrevious context:\n{memory}&quot;
+  99     return [
+ 100         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_prompt},
+ 101         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
+ 102     ]
+ 103
+ 104
+ 105 def run_agent(user_message, max_iterations=5):
+ 106     messages = build_messages(user_message)
+ 107     for _ in range(max_iterations):
+ 108         response = client.chat.completions.create(
+ 109             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
+ 110             messages=messages,
+ 111             tools=tools,
+ 112         )
+ 113         message = response.choices[0].message
+ 114         messages.append(message)
+ 115         if not message.tool_calls:
+ 116             save_memory(user_message, message.content)
+ 117             return message.content</code></pre>
             </article>
 
           </div>
