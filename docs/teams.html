@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:site_name" content="从零开始理解agent">
   <meta property="og:title" content="05. 多智能体团队协作｜60 分钟讲义">
   <meta property="og:description" content="SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/teams.html">
@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"05. 多智能体团队协作","description":"SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。","dateModified":"2026-05-05","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/teams.html","keywords":["Team","Inbox","Lifecycle"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"05. 多智能体团队协作","description":"SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/teams.html","keywords":["Team","Inbox","Lifecycle"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 05 讲","item":"https://githubxsy.github.io/nanoAgent/teams.html"}]}</script>
 </head>
 <body class="article-body">
@@ -30,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">从零开始理解agent</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
@@ -48,7 +48,7 @@
           <p>SubAgent 仍属一次性角色；本讲将其升级为具备身份、通信与复盘能力的持久团队。</p>
           <div class="chip-row">
             <span class="chip">9 分钟</span>
-            <span class="chip">395 行代码</span>
+            <span class="chip">398 行代码</span>
             <span class="chip">持久 Agent + 通信通道</span>
           </div>
         </div>
@@ -158,67 +158,67 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L150-L210">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 150 class Agent:
- 151     def __init__(self, name, role):
- 152         self.name = name
- 153         self.role = role
- 154         self.inbox = []  # 通信通道：其他 Agent 发来的消息
- 155         self.chat_count = 0
- 156         self.messages = [  # 持久记忆：跨多次 chat() 保持
- 157             {
- 158                 &quot;role&quot;: &quot;system&quot;,
- 159                 &quot;content&quot;: f&quot;You are {name}, a {role}. Be concise and focused.&quot;,
- 160             }
- 161         ]
- 162         print(f&quot;  [创建] {name} ({role})&quot;)
- 163
- 164     def receive(self, sender, message):
- 165         &quot;&quot;&quot;核心 3: 通信通道 —— 接收来自其他 Agent 的消息&quot;&quot;&quot;
- 166         self.inbox.append({&quot;from&quot;: sender, &quot;content&quot;: message})
- 167
- 168     def chat(self, task):
- 169         &quot;&quot;&quot;
- 170         核心 1: 持久记忆 —— 每次 chat() 的对话都累积在 self.messages 中
- 171         第二次 chat() 时，Agent 还记得第一次做了什么
+              <pre class="code-block"><code class="language-python"> 150 #   - 有 inbox —— 通信通道，接收其他 Agent 发来的消息
+ 151
+ 152
+ 153 class Agent:
+ 154     def __init__(self, name, role):
+ 155         self.name = name
+ 156         self.role = role
+ 157         self.inbox = []  # 通信通道：其他 Agent 发来的消息
+ 158         self.chat_count = 0
+ 159         self.messages = [  # 持久记忆：跨多次 chat() 保持
+ 160             {
+ 161                 &quot;role&quot;: &quot;system&quot;,
+ 162                 &quot;content&quot;: f&quot;You are {name}, a {role}. Be concise and focused.&quot;,
+ 163             }
+ 164         ]
+ 165         print(f&quot;  [创建] {name} ({role})&quot;)
+ 166
+ 167     def receive(self, sender, message):
+ 168         &quot;&quot;&quot;核心 3: 通信通道 —— 接收来自其他 Agent 的消息&quot;&quot;&quot;
+ 169         self.inbox.append({&quot;from&quot;: sender, &quot;content&quot;: message})
+ 170
+ 171     def chat(self, task):
  172         &quot;&quot;&quot;
- 173         self.chat_count += 1
- 174         print(
- 175             f&quot;  [记忆] {self.name} 第 {self.chat_count} 次 chat，&quot;
- 176             f&quot;已有 {len(self.messages)} 条 messages，inbox {len(self.inbox)} 条&quot;
- 177         )
- 178         # 如果 inbox 有新消息，先注入
- 179         if self.inbox:
- 180             print(f&quot;  [收件箱] {self.name} 读取 {len(self.inbox)} 条团队消息&quot;)
- 181             mail = &quot;\n&quot;.join(f&quot;[来自 {m[&#x27;from&#x27;]}]: {m[&#x27;content&#x27;]}&quot; for m in self.inbox)
- 182             self.messages.append(
- 183                 {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;你收到了团队成员的消息:\n{mail}&quot;}
- 184             )
- 185             # 让 Agent 先消化这些消息
- 186             resp = client.chat.completions.create(model=MODEL, messages=self.messages)
- 187             self.messages.append(resp.choices[0].message)
- 188             self.inbox.clear()
- 189
- 190         # 执行本次任务
- 191         self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
+ 173         核心 1: 持久记忆 —— 每次 chat() 的对话都累积在 self.messages 中
+ 174         第二次 chat() 时，Agent 还记得第一次做了什么
+ 175         &quot;&quot;&quot;
+ 176         self.chat_count += 1
+ 177         print(
+ 178             f&quot;  [记忆] {self.name} 第 {self.chat_count} 次 chat，&quot;
+ 179             f&quot;已有 {len(self.messages)} 条 messages，inbox {len(self.inbox)} 条&quot;
+ 180         )
+ 181         # 如果 inbox 有新消息，先注入
+ 182         if self.inbox:
+ 183             print(f&quot;  [收件箱] {self.name} 读取 {len(self.inbox)} 条团队消息&quot;)
+ 184             mail = &quot;\n&quot;.join(f&quot;[来自 {m[&#x27;from&#x27;]}]: {m[&#x27;content&#x27;]}&quot; for m in self.inbox)
+ 185             self.messages.append(
+ 186                 {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;你收到了团队成员的消息:\n{mail}&quot;}
+ 187             )
+ 188             # 让 Agent 先消化这些消息
+ 189             resp = client.chat.completions.create(model=MODEL, messages=self.messages)
+ 190             self.messages.append(resp.choices[0].message)
+ 191             self.inbox.clear()
  192
- 193         for _ in range(10):
- 194             response = client.chat.completions.create(
- 195                 model=MODEL, messages=self.messages, tools=tools
- 196             )
- 197             message = response.choices[0].message
- 198             self.messages.append(message)
- 199
- 200             if not message.tool_calls:
- 201                 print(f&quot;  [{self.name}] → {message.content[:100]}...&quot;)
- 202                 print(
- 203                     f&quot;  [记忆] {self.name} 本轮结束，messages {len(self.messages)} 条&quot;
- 204                 )
- 205                 return message.content
- 206
- 207             for tc in message.tool_calls:
- 208                 fn = tc.function.name
- 209                 args = json.loads(tc.function.arguments)
- 210                 print(</code></pre>
+ 193         # 执行本次任务
+ 194         self.messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: task})
+ 195
+ 196         for _ in range(10):
+ 197             response = client.chat.completions.create(
+ 198                 model=MODEL, messages=self.messages, tools=tools
+ 199             )
+ 200             message = response.choices[0].message
+ 201             self.messages.append(message)
+ 202
+ 203             if not message.tool_calls:
+ 204                 print(f&quot;  [{self.name}] → {message.content[:100]}...&quot;)
+ 205                 print(
+ 206                     f&quot;  [记忆] {self.name} 本轮结束，messages {len(self.messages)} 条&quot;
+ 207                 )
+ 208                 return message.content
+ 209
+ 210             for tc in message.tool_calls:</code></pre>
             </article>
 
             <article class="code-card">
@@ -229,35 +229,35 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/05-teams/agent-teams.py#L219-L247">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 219
- 220         return &quot;Max iterations reached&quot;
- 221
+              <pre class="code-block"><code class="language-python"> 219                 self.messages.append(
+ 220                     {&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tc.id, &quot;content&quot;: result}
+ 221                 )
  222
- 223 # ==================== 核心 2: 身份与生命周期管理（Team 类） ====================
- 224 #
- 225 # Team 管理 Agent 的完整生命周期:
- 226 #   创建（hire）→ 存活（多次 chat + 互相通信）→ 解散（disband）
- 227
- 228
- 229 class Team:
- 230     def __init__(self):
- 231         self.agents = {}  # name → Agent
- 232
- 233     def hire(self, name, role):
- 234         &quot;&quot;&quot;招募：创建一个持久 Agent&quot;&quot;&quot;
- 235         agent = Agent(name, role)
- 236         self.agents[name] = agent
- 237         return agent
- 238
- 239     def send(self, from_name, to_name, message):
- 240         &quot;&quot;&quot;核心 3: Agent 之间的通信通道&quot;&quot;&quot;
- 241         if to_name not in self.agents:
- 242             return f&quot;Error: {to_name} not found&quot;
- 243         self.agents[to_name].receive(from_name, message)
- 244         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)
- 245
- 246     def broadcast(self, from_name, message):
- 247         &quot;&quot;&quot;广播：给团队所有其他人发消息&quot;&quot;&quot;</code></pre>
+ 223         return &quot;Max iterations reached&quot;
+ 224
+ 225
+ 226 # ==================== 核心 2: 身份与生命周期管理（Team 类） ====================
+ 227 #
+ 228 # Team 管理 Agent 的完整生命周期:
+ 229 #   创建（hire）→ 存活（多次 chat + 互相通信）→ 解散（disband）
+ 230
+ 231
+ 232 class Team:
+ 233     def __init__(self):
+ 234         self.agents = {}  # name → Agent
+ 235
+ 236     def hire(self, name, role):
+ 237         &quot;&quot;&quot;招募：创建一个持久 Agent&quot;&quot;&quot;
+ 238         agent = Agent(name, role)
+ 239         self.agents[name] = agent
+ 240         return agent
+ 241
+ 242     def send(self, from_name, to_name, message):
+ 243         &quot;&quot;&quot;核心 3: Agent 之间的通信通道&quot;&quot;&quot;
+ 244         if to_name not in self.agents:
+ 245             return f&quot;Error: {to_name} not found&quot;
+ 246         self.agents[to_name].receive(from_name, message)
+ 247         print(f&quot;  [消息] {from_name} → {to_name}: {message[:60]}...&quot;)</code></pre>
             </article>
 
           </div>

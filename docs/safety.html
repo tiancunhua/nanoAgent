@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="从零开始理解 Agent">
+  <meta property="og:site_name" content="从零开始理解agent">
   <meta property="og:title" content="07. 三道安全防线｜60 分钟讲义">
   <meta property="og:description" content="最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。">
   <meta property="og:url" content="https://githubxsy.github.io/nanoAgent/safety.html">
@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"07. 三道安全防线","description":"最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。","dateModified":"2026-05-05","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/safety.html","keywords":["Safety","Approval","Guardrails"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解 Agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"07. 三道安全防线","description":"最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/safety.html","keywords":["Safety","Approval","Guardrails"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 07 讲","item":"https://githubxsy.github.io/nanoAgent/safety.html"}]}</script>
 </head>
 <body class="article-body">
@@ -30,7 +30,7 @@
     <header class="site-header">
       <a class="brand" href="index.html">
         <span class="brand-mark">nanoAgent</span>
-        <span class="brand-text">从零开始理解 Agent</span>
+        <span class="brand-text">从零开始理解agent</span>
       </a>
       <nav class="top-nav">
         <a href="index.html#agenda">时间分配</a>
@@ -48,7 +48,7 @@
           <p>最后一讲聚焦 Agent 工程使用时常见的三道边界：危险命令拦截、人工确认、超长输出截断。</p>
           <div class="chip-row">
             <span class="chip">5 分钟</span>
-            <span class="chip">288 行代码</span>
+            <span class="chip">291 行代码</span>
             <span class="chip">黑名单 + 人工确认 + 输出截断</span>
           </div>
         </div>
@@ -158,65 +158,65 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L49-L107">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  49 def is_dangerous(command):
-  50     &quot;&quot;&quot;检查命令是否匹配黑名单&quot;&quot;&quot;
-  51     for pattern in DANGEROUS_PATTERNS:
-  52         if re.search(pattern, command):
-  53             return True, pattern
-  54     return False, None
-  55
-  56
-  57 # ==================== 安全防线 2: 用户确认 ====================
-  58 #
-  59 # 命令没有被黑名单拦截，不代表它是安全的。
-  60 # 所有 bash 命令在执行前都让用户过目确认。
-  61 # 类似 OpenClaw / Claude Code 中的 &quot;Allow / Deny&quot; 机制。
-  62
-  63
-  64 def ask_user_confirmation(tool_name, args):
-  65     &quot;&quot;&quot;执行前询问用户确认&quot;&quot;&quot;
-  66     if AUTO_APPROVE:
-  67         return True
-  68
-  69     print(f&quot;\n┌─ 确认执行 ─────────────────────────────&quot;)
-  70     print(f&quot;│ 工具: {tool_name}&quot;)
-  71     for key, value in args.items():
-  72         display = str(value)[:200]
-  73         print(f&quot;│ {key}: {display}&quot;)
-  74     print(f&quot;└────────────────────────────────────────&quot;)
-  75
-  76     while True:
-  77         answer = input(&quot;[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; &quot;).strip().lower()
-  78         if answer in (&quot;y&quot;, &quot;yes&quot;, &quot;&quot;):
-  79             return True
-  80         elif answer in (&quot;n&quot;, &quot;no&quot;):
-  81             return False
-  82         elif answer in (&quot;q&quot;, &quot;quit&quot;):
-  83             print(&quot;用户终止了 Agent。&quot;)
-  84             sys.exit(0)
-  85         else:
-  86             print(&quot;请输入 Y/N/Q&quot;)
-  87
-  88
-  89 # ==================== 安全防线 3: 输出截断 ====================
-  90 #
-  91 # 工具返回的结果可能巨大（比如 cat 一个 10000 行的文件）。
-  92 # 不截断的话会迅速撑爆 context window（第六篇讲的问题）。
-  93 # 截断是压缩之外的另一道防线：从源头控制输入大小。
-  94
-  95 MAX_OUTPUT_LENGTH = 5000  # 字符数
-  96
+              <pre class="code-block"><code class="language-python">  49 ]
+  50
+  51
+  52 def is_dangerous(command):
+  53     &quot;&quot;&quot;检查命令是否匹配黑名单&quot;&quot;&quot;
+  54     for pattern in DANGEROUS_PATTERNS:
+  55         if re.search(pattern, command):
+  56             return True, pattern
+  57     return False, None
+  58
+  59
+  60 # ==================== 安全防线 2: 用户确认 ====================
+  61 #
+  62 # 命令没有被黑名单拦截，不代表它是安全的。
+  63 # 所有 bash 命令在执行前都让用户过目确认。
+  64 # 类似 OpenClaw / Claude Code 中的 &quot;Allow / Deny&quot; 机制。
+  65
+  66
+  67 def ask_user_confirmation(tool_name, args):
+  68     &quot;&quot;&quot;执行前询问用户确认&quot;&quot;&quot;
+  69     if AUTO_APPROVE:
+  70         return True
+  71
+  72     print(f&quot;\n┌─ 确认执行 ─────────────────────────────&quot;)
+  73     print(f&quot;│ 工具: {tool_name}&quot;)
+  74     for key, value in args.items():
+  75         display = str(value)[:200]
+  76         print(f&quot;│ {key}: {display}&quot;)
+  77     print(f&quot;└────────────────────────────────────────&quot;)
+  78
+  79     while True:
+  80         answer = input(&quot;[Y]执行 / [N]跳过 / [Q]终止 Agent &gt; &quot;).strip().lower()
+  81         if answer in (&quot;y&quot;, &quot;yes&quot;, &quot;&quot;):
+  82             return True
+  83         elif answer in (&quot;n&quot;, &quot;no&quot;):
+  84             return False
+  85         elif answer in (&quot;q&quot;, &quot;quit&quot;):
+  86             print(&quot;用户终止了 Agent。&quot;)
+  87             sys.exit(0)
+  88         else:
+  89             print(&quot;请输入 Y/N/Q&quot;)
+  90
+  91
+  92 # ==================== 安全防线 3: 输出截断 ====================
+  93 #
+  94 # 工具返回的结果可能巨大（比如 cat 一个 10000 行的文件）。
+  95 # 不截断的话会迅速撑爆 context window（第六篇讲的问题）。
+  96 # 截断是压缩之外的另一道防线：从源头控制输入大小。
   97
-  98 def truncate_output(text):
-  99     &quot;&quot;&quot;超长输出截断，保留首尾&quot;&quot;&quot;
- 100     if len(text) &lt;= MAX_OUTPUT_LENGTH:
- 101         return text
- 102     half = MAX_OUTPUT_LENGTH // 2
- 103     return (
- 104         text[:half]
- 105         + f&quot;\n\n... [输出过长，已截断。原始 {len(text)} 字符，保留首尾各 {half} 字符] ...\n\n&quot;
- 106         + text[-half:]
- 107     )</code></pre>
+  98 MAX_OUTPUT_LENGTH = 5000  # 字符数
+  99
+ 100
+ 101 def truncate_output(text):
+ 102     &quot;&quot;&quot;超长输出截断，保留首尾&quot;&quot;&quot;
+ 103     if len(text) &lt;= MAX_OUTPUT_LENGTH:
+ 104         return text
+ 105     half = MAX_OUTPUT_LENGTH // 2
+ 106     return (
+ 107         text[:half]</code></pre>
             </article>
 
             <article class="code-card">
@@ -227,31 +227,31 @@
                 </div>
                 <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/07-safety/agent-safe.py#L162-L186">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python"> 162 def execute_bash(command):
- 163     # 防线 1: 黑名单检查
- 164     dangerous, pattern = is_dangerous(command)
- 165     if dangerous:
- 166         msg = f&quot;🚫 命令被拦截（匹配危险模式: {pattern}）: {command}&quot;
- 167         print(f&quot;  {msg}&quot;)
- 168         return msg
- 169
- 170     # 防线 2: 用户确认
- 171     if not ask_user_confirmation(&quot;execute_bash&quot;, {&quot;command&quot;: command}):
- 172         return &quot;用户跳过了此命令。&quot;
- 173
- 174     # 执行
- 175     try:
- 176         result = subprocess.run(
- 177             command, shell=True, capture_output=True, text=True, timeout=30
- 178         )
- 179         output = result.stdout + result.stderr
- 180     except subprocess.TimeoutExpired:
- 181         output = &quot;Error: 命令执行超时（30秒）&quot;
- 182     except Exception as e:
- 183         output = f&quot;Error: {str(e)}&quot;
- 184
- 185     # 防线 3: 输出截断
- 186     return truncate_output(output)</code></pre>
+              <pre class="code-block"><code class="language-python"> 162 ]
+ 163
+ 164
+ 165 def execute_bash(command):
+ 166     # 防线 1: 黑名单检查
+ 167     dangerous, pattern = is_dangerous(command)
+ 168     if dangerous:
+ 169         msg = f&quot;🚫 命令被拦截（匹配危险模式: {pattern}）: {command}&quot;
+ 170         print(f&quot;  {msg}&quot;)
+ 171         return msg
+ 172
+ 173     # 防线 2: 用户确认
+ 174     if not ask_user_confirmation(&quot;execute_bash&quot;, {&quot;command&quot;: command}):
+ 175         return &quot;用户跳过了此命令。&quot;
+ 176
+ 177     # 执行
+ 178     try:
+ 179         result = subprocess.run(
+ 180             command, shell=True, capture_output=True, text=True, timeout=30
+ 181         )
+ 182         output = result.stdout + result.stderr
+ 183     except subprocess.TimeoutExpired:
+ 184         output = &quot;Error: 命令执行超时（30秒）&quot;
+ 185     except Exception as e:
+ 186         output = f&quot;Error: {str(e)}&quot;</code></pre>
             </article>
 
           </div>
