@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-06","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"03. Skills、Rules 与 MCP","description":"本讲聚焦三层能力扩展：一个最小 Rule、一个最小 Skill、一个最小 MCP 工具。重点不在配置多复杂，而在它们分别注入到上下文还是工具列表。","dateModified":"2026-05-07","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/skills-mcp.html","keywords":["Skills","Rules","MCP"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 03 讲","item":"https://githubxsy.github.io/nanoAgent/skills-mcp.html"}]}</script>
 </head>
 <body class="article-body">
@@ -149,20 +149,6 @@
           </div>
 
           <div class="code-group">
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">演示迭代上限</p>
-                  <h3>第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L17-L20">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  17 RULES_DIR = &quot;.agent/rules&quot;
-  18 SKILLS_DIR = &quot;.agent/skills&quot;
-  19 MCP_CONFIG = &quot;.agent/mcp.json&quot;
-  20 DEFAULT_MAX_ITERATIONS = 10</code></pre>
-            </article>
 
             <article class="code-card">
               <div class="code-card-head">
@@ -443,7 +429,7 @@ B &gt; A &gt; C，因为先保数据安全，再保能启动，最后处理界�
             <p class="eyebrow">Key Points</p>
             <h2>三个核心要点</h2>
           </div>
-          <ul class="lesson-list"><li>最小 Rule 用来约束输出格式，最小 Skill 用来补充排序方法，最小 MCP 用来扩展可调用工具。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li><li><code class="inline">DEFAULT_MAX_ITERATIONS = 10</code> 是演示友好值，能避免复杂搜索在结论前过早中断。</li></ul>
+          <ul class="lesson-list"><li>最小 Rule 用来约束输出格式，最小 Skill 用来补充排序方法，最小 MCP 用来扩展可调用工具。</li><li>Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -451,7 +437,7 @@ B &gt; A &gt; C，因为先保数据安全，再保能启动，最后处理界�
             <p class="eyebrow">Pitfalls</p>
             <h2>容易误解</h2>
           </div>
-          <ul class="lesson-list"><li>将所有约束都堆入 Rule，会模糊职责边界，模型也更难稳定执行。</li><li>Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。</li><li>迭代次数调高会改善演示完整度，但也会增加 token 成本与执行时间。</li><li>规则、技能、工具描述互相冲突时，模型表现会显著不稳定。</li></ul>
+          <ul class="lesson-list"><li>将所有约束都堆入 Rule，会模糊职责边界，模型也更难稳定执行。</li><li>Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。</li><li>规则、技能、工具描述互相冲突时，模型表现会显著不稳定。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

@@ -216,26 +216,16 @@ LESSONS = [
         talk_points=[
             "最小 Rule 用来约束输出格式，最小 Skill 用来补充排序方法，最小 MCP 用来扩展可调用工具。",
             "Rules 与 Skills 最终进入 prompt，MCP 最终进入 tools，注入位置不同，作用也不同。",
-            "`DEFAULT_MAX_ITERATIONS = 10` 是演示友好值，能避免复杂搜索在结论前过早中断。",
         ],
         pitfalls=[
             "将所有约束都堆入 Rule，会模糊职责边界，模型也更难稳定执行。",
             "Skills 过多会稀释上下文，MCP 工具过多会降低模型的工具选择准确率。",
-            "迭代次数调高会改善演示完整度，但也会增加 token 成本与执行时间。",
             "规则、技能、工具描述互相冲突时，模型表现会显著不稳定。",
         ],
         workshop_prompt="使用一个最小 Rule 与一个最小 Skill 进行演示，再观察 MCP 工具如何接入。",
         md_path=ROOT / "03-skills-mcp/agent-skills-mcp.md",
         code_path=ROOT / "03-skills-mcp/agent-skills-mcp.py",
         snippets=[
-            Snippet(
-                title="演示迭代上限",
-                start=17,
-                end=20,
-                focus="第三讲把默认循环上限提高到 10，避免现场演示在完成结论前过早中断。",
-                start_marker="RULES_DIR =",
-                end_marker="DEFAULT_MAX_ITERATIONS =",
-            ),
             Snippet(
                 title="Rules / Skills / MCP 的加载",
                 start=210,
