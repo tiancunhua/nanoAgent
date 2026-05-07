@@ -153,6 +153,20 @@
             <article class="code-card">
               <div class="code-card-head">
                 <div>
+                  <p class="lesson-index">配置入口</p>
+                  <h3>Rules、Skills、MCP 的配置文件位置集中在这里。</h3>
+                </div>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/03-skills-mcp/agent-skills-mcp.py#L17-L20">看 GitHub 行号</a>
+              </div>
+              <pre class="code-block"><code class="language-python">  17 RULES_DIR = &quot;.agent/rules&quot;
+  18 SKILLS_DIR = &quot;.agent/skills&quot;
+  19 MCP_CONFIG = &quot;.agent/mcp.json&quot;
+  20 DEFAULT_MAX_ITERATIONS = 10</code></pre>
+            </article>
+
+            <article class="code-card">
+              <div class="code-card-head">
+                <div>
                   <p class="lesson-index">Rules / Skills / MCP 的加载</p>
                   <h3>这段代码展示 <code class="inline">load_rules</code>、Markdown Skill 加载和 MCP 工具加载：Rule 与 Skill 进入 prompt，MCP 进入 tools。</h3>
                 </div>

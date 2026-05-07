@@ -227,6 +227,14 @@ LESSONS = [
         code_path=ROOT / "03-skills-mcp/agent-skills-mcp.py",
         snippets=[
             Snippet(
+                title="配置入口",
+                start=17,
+                end=20,
+                focus="Rules、Skills、MCP 的配置文件位置集中在这里。",
+                start_marker="RULES_DIR =",
+                end_marker="DEFAULT_MAX_ITERATIONS =",
+            ),
+            Snippet(
                 title="Rules / Skills / MCP 的加载",
                 start=210,
                 end=305,
