@@ -26,10 +26,6 @@ agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
   └── registry.json
 
 用法：
-  # 1. 先初始化示例 Skill 目录
-  python3 agent/17-skill-progressive/agent-progressive-skill.py --init
-
-  # 2. 运行 Agent
   python3 agent/17-skill-progressive/agent-progressive-skill.py "帮我把项目部署到 Docker"
 """
 
@@ -44,7 +40,8 @@ from openai import OpenAI
 
 # ── 配置 ──────────────────────────────────────────────
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-SKILLS_DIR = Path("skills")
+SCRIPT_DIR = Path(__file__).resolve().parent
+SKILLS_DIR = SCRIPT_DIR / "skills"
 REGISTRY_FILE = SKILLS_DIR / "registry.json"
 MAX_ITERATIONS = 10
 
@@ -89,7 +86,7 @@ def build_registry() -> list:
             "description": meta.get("description", f"Skill: {skill_dir.name}")
         })
     REGISTRY_FILE.write_text(
-        json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     return registry
 
@@ -121,6 +118,8 @@ def load_skill(name: str) -> str:
 def read_file(filepath: str) -> str:
     """读取 Skill 内部的子文件（Level 2）"""
     p = Path(filepath)
+    if not p.exists() and not p.is_absolute():
+        p = SCRIPT_DIR / filepath
     if not p.exists():
         return f"Error: File '{filepath}' not found"
     return p.read_text(encoding="utf-8")[:10000]  # 截断防止过长
@@ -289,194 +288,16 @@ def agent(task: str):
 
     print("\n⚠️ Reached max iterations")
 
-
-# ── 初始化示例 Skill ─────────────────────────────────
-
-def init_example_skills():
-    """创建示例 Skill 目录结构，方便测试"""
-
-    skills = {
-        "docker-deploy": {
-            "SKILL.md": """---
-name: docker-deploy
-description: Docker 容器化部署，支持 build / up / down / 健康检查。Use when user asks to deploy, docker, 容器部署, 上线。
----
-
-# Docker Deploy Skill
-
-## 前置检查
-1. 确认项目根目录存在 Dockerfile
-2. 确认存在 docker-compose.yml（可选）
-
-## 部署步骤
-
-### 单容器部署
-```bash
-docker build -t <image_name> .
-docker run -d --name <container_name> -p <host_port>:<container_port> <image_name>
-```
-
-### Compose 部署
-```bash
-docker-compose build
-docker-compose up -d
-docker-compose ps  # 验证状态
-```
-
-## 健康检查
-```bash
-docker ps --filter "name=<container_name>"
-curl -f http://localhost:<port>/health || echo "Health check failed"
-```
-
-## 回滚
-```bash
-docker-compose down
-docker-compose up -d --build
-```
-
-## 注意事项
-- 生产环境部署前务必确认 .env 文件不包含敏感信息
-- 确保端口未被占用
-- 建议先在本地用 docker-compose up 测试
-"""
-        },
-        "doc-search": {
-            "SKILL.md": """---
-name: doc-search
-description: 本地文档知识库检索，支持分层导航和渐进式检索。Use when user asks to 查文档, 搜索知识库, 找资料, 查制度。
----
-
-# 文档知识库检索 Skill
-
-## 快速开始
-1. 先调用 read_file("skills/doc-search/data_structure.md") 查看目录索引
-2. 根据目录描述定位到目标子目录或文件
-3. 调用 read_file 读取目标文件内容
-4. 信息不足时调整关键词重试，最多 5 轮
-
-## 检索策略
-- 从 data_structure.md 开始，逐层导航到目标文件
-- 优先局部读取，不要一次性读取大文件
-- 信息缺失时如实说明，不要猜测
-
-## 禁止行为
-- 不要跳过 data_structure.md 直接猜测文件路径
-- 不要一次性读取超过 200 行的内容
-""",
-            "data_structure.md": """# 文档目录索引
-
-| 目录 | 内容描述 | 关键词 |
-|------|----------|--------|
-| skills/doc-search/knowledge/HR/data_structure.md | 人力资源制度索引 | 请假、考勤、报销、入职 |
-| skills/doc-search/knowledge/ops/deploy_runbook.md | 运维操作手册 | 部署、监控、告警、回滚 |
-| skills/doc-search/knowledge/security/access_control.md | 安全合规制度 | 数据分类、访问控制、审计 |
-""",
-            "knowledge/HR/data_structure.md": """# HR 目录索引
-
-| 文件 | 内容描述 | 关键词 |
-|------|----------|--------|
-| skills/doc-search/knowledge/HR/leave_policy.md | 请假制度说明 | 年假、病假、审批 |
-| skills/doc-search/knowledge/HR/expense_policy.md | 报销制度说明 | 发票、报销、流程 |
-""",
-            "knowledge/HR/leave_policy.md": """# 请假制度
-
-- 年假：提前 3 个工作日提交申请。
-- 病假：可先口头同步，事后补充证明。
-- 超过 3 天的连续请假需要直属负责人确认。
-""",
-            "knowledge/HR/expense_policy.md": """# 报销制度
-
-- 报销需提交发票与用途说明。
-- 单笔超过 1000 元需补充审批记录。
-""",
-            "knowledge/ops/deploy_runbook.md": """# 运维部署手册
-
-- 发布前确认回滚方案。
-- 发布后检查健康接口与错误日志。
-""",
-            "knowledge/security/access_control.md": """# 访问控制制度
-
-- 生产权限按最小权限原则发放。
-- 权限变更需要留下审计记录。
-"""
-        },
-        "code-review": {
-            "SKILL.md": """---
-name: code-review
-description: 代码审查，支持多维度检查和结构化报告。Use when user asks to review, 代码审查, CR, 检查代码。
----
-
-# 代码审查 Skill
-
-## 审查流程
-1. 用 execute_bash("find . -name '*.py' | head -20") 了解项目规模
-2. 用 read_file 逐个读取关键文件
-3. 按以下维度检查：
-   - 安全性（SQL 注入、硬编码密钥）
-   - 性能（N+1 查询、不必要的循环）
-   - 可维护性（命名、注释、复杂度）
-4. 输出结构化报告
-
-## 报告格式
-```
-## 审查报告
-
-### 严重问题
-- [文件名:行号] 问题描述
-
-### 建议改进
-- [文件名:行号] 改进建议
-
-### 总结
-整体评价和优先级建议
-```
-"""
-        }
-    }
-
-    for skill_name, files in skills.items():
-        skill_dir = SKILLS_DIR / skill_name
-        skill_dir.mkdir(parents=True, exist_ok=True)
-        for filename, content in files.items():
-            target = skill_dir / filename
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(content.strip() + "\n", encoding="utf-8")
-        print(f"  ✅ Created skills/{skill_name}/")
-
-    # 生成 registry.json，便于观察 Level 0 只包含名称和描述。
-    registry = build_registry()
-    print(f"  ✅ Generated skills/registry.json ({len(registry)} skills)")
-    print(f"\n目录结构：")
-    for line in _tree(SKILLS_DIR):
-        print(f"  {line}")
-
-
-def _tree(path: Path, prefix: str = "") -> list:
-    """简单的目录树打印"""
-    lines = []
-    items = sorted(path.iterdir(), key=lambda x: (x.is_file(), x.name))
-    for i, item in enumerate(items):
-        is_last = i == len(items) - 1
-        connector = "└── " if is_last else "├── "
-        lines.append(f"{prefix}{connector}{item.name}")
-        if item.is_dir():
-            extension = "    " if is_last else "│   "
-            lines.extend(_tree(item, prefix + extension))
-    return lines
-
-
 # ── 入口 ──────────────────────────────────────────────
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  python agent-progressive-skill.py --init          # 初始化示例 Skill")
-        print('  python agent-progressive-skill.py "你的任务"       # 运行 Agent')
+        print('  python3 agent/17-skill-progressive/agent-progressive-skill.py "你的任务"')
         sys.exit(1)
 
-    if sys.argv[1] == "--init":
-        print("🔧 Initializing example skills...\n")
-        init_example_skills()
-    else:
-        agent(sys.argv[1])
+    if sys.argv[1].startswith("--"):
+        print("请直接输入任务。示例 skills 已经随代码放在 agent/17-skill-progressive/skills/。")
+        sys.exit(1)
+
+    agent(" ".join(sys.argv[1:]))

@@ -188,6 +188,8 @@ skills/
 └── registry.json          ← Skill 注册表
 ```
 
+配套脚本已经把这组示例 Skill 放在 `agent/17-skill-progressive/skills/`，运行时不需要再执行初始化命令。
+
 `registry.json` 只存名称和描述，是 Level 0 的目录：
 
 ```json
@@ -207,7 +209,7 @@ skills/
 ]
 ```
 
-自动扫描生成这个注册表也很简单——遍历 `skills/` 目录，读每个 SKILL.md 的 YAML frontmatter：
+脚本启动时会扫描这组文件并刷新注册表：遍历 `skills/` 目录，读每个 SKILL.md 的 YAML frontmatter：
 
 ```python
 def build_registry(skills_dir: Path) -> list:
