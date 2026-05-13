@@ -8,7 +8,7 @@ agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
 
 目录结构：
   skills/
-  ├── docker-deploy/
+  ├── code-review/
   │   └── SKILL.md
   ├── doc-search/
   │   ├── SKILL.md
@@ -16,12 +16,13 @@ agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
   │   └── knowledge/
   │       ├── HR/
   │       │   ├── data_structure.md
+  │       │   ├── expense_policy.md
   │       │   └── leave_policy.md
   │       ├── ops/
   │       │   └── deploy_runbook.md
   │       └── security/
   │           └── access_control.md
-  ├── code-review/
+  ├── docker-deploy/
   │   └── SKILL.md
   └── registry.json
 

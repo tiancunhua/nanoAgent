@@ -8,7 +8,7 @@
 
 ---
 
-## 一、问题：Skill 越多，Agent 越蠢
+## 一、问题：Skill 越多，Agent 越吃力
 
 先量化一下。回忆第三篇的 Skill 加载方式：
 
@@ -26,7 +26,7 @@ def format_skills(skills):
 
 **1. Token 浪费。** 用户说"帮我写个 Python 脚本"，Docker 部署 Skill 的 50 行操作手册白白占了 context。每轮都要付这个固定税。
 
-**2. LLM 注意力被稀释。** 研究表明，context window 越长，LLM 对中间部分的注意力越弱（"Lost in the Middle"问题）。塞了 10 个无关 Skill 的操作手册，LLM 可能反而找不到那个真正有用的 Skill。
+**2. LLM 注意力被稀释。** 长上下文里常见的 "Lost in the Middle" 问题是：内容越多，中间信息越容易被忽略。塞了 10 个无关 Skill 的操作手册，LLM 可能反而找不到那个真正有用的 Skill。
 
 一句话概括：**把所有 Skill 完整塞进 system prompt，就像员工入职第一天就把整个公司的 SOP 手册全部打印出来堆在桌上——信息过载，找不到重点。**
 
@@ -82,7 +82,7 @@ system_prompt = BASE_PROMPT + "\n# Available Skills\n" + format_skills(SKILLS)
 
 `format_skills` 只提取了 `name` 和 `description`，没有把 `steps` 塞进去。这就是 Level 0——LLM 知道"有哪些 Skill 可用"，但不知道每个 Skill 的具体操作步骤。
 
-问题是：**LLM 选中一个 Skill 之后怎么办？** 第三篇的做法是把 `steps` 也放在了 SKILLS 字典里，一次性全部注入。Skill 少的时候这没问题，多了就是灾难。
+问题是：**LLM 选中一个 Skill 之后怎么办？** 如果我们继续把 `steps` 这类操作细节提前放进 prompt，Skill 少的时候还能接受，Skill 一多就会回到全量注入的问题。
 
 ---
 
@@ -91,13 +91,15 @@ system_prompt = BASE_PROMPT + "\n# Available Skills\n" + format_skills(SKILLS)
 核心想法很简单——给 Agent 加一个新工具 `load_skill`，让 LLM 自己决定什么时候加载哪个 Skill 的详细内容：
 
 ```python
+SKILLS_DIR = Path(__file__).resolve().parent / "skills"
+
 def load_skill(name: str) -> str:
     """加载指定 Skill 的完整操作指南"""
-    skill_dir = Path(f"skills/{name}")
-    skill_file = skill_dir / "SKILL.md"
+    skill_file = SKILLS_DIR / name / "SKILL.md"
     if not skill_file.exists():
         return f"Error: Skill '{name}' not found"
-    return skill_file.read_text()
+    content = skill_file.read_text(encoding="utf-8")
+    return re.sub(r'^---\s*\n.*?\n---\s*\n', '', content, flags=re.DOTALL).strip()
 ```
 
 对应的 tool schema：
@@ -125,15 +127,15 @@ LOAD_SKILL_TOOL = {
 加上这个工具后，Agent 的行为变了：
 
 ```
-用户：帮我把这个项目部署到 Docker
+用户：咨询病假怎么处理
 
-→ LLM 看到 Available Skills 列表，发现 "docker-deploy" 匹配
-→ LLM 调用 load_skill("docker-deploy")
-→ 外层代码读取 skills/docker-deploy/SKILL.md，返回完整操作指南
-→ LLM 按照操作指南执行
+→ LLM 看到 Available Skills 列表，发现 "doc-search" 匹配
+→ LLM 调用 load_skill("doc-search")
+→ 外层代码读取 skills/doc-search/SKILL.md，返回检索指南
+→ LLM 继续按指南读取目录索引和请假制度
 ```
 
-**LLM 自己决定加载哪个 Skill。** 不需要你写 if-else 路由规则，不需要关键词匹配。LLM 的语义理解能力天然就是最好的路由器——它看到任务描述，看到 Skill 列表，自己就能选。这就是第三篇说的"Skill 的 description 是触发器"的实际应用。
+**是 LLM 在做加载决策。** 外层代码只提供 `load_skill` 工具，不写 if-else 路由规则，也不做关键词匹配。LLM 看到任务描述和 Skill 列表后，自己决定要不要加载、加载哪一个。这就是第三篇说的"Skill 的 description 是触发器"的实际应用。
 
 ---
 
@@ -170,7 +172,7 @@ Level 1 解决了"Skill 之间的按需加载"。但如果一个 Skill 本身就
 
 ```
 skills/
-├── docker-deploy/
+├── code-review/
 │   └── SKILL.md
 ├── doc-search/
 │   ├── SKILL.md
@@ -178,12 +180,13 @@ skills/
 │   └── knowledge/
 │       ├── HR/
 │       │   ├── data_structure.md
+│       │   ├── expense_policy.md
 │       │   └── leave_policy.md
 │       ├── ops/
 │       │   └── deploy_runbook.md
 │       └── security/
 │           └── access_control.md
-├── code-review/
+├── docker-deploy/
 │   └── SKILL.md
 └── registry.json          ← Skill 注册表
 ```
@@ -195,16 +198,16 @@ skills/
 ```json
 [
     {
-        "name": "docker-deploy",
-        "description": "Docker 容器化部署，支持 build / up / down / 健康检查。Use when user asks to deploy, docker, 容器部署。"
+        "name": "code-review",
+        "description": "代码审查，支持多维度检查和结构化报告。Use when user asks to review, 代码审查, CR, 检查代码。"
     },
     {
         "name": "doc-search",
-        "description": "本地文档知识库检索，支持分层导航和渐进式检索。Use when user asks to 查文档, 搜索知识库, 找资料。"
+        "description": "本地文档知识库检索，支持分层导航和渐进式检索。Use when user asks to 查文档, 搜索知识库, 找资料, 查制度。"
     },
     {
-        "name": "code-review",
-        "description": "代码审查，支持多维度并发检查和结构化报告。Use when user asks to review, 代码审查, CR。"
+        "name": "docker-deploy",
+        "description": "Docker 容器化部署，支持 build / up / down / 健康检查。Use when user asks to deploy, docker, 容器部署, 上线。"
     }
 ]
 ```
@@ -212,22 +215,27 @@ skills/
 脚本启动时会扫描这组文件并刷新注册表：遍历 `skills/` 目录，读每个 SKILL.md 的 YAML frontmatter：
 
 ```python
-def build_registry(skills_dir: Path) -> list:
+def build_registry() -> list:
     """扫描 skills 目录，生成注册表"""
+    if not SKILLS_DIR.exists():
+        return []
     registry = []
-    for skill_dir in sorted(skills_dir.iterdir()):
+    for skill_dir in sorted(SKILLS_DIR.iterdir()):
         if not skill_dir.is_dir():
             continue
         skill_file = skill_dir / "SKILL.md"
         if not skill_file.exists():
             continue
-        # 读取 YAML frontmatter
-        content = skill_file.read_text()
+        content = skill_file.read_text(encoding="utf-8")
         meta = parse_frontmatter(content)
         registry.append({
             "name": meta.get("name", skill_dir.name),
-            "description": meta.get("description", "")
+            "description": meta.get("description", f"Skill: {skill_dir.name}")
         })
+    REGISTRY_FILE.write_text(
+        json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8"
+    )
     return registry
 ```
 
@@ -240,18 +248,18 @@ def build_registry(skills_dir: Path) -> list:
 把三个 Level 串起来：
 
 ```
-用户："帮我查一下公司的请假制度"
+用户："咨询病假怎么处理"
 
 Level 0 —— Skill 目录（system prompt 中）
   LLM 扫描 Available Skills：
-  - docker-deploy: Docker 容器化部署...        ← 无关
-  - doc-search: 本地文档知识库检索...           ← 匹配！
   - code-review: 代码审查...                   ← 无关
+  - doc-search: 本地文档知识库检索...           ← 匹配！
+  - docker-deploy: Docker 容器化部署...        ← 无关
 
 Level 1 —— 加载 SKILL.md
   LLM 调用 load_skill("doc-search")
   → 外层代码返回 doc-search/SKILL.md 的内容
-  → LLM 读到：先调用 read_file("data_structure.md") 查目录
+  → LLM 读到：先调用 read_file("skills/doc-search/data_structure.md") 查目录
 
 Level 2 —— Skill 内部分层导航
   LLM 调用 read_file("skills/doc-search/data_structure.md")
@@ -271,7 +279,7 @@ Level 2 —— Skill 内部分层导航
 
 | 策略 | system prompt 占用 | 适用场景 |
 |------|-------------------|---------|
-| 全量加载（第三篇） | 所有 Skill 的完整内容 | Skill ≤ 3 个，每个很短 |
+| 全量加载（简单版） | 所有 Skill 的完整内容 | Skill ≤ 3 个，每个很短 |
 | 摘要 + 按需加载（本文） | 只有名称和描述 | Skill 5~50 个，通用场景 |
 | 语义搜索（元工具） | 零（连目录都不放） | Skill > 50 个，需要额外基础设施 |
 
@@ -289,7 +297,7 @@ Level 2 —— Skill 内部分层导航
 {
     "role": "tool",
     "tool_call_id": "call_xxx",
-    "content": "# Docker Deploy Skill\n\n## 使用方式\n..."
+    "content": "# 文档知识库检索 Skill\n\n## 快速开始\n..."
 }
 ```
 
@@ -310,11 +318,11 @@ Level 2 —— Skill 内部分层导航
 这篇番外做了一件事：**把 Skill 的加载从"一次性全量注入"变成"按需逐层披露"。**
 
 ```
-第三篇：Skill 全量加载 → 能用，但不 scale
-本    文：渐进式披露   → 目录 → 摘要 → 详情，按需加载
+简单版：Skill 提前注入 → 能用，但不 scale
+本  文：渐进式披露   → 目录 → 指南 → 具体文件，按需加载
 ```
 
-核心只加了一个 `load_skill` 工具和一份 `registry.json`。改动不大，但解决了 Skill 数量增长后的两个问题：Token 浪费和注意力稀释。
+核心是一个 `load_skill` 工具和一份 `registry.json`，再复用 `read_file` 做细节读取。改动不大，但解决了 Skill 数量增长后的两个问题：Token 浪费和注意力稀释。
 
 > 第三篇说过：Skill 告诉 Agent「可以怎么做」。这篇番外加了一个约束：**不是一次性全部告诉，而是需要的时候再告诉。**
 
