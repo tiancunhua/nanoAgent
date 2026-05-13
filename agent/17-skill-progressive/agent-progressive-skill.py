@@ -296,8 +296,4 @@ if __name__ == "__main__":
         print('  python3 agent/17-skill-progressive/agent-progressive-skill.py "你的任务"')
         sys.exit(1)
 
-    if sys.argv[1].startswith("--"):
-        print("请直接输入任务。示例 skills 已经随代码放在 agent/17-skill-progressive/skills/。")
-        sys.exit(1)
-
     agent(" ".join(sys.argv[1:]))
