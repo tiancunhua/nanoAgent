@@ -223,7 +223,7 @@ TOOL_FUNCTIONS = {
 
 # ── Agent 主循环 ──────────────────────────────────────
 
-def agent(task: str):
+def run_agent(task: str):
     """带渐进式 Skill 加载的 Agent 主循环"""
     client = create_client()
 
@@ -296,4 +296,4 @@ if __name__ == "__main__":
         print('  python3 agent/17-skill-progressive/agent-progressive-skill.py "你的任务"')
         sys.exit(1)
 
-    agent(" ".join(sys.argv[1:]))
+    run_agent(" ".join(sys.argv[1:]))
