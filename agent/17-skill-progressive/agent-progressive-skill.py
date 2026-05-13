@@ -368,16 +368,16 @@ description: 本地文档知识库检索，支持分层导航和渐进式检索�
 
 | 目录 | 内容描述 | 关键词 |
 |------|----------|--------|
-| knowledge/HR/data_structure.md | 人力资源制度索引 | 请假、考勤、报销、入职 |
-| knowledge/ops/deploy_runbook.md | 运维操作手册 | 部署、监控、告警、回滚 |
-| knowledge/security/access_control.md | 安全合规制度 | 数据分类、访问控制、审计 |
+| skills/doc-search/knowledge/HR/data_structure.md | 人力资源制度索引 | 请假、考勤、报销、入职 |
+| skills/doc-search/knowledge/ops/deploy_runbook.md | 运维操作手册 | 部署、监控、告警、回滚 |
+| skills/doc-search/knowledge/security/access_control.md | 安全合规制度 | 数据分类、访问控制、审计 |
 """,
             "knowledge/HR/data_structure.md": """# HR 目录索引
 
 | 文件 | 内容描述 | 关键词 |
 |------|----------|--------|
-| leave_policy.md | 请假制度说明 | 年假、病假、审批 |
-| expense_policy.md | 报销制度说明 | 发票、报销、流程 |
+| skills/doc-search/knowledge/HR/leave_policy.md | 请假制度说明 | 年假、病假、审批 |
+| skills/doc-search/knowledge/HR/expense_policy.md | 报销制度说明 | 发票、报销、流程 |
 """,
             "knowledge/HR/leave_policy.md": """# 请假制度
 
