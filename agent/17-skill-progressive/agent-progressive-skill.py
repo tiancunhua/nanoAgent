@@ -1,8 +1,8 @@
 """
 agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
-基于 agent.py (115行)，核心新增:
+基于系列里的最小 Agent，核心新增:
 
-  1. Skill 注册表（registry.json）自动扫描生成
+  1. Skill 注册表自动扫描生成，并写出 registry.json 方便观察
   2. load_skill 工具 —— LLM 按需加载 Skill 详情
   3. Level 0/1/2 三层渐进式披露
 
@@ -12,16 +12,25 @@ agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
   │   └── SKILL.md
   ├── doc-search/
   │   ├── SKILL.md
-  │   └── data_structure.md
-  └── code-review/
-      └── SKILL.md
+  │   ├── data_structure.md
+  │   └── knowledge/
+  │       ├── HR/
+  │       │   ├── data_structure.md
+  │       │   └── leave_policy.md
+  │       ├── ops/
+  │       │   └── deploy_runbook.md
+  │       └── security/
+  │           └── access_control.md
+  ├── code-review/
+  │   └── SKILL.md
+  └── registry.json
 
 用法：
   # 1. 先初始化示例 Skill 目录
-  python agent-progressive-skill.py --init
+  python3 agent/17-skill-progressive/agent-progressive-skill.py --init
 
   # 2. 运行 Agent
-  python agent-progressive-skill.py "帮我把项目部署到 Docker"
+  python3 agent/17-skill-progressive/agent-progressive-skill.py "帮我把项目部署到 Docker"
 """
 
 import json
@@ -34,15 +43,18 @@ from pathlib import Path
 from openai import OpenAI
 
 # ── 配置 ──────────────────────────────────────────────
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"),
-    base_url=os.environ.get("OPENAI_BASE_URL"),
-    http_client=httpx.Client(verify=False),
-)
-
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 SKILLS_DIR = Path("skills")
+REGISTRY_FILE = SKILLS_DIR / "registry.json"
 MAX_ITERATIONS = 10
+
+
+def create_client():
+    return OpenAI(
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        base_url=os.environ.get("OPENAI_BASE_URL"),
+        http_client=httpx.Client(verify=False),
+    )
 
 # ── Skill 注册表 ─────────────────────────────────────
 
@@ -76,6 +88,9 @@ def build_registry() -> list:
             "name": meta.get("name", skill_dir.name),
             "description": meta.get("description", f"Skill: {skill_dir.name}")
         })
+    REGISTRY_FILE.write_text(
+        json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     return registry
 
 
@@ -211,6 +226,8 @@ TOOL_FUNCTIONS = {
 
 def agent(task: str):
     """带渐进式 Skill 加载的 Agent 主循环"""
+    client = create_client()
+
     # Level 0：扫描 Skill 目录，生成目录摘要
     registry = build_registry()
     skill_catalog = format_skill_catalog(registry)
@@ -351,9 +368,37 @@ description: 本地文档知识库检索，支持分层导航和渐进式检索�
 
 | 目录 | 内容描述 | 关键词 |
 |------|----------|--------|
-| knowledge/HR/ | 人力资源制度 | 请假、考勤、报销、入职 |
-| knowledge/运维/ | 运维操作手册 | 部署、监控、告警、回滚 |
-| knowledge/安全/ | 安全合规制度 | 数据分类、访问控制、审计 |
+| knowledge/HR/data_structure.md | 人力资源制度索引 | 请假、考勤、报销、入职 |
+| knowledge/ops/deploy_runbook.md | 运维操作手册 | 部署、监控、告警、回滚 |
+| knowledge/security/access_control.md | 安全合规制度 | 数据分类、访问控制、审计 |
+""",
+            "knowledge/HR/data_structure.md": """# HR 目录索引
+
+| 文件 | 内容描述 | 关键词 |
+|------|----------|--------|
+| leave_policy.md | 请假制度说明 | 年假、病假、审批 |
+| expense_policy.md | 报销制度说明 | 发票、报销、流程 |
+""",
+            "knowledge/HR/leave_policy.md": """# 请假制度
+
+- 年假：提前 3 个工作日提交申请。
+- 病假：可先口头同步，事后补充证明。
+- 超过 3 天的连续请假需要直属负责人确认。
+""",
+            "knowledge/HR/expense_policy.md": """# 报销制度
+
+- 报销需提交发票与用途说明。
+- 单笔超过 1000 元需补充审批记录。
+""",
+            "knowledge/ops/deploy_runbook.md": """# 运维部署手册
+
+- 发布前确认回滚方案。
+- 发布后检查健康接口与错误日志。
+""",
+            "knowledge/security/access_control.md": """# 访问控制制度
+
+- 生产权限按最小权限原则发放。
+- 权限变更需要留下审计记录。
 """
         },
         "code-review": {
@@ -394,15 +439,13 @@ description: 代码审查，支持多维度检查和结构化报告。Use when u
         skill_dir = SKILLS_DIR / skill_name
         skill_dir.mkdir(parents=True, exist_ok=True)
         for filename, content in files.items():
-            (skill_dir / filename).write_text(content.strip() + "\n", encoding="utf-8")
+            target = skill_dir / filename
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content.strip() + "\n", encoding="utf-8")
         print(f"  ✅ Created skills/{skill_name}/")
 
-    # 生成 registry.json
+    # 生成 registry.json，便于观察 Level 0 只包含名称和描述。
     registry = build_registry()
-    registry_file = SKILLS_DIR / "registry.json"
-    registry_file.write_text(
-        json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     print(f"  ✅ Generated skills/registry.json ({len(registry)} skills)")
     print(f"\n目录结构：")
     for line in _tree(SKILLS_DIR):
