@@ -26,7 +26,7 @@ agent-progressive-skill.py - 渐进式 Skill 加载版 Agent
   └── registry.json
 
 用法：
-  python3 agent/17-skill-progressive/agent-progressive-skill.py "帮我把项目部署到 Docker"
+  python3 agent/17-skill-progressive/agent-progressive-skill.py "咨询病假怎么处理"
 """
 
 import json
