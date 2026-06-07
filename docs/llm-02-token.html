@@ -48,8 +48,8 @@
           <p>模型不直接读取中文、英文或代码，而是先把文本切成 token，再把 token ID 送入模型。</p>
           <div class="chip-row">
             <span class="chip">6 分钟</span>
-            <span class="chip">162 行代码</span>
             <span class="chip">Tokenization + BPE</span>
+            <span class="chip">文章讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#position">主线定位</a><a class="toc-link" href="#visual">图解流程</a><a class="toc-link" href="#demo">先跑实验</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#observe">观察解释</a><a class="toc-link" href="#practice">动手改一轮</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -140,23 +140,24 @@
           <p class="lead">模型不直接读取中文、英文或代码，而是先把文本切成 token，再把 token ID 送入模型。</p>
           <div class="tag-row"><span class="tag">Token</span><span class="tag">BPE</span><span class="tag">Tokenizer</span></div>
           <div class="hero-actions">
-            <a class="primary-btn" href="#demo">先跑实验</a>
-            <a class="secondary-btn" href="#visual">看图解流程</a>
+            <a class="primary-btn" href="#thesis">读文章主旨</a>
+            <a class="secondary-btn" href="#visual">看图解主线</a>
           </div>
         </section>
 
-        <section class="lesson-section" id="position">
+        <section class="lesson-section" id="thesis">
           <div class="lesson-section-head">
-            <p class="eyebrow">Position</p>
-            <h2>主线定位</h2>
+            <p class="eyebrow">Thesis</p>
+            <h2>文章主旨</h2>
           </div>
+          <p>模型不直接读取中文、英文或代码，而是先把文本切成 token，再把 token ID 送入模型。</p>
           <p class="scenario-text">同一句话，在人眼里是自然语言；在模型眼里，是一串数字 ID。为什么中文、代码、URL 更容易吃掉上下文？答案往往从分词开始。</p>
         </section>
 
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解流程</h2>
+            <h2>图解主线</h2>
           </div>
 
     <figure class="lesson-figure llm-flow-figure">
@@ -167,129 +168,35 @@
           <p class="scenario-text">Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
         </section>
 
-        <section class="lesson-section" id="demo">
+        <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
-            <p class="eyebrow">Run First</p>
-            <h2>先跑实验</h2>
-            <p>用分词结果解释：为什么同样长度的文本，在模型里成本和难度可能完全不同。</p>
+            <p class="eyebrow">Explain</p>
+            <h2>概念展开</h2>
+            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
           </div>
-          <div class="demo-box">
-            <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python3 llm/02-token/tokenizer_demo.py &quot;Kubernetes is awesome&quot;
-python3 llm/02-token/tokenizer_demo.py &quot;你好世界&quot;
-python3 llm/02-token/bpe_demo.py --merges 8</code></pre>
-          </div>
-        </section>
-
-        <section class="lesson-section" id="code">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Key Code</p>
-            <h2>关键代码</h2>
-            <p>这部分只看最能解释机制的片段，先抓数据怎么流动，再回到完整脚本。</p>
-          </div>
-          <div class="code-group">
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">统计相邻片段</p>
-                  <h3>BPE 的第一步很朴素：数一数哪些相邻片段最常一起出现。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/02-token/bpe_demo.py#L17-L23">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  17 def get_pairs(tokens_list):
-  18     &quot;&quot;&quot;统计所有相邻 token 对的出现次数&quot;&quot;&quot;
-  19     pairs = Counter()
-  20     for tokens in tokens_list:
-  21         for i in range(len(tokens) - 1):
-  22             pairs[(tokens[i], tokens[i + 1])] += 1
-  23     return pairs</code></pre>
-            </article>
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">逐轮合并高频片段</p>
-                  <h3>高频片段被合并成新 token，词表就是这样一点点训练出来的。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/02-token/bpe_demo.py#L43-L87">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  43 def train_bpe(text, num_merges=10):
-  44     &quot;&quot;&quot;
-  45     训练一个最简 BPE 分词器。
-  46
-  47     参数：
-  48         text: 训练文本
-  49         num_merges: 合并几次（决定最终词表大小）
-  50
-  51     返回：
-  52         vocab: 最终词表
-  53         merge_rules: 合并规则列表（按顺序）
-  54     &quot;&quot;&quot;
-  55     # 把每个词拆成单个字符 + 词尾标记
-  56     words = text.split()
-  57     tokens_list = [list(word) + [&quot;&lt;/w&gt;&quot;] for word in words]
-  58
-  59     # 初始词表
-  60     vocab = set()
-  61     for tokens in tokens_list:
-  62         vocab.update(tokens)
-  63
-  64     print(f&quot;训练文本: &#x27;{text}&#x27;&quot;)
-  65     print(f&quot;词的数量: {len(words)}&quot;)
-  66     print(f&quot;初始词表 ({len(vocab)} 个): {sorted(vocab)}&quot;)
-  67     print(f&quot;\n开始 BPE 合并（共 {num_merges} 轮）：&quot;)
-  68     print(&quot;=&quot; * 65)
-  69
-  70     merge_rules = []
-  71
-  72     for step in range(num_merges):
-  73         pairs = get_pairs(tokens_list)
-  74         if not pairs:
-  75             print(f&quot;\n  轮次 {step + 1}: 没有更多的 pair 可以合并了，提前停止&quot;)
-  76             break
-  77
-  78         best_pair = pairs.most_common(1)[0]
-  79         pair, count = best_pair
-  80         new_token = pair[0] + pair[1]
-  81
-  82         print(f&quot;\n  轮次 {step + 1}: 合并 (&#x27;{pair[0]}&#x27;, &#x27;{pair[1]}&#x27;) → &#x27;{new_token}&#x27;  &quot;
-  83               f&quot;（出现 {count} 次）&quot;)
-  84
-  85         tokens_list = merge_pair(tokens_list, pair, new_token)
-  86         vocab.add(new_token)
-  87         merge_rules.append((pair, new_token))</code></pre>
-            </article>
-
-          </div>
+          <ul class="lesson-list"><li>Token 是模型真正处理的基本单位。</li><li>BPE 的核心是不断合并高频相邻片段。</li><li>Token 数影响上下文长度、费用和推理开销。</li><li>模型不是看字符，而是看 token ID。</li><li>分词器决定模型第一眼看到的世界长什么样。</li><li>Token 是后续 Embedding、Attention、上下文窗口和计费的共同入口。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
           <div class="lesson-section-head">
-            <p class="eyebrow">Observe</p>
-            <h2>观察解释</h2>
-            <p>运行时不要只看最后一行，重点看中间过程如何证明本讲机制。</p>
+            <p class="eyebrow">Small Check</p>
+            <h2>可选小实验</h2>
+            <p>用一条混合文本观察：文字进入模型前会先变成 token ID。 实验只用于观察现象，不作为本页主线。</p>
           </div>
-          <ul class="lesson-list"><li><code class="inline">tokenizer_demo.py</code> 会展示文本被切成哪些 token，以及对应的 token ID。</li><li>中英文、代码、URL 的 token 数量差异会很明显。</li><li><code class="inline">bpe_demo.py</code> 会逐轮合并高频片段，展示词表是怎么长出来的。</li><li>没见过的新词也能被已有 token 拼出来，这就是子词分词的价值。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="practice">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Try It</p>
-            <h2>动手改一轮</h2>
-            <p>先让大家亲眼看到：同一段文字进入模型前，已经被改写成一串 token ID。</p>
+          <div class="demo-box">
+            <p class="lesson-index">可选实验命令</p>
+            <pre class="demo-command"><code>python3 llm/02-token/tokenizer_demo.py &quot;Kubernetes 你好 world&quot;</code></pre>
           </div>
-          <ol class="lesson-steps"><li>输入一段中文、一段英文、一段代码，对比 token 数。</li><li>把 <code class="inline">--merges</code> 从 5 改到 15，观察词表变大后分词如何变粗。</li><li>尝试 URL 或 JSON，观察它们为什么容易消耗更多 token。</li></ol>
+          <ul class="lesson-list"><li><code class="inline">tokenizer_demo.py</code> 会展示文本被切成哪些 token，以及对应的 token ID。</li><li>中文、英文和符号可能被切成不同粒度的片段。</li><li>Token 数会影响上下文长度、费用和后续计算量。</li></ul>
         </section>
 
         <section class="lesson-section" id="map">
           <div class="lesson-section-head">
             <p class="eyebrow">Map</p>
             <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它会连接前面已经讲过的机制，也为后面的章节铺路。</p>
+            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
           </div>
-          <ul class="lesson-list"><li>Token 是模型真正处理的基本单位。</li><li>BPE 的核心是不断合并高频相邻片段。</li><li>Token 数影响上下文长度、费用和推理开销。</li></ul>
-          <ul class="lesson-list"><li>模型不是看字符，而是看 token ID。</li><li>分词器决定模型第一眼看到的世界长什么样。</li><li>Token 是后续 Embedding、Attention、上下文窗口和计费的共同入口。</li></ul>
+          <ul class="lesson-list"><li>上一页「下一个词预测」提供了前置概念，这一页把它推进到「Token」。</li><li>下一页「Embedding」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Tokenization + BPE。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -304,11 +211,11 @@ python3 llm/02-token/bpe_demo.py --merges 8</code></pre>
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续阅读</h2>
-            <p>教学页只保留现场讲解需要的内容，完整文章与代码仍然保留在仓库中。</p>
+            <p>教学页以讲清文章为主；完整原文与配套脚本保留在仓库中，方便分享后继续查阅。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/02-token/llm-02-token.md">读完整原文</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/02-token/bpe_demo.py">看完整代码</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/02-token/bpe_demo.py">查看配套脚本</a>
             <a class="secondary-btn" href="llm.html">回到 LLM 目录</a>
           </div>
         </section>
@@ -321,7 +228,7 @@ python3 llm/02-token/bpe_demo.py --merges 8</code></pre>
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
+      <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
         <a href="summary.html">收束与延伸</a>

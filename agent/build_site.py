@@ -593,17 +593,12 @@ LLM_LESSONS = [
         tags=["Next Token", "Probability", "Temperature"],
         scenario="当你输入“Thank you very”时，模型不会去数据库里查标准答案，而是在词表里给所有可能的下一个 token 排概率，然后选出一个继续往后写。",
         mental_model="把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。",
-        demo_command=(
-            'python3 llm/01-next-token/predict.py "Thank you very"\n'
-            'python3 llm/01-next-token/generate.py "The meaning of life is" --temperature 0.3 --max-tokens 12\n'
-            'python3 llm/01-next-token/generate.py "The meaning of life is" --temperature 1.5 --max-tokens 12'
-        ),
-        demo_goal="把“生成回答”拆成可观察的概率表和逐词生成过程。",
+        demo_command='python3 llm/01-next-token/predict.py "Thank you very"',
+        demo_goal="用概率表观察模型如何预测下一个 token。",
         demo_expected=[
             "`predict.py` 会打印输入被切成哪些 token，以及下一个 token 的 Top 10 概率。",
-            "低 Temperature 会更偏向高概率 token，输出更稳定。",
-            "高 Temperature 会让低概率 token 也有机会被选中，输出更发散。",
-            "完整回答其实是“预测一个、拼上去、再预测下一个”的循环。",
+            "Top 10 概率能说明：模型不是查唯一答案，而是在多个可能里选择。",
+            "这一个小动作连续发生很多次，最后才形成完整回复。",
         ],
         takeaways=[
             "大模型的基本动作是预测下一个 token。",
@@ -655,17 +650,12 @@ LLM_LESSONS = [
         tags=["Token", "BPE", "Tokenizer"],
         scenario="同一句话，在人眼里是自然语言；在模型眼里，是一串数字 ID。为什么中文、代码、URL 更容易吃掉上下文？答案往往从分词开始。",
         mental_model="Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。",
-        demo_command=(
-            'python3 llm/02-token/tokenizer_demo.py "Kubernetes is awesome"\n'
-            'python3 llm/02-token/tokenizer_demo.py "你好世界"\n'
-            'python3 llm/02-token/bpe_demo.py --merges 8'
-        ),
-        demo_goal="用分词结果解释：为什么同样长度的文本，在模型里成本和难度可能完全不同。",
+        demo_command='python3 llm/02-token/tokenizer_demo.py "Kubernetes 你好 world"',
+        demo_goal="用一条混合文本观察：文字进入模型前会先变成 token ID。",
         demo_expected=[
             "`tokenizer_demo.py` 会展示文本被切成哪些 token，以及对应的 token ID。",
-            "中英文、代码、URL 的 token 数量差异会很明显。",
-            "`bpe_demo.py` 会逐轮合并高频片段，展示词表是怎么长出来的。",
-            "没见过的新词也能被已有 token 拼出来，这就是子词分词的价值。",
+            "中文、英文和符号可能被切成不同粒度的片段。",
+            "Token 数会影响上下文长度、费用和后续计算量。",
         ],
         takeaways=[
             "Token 是模型真正处理的基本单位。",
@@ -717,16 +707,12 @@ LLM_LESSONS = [
         tags=["Embedding", "Vector", "Similarity"],
         scenario="模型看到 `Paris` 不是看到一个城市名字，而是看到一串向量。向量之间的距离和方向，承载了“相似”“相关”“语义靠近”等信息。",
         mental_model="Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。",
-        demo_command=(
-            'python3 llm/03-embedding/embedding.py "France" "Paris" "Germany" "Berlin" "cat" "dog"\n'
-            'python3 llm/03-embedding/context_embedding.py'
-        ),
-        demo_goal="从向量形状、相似度和一词多义三个角度理解 Embedding。",
+        demo_command='python3 llm/03-embedding/embedding.py "France" "Paris" "Germany" "Berlin" "cat" "dog"',
+        demo_goal="用一组词的相似度观察 Embedding 如何表达关系。",
         demo_expected=[
             "`embedding.py` 会打印 Embedding 表形状：词表大小 × 向量维度。",
             "语义相关的词通常会有更高相似度，例如国家和首都、动物和动物。",
-            "`context_embedding.py` 会展示同一个 `bank` 在不同上下文中经过 Transformer 后向量发生变化。",
-            "固定 Embedding 是起点，真正的语境理解发生在后续层里。",
+            "这个实验只看向量入口，真正的语境加工会在后续 Transformer 层发生。",
         ],
         takeaways=[
             "Embedding 把 token ID 变成可计算的向量。",
@@ -778,15 +764,11 @@ LLM_LESSONS = [
         tags=["Attention", "QKV", "Causal Mask"],
         scenario="一句话里每个词的重要性不同。模型生成最后一个词时，不能平均看前面所有词，而要知道当前最该关注谁。",
         mental_model="Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。",
-        demo_command=(
-            'python3 llm/04-attention/attention.py "The capital of France is" --layer 0\n'
-            'python3 llm/04-attention/multi_head.py "The capital of France is" --layer 11'
-        ),
+        demo_command='python3 llm/04-attention/attention.py "The capital of France is" --layer 0',
         demo_goal="把抽象的 Attention 变成可观察的矩阵和热力图。",
         demo_expected=[
             "Attention 矩阵会显示每个 token 对前面 token 的关注权重。",
             "右上角未来位置不可见，这是因果掩码的效果。",
-            "不同层、不同头可能关注不同 token，说明模型在多角度读取上下文。",
             "最后一个 token 的注意力变化，可以直观看到模型如何汇总前文。",
         ],
         takeaways=[
@@ -1743,7 +1725,7 @@ def llm_course_nav(current_slug: str) -> str:
 def build_footer() -> str:
     return f"""
     <footer class="site-footer">
-      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
+      <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
         <a href="summary.html">收束与延伸</a>
@@ -2101,12 +2083,12 @@ def build_llm_home_page() -> str:
               <p>{format_inline(lesson.summary)}</p>
               <div class="lesson-meta">
                 <span>{html.escape(lesson.lesson_minutes)}</span>
-                <span>{code_lines(lesson.code_path)} 行代码</span>
                 <span>{html.escape(lesson.core)}</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：{format_inline(lesson.workshop_prompt)}</p>
+              <p class="lesson-kicker">讲法：{format_inline(lesson.mental_model)}</p>
               <div class="lesson-tag-row">{render_tags(lesson.tags, "tag")}</div>
-              <a class="lesson-link" href="{llm_lesson_filename(lesson)}">查看教学页</a>
+              <a class="lesson-link" href="{llm_lesson_filename(lesson)}">查看讲义</a>
             </article>
             """
         )
@@ -2254,7 +2236,7 @@ def build_llm_home_page() -> str:
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
           <h2>10 页 LLM 讲义</h2>
-          <p>每页先定位在模型链路中的位置，再用图示和代码实验把机制讲透。</p>
+          <p>每页围绕文章主旨展开：先把结论讲清楚，再用图示串起概念，最后保留一个可选小实验辅助观察。</p>
         </div>
         <div class="lesson-grid">
           {"".join(lesson_cards)}
@@ -2284,34 +2266,14 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
     next_lesson = LLM_LESSONS[index + 1] if index < len(LLM_LESSONS) - 1 else None
 
     toc_links = [
-        ("position", "主线定位"),
-        ("visual", "图解流程"),
-        ("demo", "先跑实验"),
-        ("code", "关键代码"),
-        ("observe", "观察解释"),
-        ("practice", "动手改一轮"),
+        ("thesis", "文章主旨"),
+        ("visual", "图解主线"),
+        ("explain", "概念展开"),
+        ("observe", "可选小实验"),
         ("map", "前后关系"),
         ("pitfalls", "易混点"),
         ("extend", "继续阅读"),
     ]
-
-    snippet_cards = []
-    for snippet in lesson.snippets:
-        snippet_start, snippet_end = resolve_snippet_range(lesson.code_path, snippet)
-        snippet_cards.append(
-            f"""
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">{html.escape(snippet.title)}</p>
-                  <h3>{format_inline(snippet.focus)}</h3>
-                </div>
-                <a class="source-link" href="{github_lines_url(lesson.code_path, snippet_start, snippet_end)}">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">{html.escape(excerpt_code(lesson.code_path, snippet_start, snippet_end))}</code></pre>
-            </article>
-            """
-        )
 
     prev_link = (
         f'<a class="pager-link" href="{llm_lesson_filename(prev_lesson)}"><span>上一页</span><strong>{prev_lesson.number}. {html.escape(prev_lesson.short_title)}</strong></a>'
@@ -2325,6 +2287,27 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
     )
     filename = llm_lesson_filename(lesson)
     visual_html = build_llm_figure(lesson)
+    concept_items = [*lesson.takeaways, *lesson.talk_points]
+    relation_items = []
+    if prev_lesson:
+        relation_items.append(
+            f"上一页「{prev_lesson.short_title}」提供了前置概念，这一页把它推进到「{lesson.short_title}」。"
+        )
+    else:
+        relation_items.append(
+            "这是 LLM 序列的起点：先理解模型最小动作，再看后面的结构如何服务这个动作。"
+        )
+    if next_lesson:
+        relation_items.append(
+            f"下一页「{next_lesson.short_title}」会沿着这条线继续展开，避免把单个概念孤立记忆。"
+        )
+    else:
+        relation_items.append(
+            "这一页把 LLM 与 Agent 接起来，为后面的 Agent 序列提供入口。"
+        )
+    relation_items.append(
+        f"本页只抓一个关键词：{lesson.core}。现场讲解时先讲文章结论，再用图示解释为什么。"
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -2356,8 +2339,8 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
           <p>{format_inline(lesson.summary)}</p>
           <div class="chip-row">
             <span class="chip">{html.escape(lesson.lesson_minutes)}</span>
-            <span class="chip">{code_lines(lesson.code_path)} 行代码</span>
             <span class="chip">{html.escape(lesson.core)}</span>
+            <span class="chip">文章讲解</span>
           </div>
         </div>
 
@@ -2388,77 +2371,58 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
           <p class="lead">{format_inline(lesson.summary)}</p>
           <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
-            <a class="primary-btn" href="#demo">先跑实验</a>
-            <a class="secondary-btn" href="#visual">看图解流程</a>
+            <a class="primary-btn" href="#thesis">读文章主旨</a>
+            <a class="secondary-btn" href="#visual">看图解主线</a>
           </div>
         </section>
 
-        <section class="lesson-section" id="position">
+        <section class="lesson-section" id="thesis">
           <div class="lesson-section-head">
-            <p class="eyebrow">Position</p>
-            <h2>主线定位</h2>
+            <p class="eyebrow">Thesis</p>
+            <h2>文章主旨</h2>
           </div>
+          <p>{format_inline(lesson.summary)}</p>
           <p class="scenario-text">{format_inline(lesson.scenario)}</p>
         </section>
 
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解流程</h2>
+            <h2>图解主线</h2>
           </div>
           {visual_html}
           <p class="scenario-text">{format_inline(lesson.mental_model)}</p>
         </section>
 
-        <section class="lesson-section" id="demo">
+        <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
-            <p class="eyebrow">Run First</p>
-            <h2>先跑实验</h2>
-            <p>{format_inline(lesson.demo_goal)}</p>
+            <p class="eyebrow">Explain</p>
+            <h2>概念展开</h2>
+            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
           </div>
-          <div class="demo-box">
-            <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>{html.escape(lesson.demo_command)}</code></pre>
-          </div>
-        </section>
-
-        <section class="lesson-section" id="code">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Key Code</p>
-            <h2>关键代码</h2>
-            <p>这部分只看最能解释机制的片段，先抓数据怎么流动，再回到完整脚本。</p>
-          </div>
-          <div class="code-group">
-            {"".join(snippet_cards)}
-          </div>
+          {render_bullets(concept_items)}
         </section>
 
         <section class="lesson-section" id="observe">
           <div class="lesson-section-head">
-            <p class="eyebrow">Observe</p>
-            <h2>观察解释</h2>
-            <p>运行时不要只看最后一行，重点看中间过程如何证明本讲机制。</p>
+            <p class="eyebrow">Small Check</p>
+            <h2>可选小实验</h2>
+            <p>{format_inline(lesson.demo_goal)} 实验只用于观察现象，不作为本页主线。</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">可选实验命令</p>
+            <pre class="demo-command"><code>{html.escape(lesson.demo_command)}</code></pre>
           </div>
           {render_bullets(lesson.demo_expected, "lesson-list")}
-        </section>
-
-        <section class="lesson-section" id="practice">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Try It</p>
-            <h2>动手改一轮</h2>
-            <p>{format_inline(lesson.workshop_prompt)}</p>
-          </div>
-          {render_steps(lesson.practice_steps)}
         </section>
 
         <section class="lesson-section" id="map">
           <div class="lesson-section-head">
             <p class="eyebrow">Map</p>
             <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它会连接前面已经讲过的机制，也为后面的章节铺路。</p>
+            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
           </div>
-          {render_bullets(lesson.takeaways)}
-          {render_bullets(lesson.talk_points)}
+          {render_bullets(relation_items)}
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -2473,11 +2437,11 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续阅读</h2>
-            <p>教学页只保留现场讲解需要的内容，完整文章与代码仍然保留在仓库中。</p>
+            <p>教学页以讲清文章为主；完整原文与配套脚本保留在仓库中，方便分享后继续查阅。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="{github_blob_url(lesson.md_path)}">读完整原文</a>
-            <a class="secondary-btn" href="{github_blob_url(lesson.code_path)}">看完整代码</a>
+            <a class="secondary-btn" href="{github_blob_url(lesson.code_path)}">查看配套脚本</a>
             <a class="secondary-btn" href="llm.html">回到 LLM 目录</a>
           </div>
         </section>

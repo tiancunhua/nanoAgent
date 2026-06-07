@@ -48,8 +48,8 @@
           <p>上下文窗口决定模型一次能看到多少 token；窗口越长，位置编码、Attention 计算和 KV Cache 压力越大。</p>
           <div class="chip-row">
             <span class="chip">6 分钟</span>
-            <span class="chip">256 行代码</span>
             <span class="chip">Context Window</span>
+            <span class="chip">文章讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#position">主线定位</a><a class="toc-link" href="#visual">图解流程</a><a class="toc-link" href="#demo">先跑实验</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#observe">观察解释</a><a class="toc-link" href="#practice">动手改一轮</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -140,23 +140,24 @@
           <p class="lead">上下文窗口决定模型一次能看到多少 token；窗口越长，位置编码、Attention 计算和 KV Cache 压力越大。</p>
           <div class="tag-row"><span class="tag">Context</span><span class="tag">Position</span><span class="tag">KV Cache</span></div>
           <div class="hero-actions">
-            <a class="primary-btn" href="#demo">先跑实验</a>
-            <a class="secondary-btn" href="#visual">看图解流程</a>
+            <a class="primary-btn" href="#thesis">读文章主旨</a>
+            <a class="secondary-btn" href="#visual">看图解主线</a>
           </div>
         </section>
 
-        <section class="lesson-section" id="position">
+        <section class="lesson-section" id="thesis">
           <div class="lesson-section-head">
-            <p class="eyebrow">Position</p>
-            <h2>主线定位</h2>
+            <p class="eyebrow">Thesis</p>
+            <h2>文章主旨</h2>
           </div>
+          <p>上下文窗口决定模型一次能看到多少 token；窗口越长，位置编码、Attention 计算和 KV Cache 压力越大。</p>
           <p class="scenario-text">为什么模型不能无限记住所有对话？因为每次推理都要把上下文作为输入处理，长度越大，计算和显存压力越明显。</p>
         </section>
 
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解流程</h2>
+            <h2>图解主线</h2>
           </div>
 
     <figure class="lesson-figure llm-flow-figure">
@@ -167,144 +168,35 @@
           <p class="scenario-text">上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
         </section>
 
-        <section class="lesson-section" id="demo">
+        <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
-            <p class="eyebrow">Run First</p>
-            <h2>先跑实验</h2>
-            <p>从位置编码、超长输入和 KV Cache 三个角度观察上下文窗口的边界。</p>
+            <p class="eyebrow">Explain</p>
+            <h2>概念展开</h2>
+            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
           </div>
-          <div class="demo-box">
-            <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python3 llm/08-context-window/context_window.py</code></pre>
-          </div>
-        </section>
-
-        <section class="lesson-section" id="code">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Key Code</p>
-            <h2>关键代码</h2>
-            <p>这部分只看最能解释机制的片段，先抓数据怎么流动，再回到完整脚本。</p>
-          </div>
-          <div class="code-group">
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">位置编码表决定窗口边界</p>
-                  <h3>GPT-2 的最大位置来自位置编码表，这让上下文窗口变成一个具体限制。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/08-context-window/context_window.py#L26-L48">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  26 # ==================== 1. GPT-2 位置编码表 ====================
-  27 print(&quot;\n&quot; + &quot;=&quot; * 60)
-  28 print(&quot;实验 1：GPT-2 的位置编码&quot;)
-  29 print(&quot;=&quot; * 60)
-  30
-  31 pos_embed = model.transformer.wpe.weight.detach()
-  32 print(f&quot;\n  位置编码表形状: {pos_embed.shape}&quot;)
-  33 print(f&quot;  最大位置: {pos_embed.shape[0]}（= GPT-2 的上下文窗口大小）&quot;)
-  34 print(f&quot;  每个位置的向量维度: {pos_embed.shape[1]}&quot;)
-  35
-  36 # 相邻 vs 远距离位置的相似度
-  37 print(f&quot;\n  不同距离的位置编码相似度:&quot;)
-  38 print(f&quot;  {&#x27;位置对&#x27;:&lt;25} {&#x27;余弦相似度&#x27;:&gt;10}&quot;)
-  39 print(&quot;  &quot; + &quot;-&quot; * 40)
-  40
-  41 distances = [1, 2, 5, 10, 50, 100, 500, 1023]
-  42 for dist in distances:
-  43     sim = cosine_similarity(pos_embed[0], pos_embed[dist]).item()
-  44     bar = &quot;█&quot; * int(max(0, sim) * 20)
-  45     print(f&quot;  位置 0 vs 位置 {dist:&gt;4}:    {sim:&gt;8.3f}  {bar}&quot;)
-  46
-  47 print(&quot;\n  → 相邻位置相似度高，远距离位置相似度低&quot;)
-  48 print(&quot;  → 模型靠这种差异来区分&#x27;紧挨着&#x27;和&#x27;隔得远&#x27;&quot;)</code></pre>
-            </article>
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">KV Cache 随上下文增长</p>
-                  <h3>上下文越长，缓存的 K/V 越多，显存占用会线性增长。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/08-context-window/context_window.py#L174-L219">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python"> 174 # ==================== 5. KV Cache 显存估算 ====================
- 175 print(f&quot;{&#x27;=&#x27; * 60}&quot;)
- 176 print(&quot;实验 5：不同上下文长度的 KV Cache 显存需求&quot;)
- 177 print(&quot;=&quot; * 60)
- 178
- 179 def kv_cache_size_mb(n_tokens, n_layers, n_heads, head_dim, dtype_bytes=2):
- 180     &quot;&quot;&quot;计算 KV Cache 的显存占用（MB）&quot;&quot;&quot;
- 181     return n_tokens * n_layers * n_heads * head_dim * 2 * dtype_bytes / (1024 * 1024)
- 182
- 183 # 不同模型配置
- 184 configs = [
- 185     (&quot;GPT-2&quot;,       12, 12,  64, 2),
- 186     (&quot;LLaMA 7B&quot;,    32, 32, 128, 2),
- 187     (&quot;LLaMA 70B&quot;,   80, 64, 128, 2),
- 188 ]
- 189
- 190 context_lengths = [1024, 4096, 32768, 131072, 1000000]
- 191
- 192 print(f&quot;\n  KV Cache 显存（float16）:&quot;)
- 193 print(f&quot;\n  {&#x27;模型&#x27;:&lt;14}&quot;, end=&quot;&quot;)
- 194 for ctx in context_lengths:
- 195     if ctx &gt;= 1000000:
- 196         label = f&quot;{ctx//1000000}M&quot;
- 197     elif ctx &gt;= 1024:
- 198         label = f&quot;{ctx//1024}K&quot;
- 199     else:
- 200         label = str(ctx)
- 201     print(f&quot;  {label:&gt;8}&quot;, end=&quot;&quot;)
- 202 print()
- 203 print(&quot;  &quot; + &quot;-&quot; * (14 + len(context_lengths) * 10))
- 204
- 205 for name, layers, heads, head_dim, dtype in configs:
- 206     print(f&quot;  {name:&lt;14}&quot;, end=&quot;&quot;)
- 207     for ctx in context_lengths:
- 208         size_mb = kv_cache_size_mb(ctx, layers, heads, head_dim, dtype)
- 209         if size_mb &gt;= 1024:
- 210             print(f&quot;  {size_mb/1024:&gt;6.1f}GB&quot;, end=&quot;&quot;)
- 211         else:
- 212             print(f&quot;  {size_mb:&gt;6.0f}MB&quot;, end=&quot;&quot;)
- 213     print()
- 214
- 215 print(f&quot;&quot;&quot;
- 216   → 上下文长度和 KV Cache 显存成正比
- 217   → LLaMA 7B 在 128K 上下文时，KV Cache 就要约 64 GB
- 218   → 这就是长上下文窗口的核心工程挑战
- 219 &quot;&quot;&quot;)</code></pre>
-            </article>
-
-          </div>
+          <ul class="lesson-list"><li>上下文窗口是模型一次推理能看到的 token 上限。</li><li>长上下文不是免费能力，会带来计算、显存和检索质量问题。</li><li>Agent 的记忆、压缩、检索都在处理上下文窗口的现实边界。</li><li>能装下不代表能用好，长上下文也会稀释注意力。</li><li>位置编码告诉模型 token 在哪里。</li><li>KV Cache 让长上下文的成本从抽象限制变成具体显存占用。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
           <div class="lesson-section-head">
-            <p class="eyebrow">Observe</p>
-            <h2>观察解释</h2>
-            <p>运行时不要只看最后一行，重点看中间过程如何证明本讲机制。</p>
+            <p class="eyebrow">Small Check</p>
+            <h2>可选小实验</h2>
+            <p>从位置编码、超长输入和 KV Cache 三个角度观察上下文窗口的边界。 实验只用于观察现象，不作为本页主线。</p>
+          </div>
+          <div class="demo-box">
+            <p class="lesson-index">可选实验命令</p>
+            <pre class="demo-command"><code>python3 llm/08-context-window/context_window.py</code></pre>
           </div>
           <ul class="lesson-list"><li>GPT-2 的位置编码表会显示最大位置为 1024。</li><li>超出窗口时会触发截断或范围错误，说明窗口不是抽象概念。</li><li>KV Cache 显存估算会展示上下文长度增长带来的直接成本。</li><li>同一个目标句子放在更长填充文本后，预测也可能受影响。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="practice">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Try It</p>
-            <h2>动手改一轮</h2>
-            <p>把“模型会忘”讲成上下文窗口和显存成本，而不是拟人化解释。</p>
-          </div>
-          <ol class="lesson-steps"><li>查看 <code class="inline">test_lengths</code>，理解为什么 GPT-2 会卡在 1024。</li><li>改 <code class="inline">context_lengths</code>，观察 KV Cache 显存估算如何变化。</li><li>把填充段数调大，观察预测 Top1 是否稳定。</li></ol>
         </section>
 
         <section class="lesson-section" id="map">
           <div class="lesson-section-head">
             <p class="eyebrow">Map</p>
             <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它会连接前面已经讲过的机制，也为后面的章节铺路。</p>
+            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
           </div>
-          <ul class="lesson-list"><li>上下文窗口是模型一次推理能看到的 token 上限。</li><li>长上下文不是免费能力，会带来计算、显存和检索质量问题。</li><li>Agent 的记忆、压缩、检索都在处理上下文窗口的现实边界。</li></ul>
-          <ul class="lesson-list"><li>能装下不代表能用好，长上下文也会稀释注意力。</li><li>位置编码告诉模型 token 在哪里。</li><li>KV Cache 让长上下文的成本从抽象限制变成具体显存占用。</li></ul>
+          <ul class="lesson-list"><li>上一页「推理」提供了前置概念，这一页把它推进到「上下文窗口」。</li><li>下一页「Scaling Law」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Context Window。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -319,11 +211,11 @@
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续阅读</h2>
-            <p>教学页只保留现场讲解需要的内容，完整文章与代码仍然保留在仓库中。</p>
+            <p>教学页以讲清文章为主；完整原文与配套脚本保留在仓库中，方便分享后继续查阅。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/08-context-window/llm-08-context-window.md">读完整原文</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/08-context-window/context_window.py">看完整代码</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/08-context-window/context_window.py">查看配套脚本</a>
             <a class="secondary-btn" href="llm.html">回到 LLM 目录</a>
           </div>
         </section>
@@ -336,7 +228,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
+      <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
         <a href="summary.html">收束与延伸</a>

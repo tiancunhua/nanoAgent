@@ -48,8 +48,8 @@
           <p>Attention 让每个 token 在生成表示时，按权重查看前面的 token，从而把上下文关系带进当前表示。</p>
           <div class="chip-row">
             <span class="chip">7 分钟</span>
-            <span class="chip">167 行代码</span>
             <span class="chip">Query + Key + Value</span>
+            <span class="chip">文章讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#position">主线定位</a><a class="toc-link" href="#visual">图解流程</a><a class="toc-link" href="#demo">先跑实验</a><a class="toc-link" href="#code">关键代码</a><a class="toc-link" href="#observe">观察解释</a><a class="toc-link" href="#practice">动手改一轮</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -140,23 +140,24 @@
           <p class="lead">Attention 让每个 token 在生成表示时，按权重查看前面的 token，从而把上下文关系带进当前表示。</p>
           <div class="tag-row"><span class="tag">Attention</span><span class="tag">QKV</span><span class="tag">Causal Mask</span></div>
           <div class="hero-actions">
-            <a class="primary-btn" href="#demo">先跑实验</a>
-            <a class="secondary-btn" href="#visual">看图解流程</a>
+            <a class="primary-btn" href="#thesis">读文章主旨</a>
+            <a class="secondary-btn" href="#visual">看图解主线</a>
           </div>
         </section>
 
-        <section class="lesson-section" id="position">
+        <section class="lesson-section" id="thesis">
           <div class="lesson-section-head">
-            <p class="eyebrow">Position</p>
-            <h2>主线定位</h2>
+            <p class="eyebrow">Thesis</p>
+            <h2>文章主旨</h2>
           </div>
+          <p>Attention 让每个 token 在生成表示时，按权重查看前面的 token，从而把上下文关系带进当前表示。</p>
           <p class="scenario-text">一句话里每个词的重要性不同。模型生成最后一个词时，不能平均看前面所有词，而要知道当前最该关注谁。</p>
         </section>
 
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解流程</h2>
+            <h2>图解主线</h2>
           </div>
 
     <figure class="lesson-figure llm-flow-figure">
@@ -167,145 +168,35 @@
           <p class="scenario-text">Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。</p>
         </section>
 
-        <section class="lesson-section" id="demo">
+        <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
-            <p class="eyebrow">Run First</p>
-            <h2>先跑实验</h2>
-            <p>把抽象的 Attention 变成可观察的矩阵和热力图。</p>
+            <p class="eyebrow">Explain</p>
+            <h2>概念展开</h2>
+            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
           </div>
-          <div class="demo-box">
-            <p class="lesson-index">演示命令</p>
-            <pre class="demo-command"><code>python3 llm/04-attention/attention.py &quot;The capital of France is&quot; --layer 0
-python3 llm/04-attention/multi_head.py &quot;The capital of France is&quot; --layer 11</code></pre>
-          </div>
-        </section>
-
-        <section class="lesson-section" id="code">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Key Code</p>
-            <h2>关键代码</h2>
-            <p>这部分只看最能解释机制的片段，先抓数据怎么流动，再回到完整脚本。</p>
-          </div>
-          <div class="code-group">
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">取出 Attention 矩阵</p>
-                  <h3>这段代码把模型内部的注意力权重取出来，并标出每个 token 最关注谁。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/04-attention/attention.py#L24-L63">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  24 def visualize_attention(text, layer=0, head=0):
-  25     &quot;&quot;&quot;可视化指定层、指定头的 Attention 分数矩阵&quot;&quot;&quot;
-  26     input_ids = tokenizer.encode(text, return_tensors=&quot;pt&quot;)
-  27     tokens = [tokenizer.decode([id]) for id in input_ids[0]]
-  28
-  29     with torch.no_grad():
-  30         outputs = model(input_ids)
-  31
-  32     attention = outputs.attentions[layer][0, head].numpy()
-  33
-  34     print(f&quot;\n输入: &#x27;{text}&#x27;&quot;)
-  35     print(f&quot;Tokens: {tokens}&quot;)
-  36     print(f&quot;Layer {layer}, Head {head} 的 Attention 矩阵：&quot;)
-  37     print()
-  38
-  39     max_tok_len = max(len(t) for t in tokens)
-  40     col_w = max(max_tok_len + 1, 7)
-  41
-  42     # 表头
-  43     header = &quot; &quot; * (max_tok_len + 3)
-  44     for t in tokens:
-  45         header += f&quot;{t:&gt;{col_w}}&quot;
-  46     print(header)
-  47     print(&quot; &quot; * (max_tok_len + 3) + &quot;-&quot; * (len(tokens) * col_w))
-  48
-  49     for i, token in enumerate(tokens):
-  50         row = f&quot;{token:&gt;{max_tok_len}} │&quot;
-  51         for j in range(len(tokens)):
-  52             if j &gt; i:
-  53                 row += f&quot;{&#x27;·&#x27;:&gt;{col_w}}&quot;
-  54             else:
-  55                 score = attention[i][j]
-  56                 row += f&quot;{score:&gt;{col_w}.3f}&quot;
-  57
-  58         # 最关注谁（只看因果掩码范围内）
-  59         max_j = attention[i][:i + 1].argmax()
-  60         row += f&quot;  ← 最关注 &#x27;{tokens[max_j]}&#x27;&quot;
-  61         print(row)
-  62
-  63     return attention, tokens</code></pre>
-            </article>
-
-            <article class="code-card">
-              <div class="code-card-head">
-                <div>
-                  <p class="lesson-index">画出 ASCII 热力图</p>
-                  <h3>热力图让 Attention 从公式变成可观察结果，适合现场教学。</h3>
-                </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/04-attention/attention.py#L66-L94">看 GitHub 行号</a>
-              </div>
-              <pre class="code-block"><code class="language-python">  66 def attention_heatmap_ascii(attention, tokens, title=&quot;&quot;):
-  67     &quot;&quot;&quot;用 ASCII 字符画出 Attention 热力图&quot;&quot;&quot;
-  68     blocks = &quot; ░▒▓█&quot;
-  69
-  70     if title:
-  71         print(f&quot;\n{title}&quot;)
-  72
-  73     max_tok_len = max(len(t) for t in tokens)
-  74
-  75     print(&quot; &quot; * (max_tok_len + 3), end=&quot;&quot;)
-  76     for t in tokens:
-  77         print(f&quot;{t[:4]:&gt;5}&quot;, end=&quot;&quot;)
-  78     print(&quot;  ← Key&quot;)
-  79     print(&quot; &quot; * (max_tok_len + 3) + &quot;─&quot; * (len(tokens) * 5))
-  80
-  81     for i in range(len(tokens)):
-  82         print(f&quot;{tokens[i]:&gt;{max_tok_len}} │ &quot;, end=&quot;&quot;)
-  83         for j in range(len(tokens)):
-  84             if j &gt; i:
-  85                 print(&quot;   · &quot;, end=&quot;&quot;)
-  86             else:
-  87                 score = attention[i][j]
-  88                 level = min(int(score * 5), 4)
-  89                 char = blocks[level]
-  90                 print(f&quot;  {char}{char} &quot;, end=&quot;&quot;)
-  91         print(&quot;│&quot;)
-  92
-  93     print()
-  94     print(&quot;  图例: &#x27; &#x27;≈0%  ░≈20%  ▒≈40%  ▓≈60%  █≈80%+&quot;)</code></pre>
-            </article>
-
-          </div>
+          <ul class="lesson-list"><li>Attention 负责在上下文里分配注意力权重。</li><li>因果语言模型只能看当前位置及之前的 token。</li><li>多头注意力让模型能同时从多个角度理解一句话。</li><li>Q、K、V 可以理解为：我在找什么、每个词提供什么索引、真正取走什么信息。</li><li>Attention 不是人类意义上的专注，而是一组可计算的权重。</li><li>因果掩码保证模型不能偷看未来答案。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
           <div class="lesson-section-head">
-            <p class="eyebrow">Observe</p>
-            <h2>观察解释</h2>
-            <p>运行时不要只看最后一行，重点看中间过程如何证明本讲机制。</p>
+            <p class="eyebrow">Small Check</p>
+            <h2>可选小实验</h2>
+            <p>把抽象的 Attention 变成可观察的矩阵和热力图。 实验只用于观察现象，不作为本页主线。</p>
           </div>
-          <ul class="lesson-list"><li>Attention 矩阵会显示每个 token 对前面 token 的关注权重。</li><li>右上角未来位置不可见，这是因果掩码的效果。</li><li>不同层、不同头可能关注不同 token，说明模型在多角度读取上下文。</li><li>最后一个 token 的注意力变化，可以直观看到模型如何汇总前文。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="practice">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Try It</p>
-            <h2>动手改一轮</h2>
-            <p>用矩阵和热力图把“模型在看哪里”展示出来，比只讲公式更容易理解。</p>
+          <div class="demo-box">
+            <p class="lesson-index">可选实验命令</p>
+            <pre class="demo-command"><code>python3 llm/04-attention/attention.py &quot;The capital of France is&quot; --layer 0</code></pre>
           </div>
-          <ol class="lesson-steps"><li>换成 <code class="inline">I deposited money at the bank</code>，观察 <code class="inline">bank</code> 附近的注意力。</li><li>修改 <code class="inline">--layer</code>，对比浅层和深层关注点。</li><li>运行 <code class="inline">multi_head.py</code>，观察不同 head 是否看向不同 token。</li></ol>
+          <ul class="lesson-list"><li>Attention 矩阵会显示每个 token 对前面 token 的关注权重。</li><li>右上角未来位置不可见，这是因果掩码的效果。</li><li>最后一个 token 的注意力变化，可以直观看到模型如何汇总前文。</li></ul>
         </section>
 
         <section class="lesson-section" id="map">
           <div class="lesson-section-head">
             <p class="eyebrow">Map</p>
             <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它会连接前面已经讲过的机制，也为后面的章节铺路。</p>
+            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
           </div>
-          <ul class="lesson-list"><li>Attention 负责在上下文里分配注意力权重。</li><li>因果语言模型只能看当前位置及之前的 token。</li><li>多头注意力让模型能同时从多个角度理解一句话。</li></ul>
-          <ul class="lesson-list"><li>Q、K、V 可以理解为：我在找什么、每个词提供什么索引、真正取走什么信息。</li><li>Attention 不是人类意义上的专注，而是一组可计算的权重。</li><li>因果掩码保证模型不能偷看未来答案。</li></ul>
+          <ul class="lesson-list"><li>上一页「Embedding」提供了前置概念，这一页把它推进到「Attention」。</li><li>下一页「Transformer」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Query + Key + Value。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
         </section>
 
         <section class="lesson-section" id="pitfalls">
@@ -320,11 +211,11 @@ python3 llm/04-attention/multi_head.py &quot;The capital of France is&quot; --la
           <div class="lesson-section-head">
             <p class="eyebrow">Extend</p>
             <h2>继续阅读</h2>
-            <p>教学页只保留现场讲解需要的内容，完整文章与代码仍然保留在仓库中。</p>
+            <p>教学页以讲清文章为主；完整原文与配套脚本保留在仓库中，方便分享后继续查阅。</p>
           </div>
           <div class="deep-links">
             <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/04-attention/llm-04-attention.md">读完整原文</a>
-            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/04-attention/attention.py">看完整代码</a>
+            <a class="secondary-btn" href="https://github.com/GitHubxsy/nanoAgent/blob/book/llm/04-attention/attention.py">查看配套脚本</a>
             <a class="secondary-btn" href="llm.html">回到 LLM 目录</a>
           </div>
         </section>
@@ -337,7 +228,7 @@ python3 llm/04-attention/multi_head.py &quot;The capital of France is&quot; --la
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
+      <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
         <a href="summary.html">收束与延伸</a>

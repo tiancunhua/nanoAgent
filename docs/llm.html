@@ -217,7 +217,7 @@
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
           <h2>10 页 LLM 讲义</h2>
-          <p>每页先定位在模型链路中的位置，再用图示和代码实验把机制讲透。</p>
+          <p>每页围绕文章主旨展开：先把结论讲清楚，再用图示串起概念，最后保留一个可选小实验辅助观察。</p>
         </div>
         <div class="lesson-grid">
 
@@ -227,12 +227,12 @@
               <p>大模型不是一次性写完整答案，而是在每一步预测下一个 token，连续很多步后形成完整回复。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>78 行代码</span>
                 <span>Next Token Prediction</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：先把大模型从“会聊天的黑盒”降维成“会连续预测 token 的系统”。</p>
+              <p class="lesson-kicker">讲法：把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。</p>
               <div class="lesson-tag-row"><span class="tag">Next Token</span><span class="tag">Probability</span><span class="tag">Temperature</span></div>
-              <a class="lesson-link" href="llm-01-next-token.html">查看教学页</a>
+              <a class="lesson-link" href="llm-01-next-token.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -241,12 +241,12 @@
               <p>模型不直接读取中文、英文或代码，而是先把文本切成 token，再把 token ID 送入模型。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>162 行代码</span>
                 <span>Tokenization + BPE</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：先让大家亲眼看到：同一段文字进入模型前，已经被改写成一串 token ID。</p>
+              <p class="lesson-kicker">讲法：Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
               <div class="lesson-tag-row"><span class="tag">Token</span><span class="tag">BPE</span><span class="tag">Tokenizer</span></div>
-              <a class="lesson-link" href="llm-02-token.html">查看教学页</a>
+              <a class="lesson-link" href="llm-02-token.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -255,12 +255,12 @@
               <p>Token ID 只是编号，模型还需要把它查成一串向量，才能在数学空间里计算相似、关系和上下文。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>105 行代码</span>
                 <span>Embedding Vector</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：用“身份证坐标”解释 Embedding，再用相似度输出验证它确实能表达关系。</p>
+              <p class="lesson-kicker">讲法：Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。</p>
               <div class="lesson-tag-row"><span class="tag">Embedding</span><span class="tag">Vector</span><span class="tag">Similarity</span></div>
-              <a class="lesson-link" href="llm-03-embedding.html">查看教学页</a>
+              <a class="lesson-link" href="llm-03-embedding.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -269,12 +269,12 @@
               <p>Attention 让每个 token 在生成表示时，按权重查看前面的 token，从而把上下文关系带进当前表示。</p>
               <div class="lesson-meta">
                 <span>7 分钟</span>
-                <span>167 行代码</span>
                 <span>Query + Key + Value</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：用矩阵和热力图把“模型在看哪里”展示出来，比只讲公式更容易理解。</p>
+              <p class="lesson-kicker">讲法：Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。</p>
               <div class="lesson-tag-row"><span class="tag">Attention</span><span class="tag">QKV</span><span class="tag">Causal Mask</span></div>
-              <a class="lesson-link" href="llm-04-attention.html">查看教学页</a>
+              <a class="lesson-link" href="llm-04-attention.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -283,12 +283,12 @@
               <p>Transformer 把 Embedding、Attention、FFN、残差连接和 LayerNorm 堆叠起来，形成大模型的主体结构。</p>
               <div class="lesson-meta">
                 <span>7 分钟</span>
-                <span>198 行代码</span>
                 <span>Attention + FFN + Residual</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：把 Transformer 讲成“数据在一栋楼里逐层加工”，比直接堆术语更直观。</p>
+              <p class="lesson-kicker">讲法：一层 Transformer 像一次小组讨论：Attention 先看上下文，FFN 再做局部加工，残差连接负责保留原始信息。</p>
               <div class="lesson-tag-row"><span class="tag">Transformer</span><span class="tag">FFN</span><span class="tag">Residual</span></div>
-              <a class="lesson-link" href="llm-05-transformer.html">查看教学页</a>
+              <a class="lesson-link" href="llm-05-transformer.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -297,12 +297,12 @@
               <p>训练就是不断预测、计算误差、反向传播、更新参数，让模型逐渐降低 Loss。</p>
               <div class="lesson-meta">
                 <span>7 分钟</span>
-                <span>277 行代码</span>
                 <span>Loss + Gradient Descent</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：用 Loss 曲线把“学习”讲成一个可以观察的工程过程。</p>
+              <p class="lesson-kicker">讲法：训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。</p>
               <div class="lesson-tag-row"><span class="tag">Training</span><span class="tag">Loss</span><span class="tag">Gradient</span></div>
-              <a class="lesson-link" href="llm-06-training.html">查看教学页</a>
+              <a class="lesson-link" href="llm-06-training.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -311,12 +311,12 @@
               <p>推理阶段不更新参数，而是把输入送进模型，逐 token 生成输出，并用 KV Cache 避免重复计算。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>158 行代码</span>
                 <span>Prefill + Decode + KV Cache</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：把推理讲成 Prefill 和 Decode 两段，很多性能问题会立刻变清楚。</p>
+              <p class="lesson-kicker">讲法：推理像餐厅出餐：Prefill 是先读完整菜单和备注，Decode 是一道一道上菜，KV Cache 是把已读过的信息放在手边，不用每次重读。</p>
               <div class="lesson-tag-row"><span class="tag">Inference</span><span class="tag">KV Cache</span><span class="tag">Decode</span></div>
-              <a class="lesson-link" href="llm-07-inference.html">查看教学页</a>
+              <a class="lesson-link" href="llm-07-inference.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -325,12 +325,12 @@
               <p>上下文窗口决定模型一次能看到多少 token；窗口越长，位置编码、Attention 计算和 KV Cache 压力越大。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>256 行代码</span>
                 <span>Context Window</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：把“模型会忘”讲成上下文窗口和显存成本，而不是拟人化解释。</p>
+              <p class="lesson-kicker">讲法：上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
               <div class="lesson-tag-row"><span class="tag">Context</span><span class="tag">Position</span><span class="tag">KV Cache</span></div>
-              <a class="lesson-link" href="llm-08-context-window.html">查看教学页</a>
+              <a class="lesson-link" href="llm-08-context-window.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -339,12 +339,12 @@
               <p>Scaling Law 描述模型规模、数据规模、计算量和 Loss 之间的经验关系，解释了为什么更大模型通常更强。</p>
               <div class="lesson-meta">
                 <span>6 分钟</span>
-                <span>323 行代码</span>
                 <span>Scale + Loss</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：用小实验解释趋势，用边界提醒大家不要把规模神化。</p>
+              <p class="lesson-kicker">讲法：Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。</p>
               <div class="lesson-tag-row"><span class="tag">Scaling Law</span><span class="tag">Model Size</span><span class="tag">Loss</span></div>
-              <a class="lesson-link" href="llm-09-scaling-law.html">查看教学页</a>
+              <a class="lesson-link" href="llm-09-scaling-law.html">查看讲义</a>
             </article>
 
             <article class="lesson-card">
@@ -353,12 +353,12 @@
               <p>LLM 本身只生成 token；接上工具定义、执行函数和循环后，才变成能作用于外部世界的 Agent。</p>
               <div class="lesson-meta">
                 <span>7 分钟</span>
-                <span>223 行代码</span>
                 <span>LLM + Tools + Loop</span>
+                <span>文章讲解</span>
               </div>
-              <p class="lesson-kicker">要点：用 50 行最小 Agent 把 LLM 系列自然接到 Agent 系列。</p>
+              <p class="lesson-kicker">讲法：LLM 像大脑，工具像手，循环像“看结果再决定下一步”的工作节奏。三者合在一起，才是最小 Agent。</p>
               <div class="lesson-tag-row"><span class="tag">Agent</span><span class="tag">Tools</span><span class="tag">Loop</span></div>
-              <a class="lesson-link" href="llm-10-agent.html">查看教学页</a>
+              <a class="lesson-link" href="llm-10-agent.html">查看讲义</a>
             </article>
 
         </div>
@@ -419,7 +419,7 @@
     </main>
 
     <footer class="site-footer">
-      <p>本讲义仅保留关键代码、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
+      <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
         <a href="summary.html">收束与延伸</a>
