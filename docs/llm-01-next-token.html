@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">6 分钟</span>
             <span class="chip">Next Token Prediction</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Next Token</span><span class="tag">Probability</span><span class="tag">Temperature</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-01-next-token.svg" alt="一个 token 接一个 token 地生成">
       <figcaption>大模型一次只预测下一个 token；把新 token 拼回上下文后，再进入下一轮预测。</figcaption>
     </figure>
 
-          <p class="scenario-text">把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-01-next-token-analogy.svg" alt="像输入法一样续写">
+      <figcaption>输入法不会一次写完整段落，而是根据前文推荐下一个候选；大模型也是连续做这个动作。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像输入法一样续写</strong></p>
+            <p>把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。</p>
+            <p>对应到机制：大模型一次只预测下一个 token；把新 token 拼回上下文后，再进入下一轮预测。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>大模型的基本动作是预测下一个 token。</li><li>概率最高不等于唯一答案，采样策略会影响输出风格。</li><li>看懂这一讲，后面的 Token、Embedding、Attention 都是在解释“它怎么猜得更准”。</li><li>“智能感”来自大量连续的小预测，而不是一次神秘的完整推理。</li><li>概率分布越集中，模型越确定；概率分布越分散，输出越容易变化。</li><li>Temperature 不是让模型更聪明，而是改变选择 token 时的随机程度。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先降维</h3>
+              <p>先把“大模型会回答”降维成一个小动作：根据已有上下文，预测下一个 token。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再连起来</h3>
+              <p>预测出的 token 会被拼回上下文，模型再预测下一个；连续很多轮后，看起来就是完整回答。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后看采样</h3>
+              <p>概率分布决定候选范围，Temperature 等采样参数只是在改变“选哪个候选”的方式。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>大模型的基本动作是预测下一个 token。</li><li>概率最高不等于唯一答案，采样策略会影响输出风格。</li><li>看懂这一讲，后面的 Token、Embedding、Attention 都是在解释“它怎么猜得更准”。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/01-next-token/predict.py &quot;Thank you very&quot;</code></pre>
           </div>
           <ul class="lesson-list"><li><code class="inline">predict.py</code> 会打印输入被切成哪些 token，以及下一个 token 的 Top 10 概率。</li><li>Top 10 概率能说明：模型不是查唯一答案，而是在多个可能里选择。</li><li>这一个小动作连续发生很多次，最后才形成完整回复。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>这是 LLM 序列的起点：先理解模型最小动作，再看后面的结构如何服务这个动作。</li><li>下一页「Token」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Next Token Prediction。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>不要把“预测下一个 token”误解成简单背诵，它背后已经包含上下文计算。</li><li>不要把 Temperature 当成准确率开关，高温通常只是更发散。</li><li>一次输出看起来像一句话，底层却是一连串 token 选择。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

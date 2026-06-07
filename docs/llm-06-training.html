@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">7 分钟</span>
             <span class="chip">Loss + Gradient Descent</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Training</span><span class="tag">Loss</span><span class="tag">Gradient</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-06-training.svg" alt="训练就是不断降低 Loss">
       <figcaption>模型先预测，再和正确答案比较；梯度告诉参数往哪边调，优化器完成更新。</figcaption>
     </figure>
 
-          <p class="scenario-text">训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-06-training-analogy.svg" alt="像调音台反复拧旋钮">
+      <figcaption>Loss 告诉你声音偏了多少，梯度告诉每个旋钮往哪边拧，优化器负责真的拧一下。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像调音台反复拧旋钮</strong></p>
+            <p>训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。</p>
+            <p>对应到机制：模型先预测，再和正确答案比较；梯度告诉参数往哪边调，优化器完成更新。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>训练的核心闭环是预测、算 Loss、反向传播、更新参数。</li><li>Loss 下降表示模型在训练数据上越来越不离谱。</li><li>真实大模型训练只是规模巨大，本质闭环并没有变。</li><li>模型参数不是人工写出来的，而是通过优化不断调出来的。</li><li>训练数据决定模型能学到什么，也决定它容易重复什么。</li><li>小模型能演示机制，但不能代表真实大模型的能力边界。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先预测</h3>
+              <p>训练样本进来后，模型先像平时一样预测下一个 token，这一步还不更新参数。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再听偏差</h3>
+              <p>Loss 把预测和正确答案的差距变成一个数，让“猜得离谱不离谱”可以被计算。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后调参数</h3>
+              <p>反向传播计算每个参数该怎么调，优化器执行更新；重复很多次，Loss 才逐步下降。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>训练的核心闭环是预测、算 Loss、反向传播、更新参数。</li><li>Loss 下降表示模型在训练数据上越来越不离谱。</li><li>真实大模型训练只是规模巨大，本质闭环并没有变。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/06-training/train_tiny.py</code></pre>
           </div>
           <ul class="lesson-list"><li>启动时会打印训练数据长度、词表大小和模型参数量。</li><li>训练过程中每隔一段时间打印 Loss，通常会看到整体下降。</li><li>训练后用几个 prompt 生成文本，能看到模型学到了训练语料里的模式。</li><li>这个小模型不是为了好用，而是为了看清训练循环。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「Transformer」提供了前置概念，这一页把它推进到「训练」。</li><li>下一页「推理」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Loss + Gradient Descent。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>Loss 低不等于真实世界表现一定好，可能只是记住训练数据。</li><li>训练不是一次完成，大模型通常还有预训练、指令微调、偏好对齐等阶段。</li><li>不要把训练和推理混为一谈，训练会更新参数，推理通常不更新参数。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">6 分钟</span>
             <span class="chip">Context Window</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Context</span><span class="tag">Position</span><span class="tag">KV Cache</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-08-context-window.svg" alt="上下文窗口是一次推理的工作现场">
       <figcaption>窗口越长，模型能看到的信息越多，但 Attention 和 KV Cache 成本也会增长。</figcaption>
     </figure>
 
-          <p class="scenario-text">上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-08-context-window-analogy.svg" alt="像一次工作的桌面">
+      <figcaption>桌面能放材料，但不是无限大；材料越多，找线索和维护现场的成本越高。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像一次工作的桌面</strong></p>
+            <p>上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
+            <p>对应到机制：窗口越长，模型能看到的信息越多，但 Attention 和 KV Cache 成本也会增长。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>上下文窗口是模型一次推理能看到的 token 上限。</li><li>长上下文不是免费能力，会带来计算、显存和检索质量问题。</li><li>Agent 的记忆、压缩、检索都在处理上下文窗口的现实边界。</li><li>能装下不代表能用好，长上下文也会稀释注意力。</li><li>位置编码告诉模型 token 在哪里。</li><li>KV Cache 让长上下文的成本从抽象限制变成具体显存占用。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先定义边界</h3>
+              <p>上下文窗口是一次推理能看到的 token 范围，不在窗口里的内容模型无法直接使用。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再看成本</h3>
+              <p>窗口越长，Attention 计算和 KV Cache 占用越高，所以长上下文不是免费能力。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后接实践</h3>
+              <p>摘要、检索和记忆机制，本质上都是在帮模型管理这个有限工作现场。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>上下文窗口是模型一次推理能看到的 token 上限。</li><li>长上下文不是免费能力，会带来计算、显存和检索质量问题。</li><li>Agent 的记忆、压缩、检索都在处理上下文窗口的现实边界。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/08-context-window/context_window.py</code></pre>
           </div>
           <ul class="lesson-list"><li>GPT-2 的位置编码表会显示最大位置为 1024。</li><li>超出窗口时会触发截断或范围错误，说明窗口不是抽象概念。</li><li>KV Cache 显存估算会展示上下文长度增长带来的直接成本。</li><li>同一个目标句子放在更长填充文本后，预测也可能受影响。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「推理」提供了前置概念，这一页把它推进到「上下文窗口」。</li><li>下一页「Scaling Law」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Context Window。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>不要把上下文窗口等同于长期记忆，窗口外的信息模型看不到。</li><li>更长窗口不自动等于更高准确率。</li><li>截断上下文时，最容易丢掉早期但关键的信息。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

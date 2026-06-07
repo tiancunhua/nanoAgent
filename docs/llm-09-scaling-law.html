@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">6 分钟</span>
             <span class="chip">Scale + Loss</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Scaling Law</span><span class="tag">Model Size</span><span class="tag">Loss</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-09-scaling-law.svg" alt="规模、数据、算力共同影响 Loss">
       <figcaption>Scaling Law 关注的是趋势：投入更多参数、数据和计算后，Loss 通常按规律下降。</figcaption>
     </figure>
 
-          <p class="scenario-text">Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-09-scaling-law-analogy.svg" alt="像工程里的压测曲线">
+      <figcaption>投入更多参数、数据和算力，Loss 往往按趋势下降；它不是神话，而是工程曲线。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像工程里的压测曲线</strong></p>
+            <p>Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。</p>
+            <p>对应到机制：Scaling Law 关注的是趋势：投入更多参数、数据和计算后，Loss 通常按规律下降。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>模型能力提升常常来自参数、数据和算力共同扩大。</li><li>Scaling Law 关注的是趋势，不是某一次实验的绝对值。</li><li>规模带来能力，也带来训练、推理、成本和安全问题。</li><li>“大力出奇迹”背后是可观察的经验规律。</li><li>参数量不是唯一变量，数据量和计算量同样关键。</li><li>真实系统要在效果、成本、延迟之间做取舍。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先看趋势</h3>
+              <p>Scaling Law 关心的不是单次实验输赢，而是规模扩大后 Loss 的整体下降趋势。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再看三要素</h3>
+              <p>参数、数据和算力要一起看；只堆某一个变量，收益会受另外两个变量限制。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后看取舍</h3>
+              <p>规模带来能力，也带来成本、延迟和安全问题，工程上必须算账。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>模型能力提升常常来自参数、数据和算力共同扩大。</li><li>Scaling Law 关注的是趋势，不是某一次实验的绝对值。</li><li>规模带来能力，也带来训练、推理、成本和安全问题。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/09-scaling-law/scaling_law.py --steps 50</code></pre>
           </div>
           <ul class="lesson-list"><li>脚本会训练多组不同参数量的小模型。</li><li>结果表会打印参数量、Loss、log 参数量和 log Loss。</li><li>如果训练步数足够，通常能看到更大模型 Loss 更低的趋势。</li><li>这个实验只演示趋势，不等同于真实大模型训练结论。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「上下文窗口」提供了前置概念，这一页把它推进到「Scaling Law」。</li><li>下一页「LLM 到 Agent」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Scale + Loss。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>不要把小实验的数字当成真实大模型定律，只看趋势。</li><li>模型变大并不自动解决数据质量和对齐问题。</li><li>规模收益会有边际成本，工程上必须算账。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

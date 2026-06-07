@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">6 分钟</span>
             <span class="chip">Embedding Vector</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Embedding</span><span class="tag">Vector</span><span class="tag">Similarity</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-03-embedding.svg" alt="Token ID 查表得到向量">
       <figcaption>Embedding 表把离散 ID 映射成连续向量，模型后续才能计算距离、关系和上下文。</figcaption>
     </figure>
 
-          <p class="scenario-text">Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-03-embedding-analogy.svg" alt="像给词发坐标身份证">
+      <figcaption>Token ID 只是号码，Embedding 才是坐标；坐标近的词，模型更容易认为它们相关。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像给词发坐标身份证</strong></p>
+            <p>Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。</p>
+            <p>对应到机制：Embedding 表把离散 ID 映射成连续向量，模型后续才能计算距离、关系和上下文。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>Embedding 把 token ID 变成可计算的向量。</li><li>向量相似度可以表达粗粒度语义关系。</li><li>同一个 token 的最终表示会被上下文改写。</li><li>模型不能直接算文字，只能算数字向量。</li><li>Embedding 表本质上是一张大查找表。</li><li>上下文感知不是 Embedding 单独完成的，而是 Transformer 层逐步加工的结果。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先区分编号和含义</h3>
+              <p>Token ID 只是离散编号，不能直接表达相似或关系；Embedding 把编号变成可计算向量。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再看空间</h3>
+              <p>向量之间可以算距离，距离近通常表示模型把它们放在相近语义区域。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后接上下文</h3>
+              <p>Embedding 是起点，不是终点；后面的 Transformer 层会继续改写这些向量。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>Embedding 把 token ID 变成可计算的向量。</li><li>向量相似度可以表达粗粒度语义关系。</li><li>同一个 token 的最终表示会被上下文改写。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/03-embedding/embedding.py &quot;France&quot; &quot;Paris&quot; &quot;Germany&quot; &quot;Berlin&quot; &quot;cat&quot; &quot;dog&quot;</code></pre>
           </div>
           <ul class="lesson-list"><li><code class="inline">embedding.py</code> 会打印 Embedding 表形状：词表大小 × 向量维度。</li><li>语义相关的词通常会有更高相似度，例如国家和首都、动物和动物。</li><li>这个实验只看向量入口，真正的语境加工会在后续 Transformer 层发生。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「Token」提供了前置概念，这一页把它推进到「Embedding」。</li><li>下一页「Attention」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Embedding Vector。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>不要把向量维度理解成可人工命名的属性列，它们通常不是人类可读字段。</li><li>向量相似不等于事实正确，只表示表示空间里的接近。</li><li>静态 Embedding 无法单独解决一词多义。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

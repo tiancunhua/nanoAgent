@@ -1216,6 +1216,114 @@ LLM_VISUALS = {
 }
 
 
+LLM_ANALOGIES = {
+    "next-token": (
+        "像输入法一样续写",
+        "输入法不会一次写完整段落，而是根据前文推荐下一个候选；大模型也是连续做这个动作。",
+        ["前文", "候选词", "选一个", "接着猜"],
+    ),
+    "token": (
+        "像把句子切成积木块",
+        "模型不能直接搬运整句话，只能先把文字拆成它认识的积木块，再给每块编号。",
+        ["一句话", "切积木", "编号", "送入模型"],
+    ),
+    "embedding": (
+        "像给词发坐标身份证",
+        "Token ID 只是号码，Embedding 才是坐标；坐标近的词，模型更容易认为它们相关。",
+        ["号码", "查表", "坐标", "比较距离"],
+    ),
+    "attention": (
+        "像读文章时划重点",
+        "当前词带着问题回看前文，相关位置权重大，不相关位置权重小。",
+        ["当前问题", "回看前文", "划重点", "取信息"],
+    ),
+    "transformer": (
+        "像一栋逐层加工的大楼",
+        "每一层先看上下文，再加工表示；很多层叠起来，简单 token 才逐渐变成复杂理解。",
+        ["进一层", "看上下文", "再加工", "去下一层"],
+    ),
+    "training": (
+        "像调音台反复拧旋钮",
+        "Loss 告诉你声音偏了多少，梯度告诉每个旋钮往哪边拧，优化器负责真的拧一下。",
+        ["听偏差", "找方向", "拧旋钮", "再听一次"],
+    ),
+    "inference": (
+        "像餐厅先读菜单再一道道上菜",
+        "Prefill 先读完整输入，Decode 再一个 token 一个 token 输出；KV Cache 把已读信息放在手边。",
+        ["读菜单", "备好信息", "一道道上", "不用重读"],
+    ),
+    "context-window": (
+        "像一次工作的桌面",
+        "桌面能放材料，但不是无限大；材料越多，找线索和维护现场的成本越高。",
+        ["放材料", "整理位置", "开始处理", "空间有限"],
+    ),
+    "scaling-law": (
+        "像工程里的压测曲线",
+        "投入更多参数、数据和算力，Loss 往往按趋势下降；它不是神话，而是工程曲线。",
+        ["加资源", "跑实验", "看曲线", "算成本"],
+    ),
+    "agent": (
+        "像大脑接上手和工作循环",
+        "LLM 负责想下一步，工具负责真的动手，循环负责看结果后继续调整。",
+        ["想一步", "动一次手", "看结果", "再决定"],
+    ),
+}
+
+
+LLM_EXPLAINERS = {
+    "next-token": [
+        ("先降维", "先把“大模型会回答”降维成一个小动作：根据已有上下文，预测下一个 token。"),
+        ("再连起来", "预测出的 token 会被拼回上下文，模型再预测下一个；连续很多轮后，看起来就是完整回答。"),
+        ("最后看采样", "概率分布决定候选范围，Temperature 等采样参数只是在改变“选哪个候选”的方式。"),
+    ],
+    "token": [
+        ("先看入口", "模型真正接收的不是文字，而是一串 token ID；这一步决定后面所有计算的输入形状。"),
+        ("再看切法", "常见片段可能是一整块，不常见片段会拆得更碎，所以字符数和 token 数并不等价。"),
+        ("最后看成本", "Token 数会直接影响上下文窗口、推理成本和计费，也是理解长文本的入口。"),
+    ],
+    "embedding": [
+        ("先区分编号和含义", "Token ID 只是离散编号，不能直接表达相似或关系；Embedding 把编号变成可计算向量。"),
+        ("再看空间", "向量之间可以算距离，距离近通常表示模型把它们放在相近语义区域。"),
+        ("最后接上下文", "Embedding 是起点，不是终点；后面的 Transformer 层会继续改写这些向量。"),
+    ],
+    "attention": [
+        ("先问问题", "当前 token 会形成 Query，可以理解为“我现在需要找什么线索”。"),
+        ("再匹配线索", "前文 token 提供 Key 和 Value；Key 用来匹配，Value 是真正被取走的信息。"),
+        ("最后加权汇总", "Attention 权重不是平均分配，而是让相关位置贡献更多上下文信息。"),
+    ],
+    "transformer": [
+        ("先看一层", "一层 Transformer 不是神秘整体，主路径就是 Attention、FFN、残差和归一化。"),
+        ("再看叠加", "单层只做一次加工，多层反复加工后，表示会从局部片段逐渐变成复杂上下文理解。"),
+        ("最后看输出", "最后一层的向量会被映射回词表概率，回到第一讲的“预测下一个 token”。"),
+    ],
+    "training": [
+        ("先预测", "训练样本进来后，模型先像平时一样预测下一个 token，这一步还不更新参数。"),
+        ("再听偏差", "Loss 把预测和正确答案的差距变成一个数，让“猜得离谱不离谱”可以被计算。"),
+        ("最后调参数", "反向传播计算每个参数该怎么调，优化器执行更新；重复很多次，Loss 才逐步下降。"),
+    ],
+    "inference": [
+        ("先分两段", "推理不是一次吐完整答案，而是先 Prefill 读完输入，再 Decode 逐 token 生成。"),
+        ("再看缓存", "KV Cache 把历史上下文的关键中间结果留下，后续生成不用每次从头重算。"),
+        ("最后看延迟", "首 token 慢多半和 Prefill 有关，后续输出速度更多受 Decode 和缓存影响。"),
+    ],
+    "context-window": [
+        ("先定义边界", "上下文窗口是一次推理能看到的 token 范围，不在窗口里的内容模型无法直接使用。"),
+        ("再看成本", "窗口越长，Attention 计算和 KV Cache 占用越高，所以长上下文不是免费能力。"),
+        ("最后接实践", "摘要、检索和记忆机制，本质上都是在帮模型管理这个有限工作现场。"),
+    ],
+    "scaling-law": [
+        ("先看趋势", "Scaling Law 关心的不是单次实验输赢，而是规模扩大后 Loss 的整体下降趋势。"),
+        ("再看三要素", "参数、数据和算力要一起看；只堆某一个变量，收益会受另外两个变量限制。"),
+        ("最后看取舍", "规模带来能力，也带来成本、延迟和安全问题，工程上必须算账。"),
+    ],
+    "agent": [
+        ("先守住边界", "LLM 自己只生成 token，不会真的执行命令或创建文件。"),
+        ("再接工具", "工具说明进入上下文，工具实现留在外部程序里；模型输出意图，程序执行动作。"),
+        ("最后形成循环", "结果回填给模型，模型再决定下一步；这个循环让 LLM 开始作用于外部世界。"),
+    ],
+}
+
+
 HOME_FORMAT_CARDS = [
     (
         "场景切入",
@@ -1751,6 +1859,10 @@ def llm_visual_filename(lesson: LLMLesson) -> str:
     return f"llm-{lesson.number}-{lesson.slug}.svg"
 
 
+def llm_analogy_filename(lesson: LLMLesson) -> str:
+    return f"llm-{lesson.number}-{lesson.slug}-analogy.svg"
+
+
 def build_llm_visual_svg(title: str, caption: str, steps: List[str]) -> str:
     width = 1180
     height = 360
@@ -1810,6 +1922,59 @@ def build_llm_visual_svg(title: str, caption: str, steps: List[str]) -> str:
 """
 
 
+def build_llm_analogy_svg(title: str, caption: str, steps: List[str]) -> str:
+    width = 1100
+    height = 430
+    card_width = 230
+    card_height = 128
+    start_x = 74
+    gap = 36
+    card_y = 182
+
+    cards = []
+    arrows = []
+    for index, step in enumerate(steps):
+        x = start_x + index * (card_width + gap)
+        cards.append(
+            f"""
+  <g filter="url(#softShadow)">
+    <rect x="{x}" y="{card_y}" width="{card_width}" height="{card_height}" rx="28" fill="#fff8ed" stroke="rgba(178,76,42,0.24)" />
+    <circle cx="{x + 44}" cy="{card_y + 42}" r="22" fill="#b24c2a" opacity="0.92" />
+    <text x="{x + 44}" y="{card_y + 50}" text-anchor="middle" fill="#fff8ed" font-size="20" font-weight="800">{index + 1}</text>
+    <text x="{x + card_width / 2}" y="{card_y + 84}" text-anchor="middle" fill="#1f2430" font-size="25" font-weight="800">{html.escape(step)}</text>
+  </g>"""
+        )
+        if index < len(steps) - 1:
+            arrow_x = x + card_width + 10
+            arrows.append(
+                f"""
+  <path d="M {arrow_x} {card_y + card_height / 2} C {arrow_x + 22} {card_y + 26}, {arrow_x + gap - 22} {card_y + 102}, {arrow_x + gap - 8} {card_y + card_height / 2}" fill="none" stroke="#d08a4e" stroke-width="4" stroke-linecap="round" />
+  <path d="M {arrow_x + gap - 8} {card_y + card_height / 2} l -11 -7 v14 z" fill="#d08a4e" />"""
+            )
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="{html.escape(title)}">
+  <defs>
+    <linearGradient id="paper" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8ed" />
+      <stop offset="58%" stop-color="#f1dfc7" />
+      <stop offset="100%" stop-color="#d89a63" />
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#7b4a25" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="{width}" height="{height}" rx="34" fill="url(#paper)" />
+  <circle cx="1020" cy="50" r="150" fill="rgba(178,76,42,0.12)" />
+  <circle cx="100" cy="375" r="190" fill="rgba(31,36,48,0.08)" />
+  <text x="70" y="78" fill="#b24c2a" font-size="19" font-weight="800" letter-spacing="4">ANALOGY</text>
+  <text x="70" y="122" fill="#1f2430" font-size="38" font-weight="800">{html.escape(title)}</text>
+  <text x="70" y="350" fill="rgba(31,36,48,0.72)" font-size="22">{html.escape(caption)}</text>
+  {"".join(arrows)}
+  {"".join(cards)}
+</svg>
+"""
+
+
 def build_llm_figure(lesson: LLMLesson) -> str:
     title, caption, _ = LLM_VISUALS[lesson.slug]
     return f"""
@@ -1818,6 +1983,31 @@ def build_llm_figure(lesson: LLMLesson) -> str:
       <figcaption>{html.escape(caption)}</figcaption>
     </figure>
     """
+
+
+def build_llm_analogy_figure(lesson: LLMLesson) -> str:
+    title, caption, _ = LLM_ANALOGIES[lesson.slug]
+    return f"""
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/{llm_analogy_filename(lesson)}" alt="{html.escape(title)}">
+      <figcaption>{html.escape(caption)}</figcaption>
+    </figure>
+    """
+
+
+def render_llm_explain_cards(lesson: LLMLesson) -> str:
+    cards = []
+    for index, (title, body) in enumerate(LLM_EXPLAINERS[lesson.slug], start=1):
+        cards.append(
+            f"""
+            <article class="explain-card">
+              <p class="lesson-index">Step {index:02d}</p>
+              <h3>{html.escape(title)}</h3>
+              <p>{format_inline(body)}</p>
+            </article>
+            """
+        )
+    return "".join(cards)
 
 
 def build_demo_config_showcase(lesson: Lesson) -> str:
@@ -2084,7 +2274,7 @@ def build_llm_home_page() -> str:
               <div class="lesson-meta">
                 <span>{html.escape(lesson.lesson_minutes)}</span>
                 <span>{html.escape(lesson.core)}</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：{format_inline(lesson.mental_model)}</p>
               <div class="lesson-tag-row">{render_tags(lesson.tags, "tag")}</div>
@@ -2236,7 +2426,7 @@ def build_llm_home_page() -> str:
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
           <h2>10 页 LLM 讲义</h2>
-          <p>每页围绕文章主旨展开：先把结论讲清楚，再用图示串起概念，最后保留一个可选小实验辅助观察。</p>
+          <p>每页围绕文章主旨展开：一张机制图、一张比喻图，再用三段解释把文章讲顺；实验只保留一条辅助观察。</p>
         </div>
         <div class="lesson-grid">
           {"".join(lesson_cards)}
@@ -2267,11 +2457,10 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
 
     toc_links = [
         ("thesis", "文章主旨"),
-        ("visual", "图解主线"),
-        ("explain", "概念展开"),
+        ("visual", "两张图看懂"),
+        ("analogy", "核心比喻"),
+        ("explain", "概念拆解"),
         ("observe", "可选小实验"),
-        ("map", "前后关系"),
-        ("pitfalls", "易混点"),
         ("extend", "继续阅读"),
     ]
 
@@ -2287,27 +2476,9 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
     )
     filename = llm_lesson_filename(lesson)
     visual_html = build_llm_figure(lesson)
-    concept_items = [*lesson.takeaways, *lesson.talk_points]
-    relation_items = []
-    if prev_lesson:
-        relation_items.append(
-            f"上一页「{prev_lesson.short_title}」提供了前置概念，这一页把它推进到「{lesson.short_title}」。"
-        )
-    else:
-        relation_items.append(
-            "这是 LLM 序列的起点：先理解模型最小动作，再看后面的结构如何服务这个动作。"
-        )
-    if next_lesson:
-        relation_items.append(
-            f"下一页「{next_lesson.short_title}」会沿着这条线继续展开，避免把单个概念孤立记忆。"
-        )
-    else:
-        relation_items.append(
-            "这一页把 LLM 与 Agent 接起来，为后面的 Agent 序列提供入口。"
-        )
-    relation_items.append(
-        f"本页只抓一个关键词：{lesson.core}。现场讲解时先讲文章结论，再用图示解释为什么。"
-    )
+    analogy_html = build_llm_analogy_figure(lesson)
+    analogy_title, analogy_caption, _ = LLM_ANALOGIES[lesson.slug]
+    _, visual_caption, _ = LLM_VISUALS[lesson.slug]
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -2340,7 +2511,7 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
           <div class="chip-row">
             <span class="chip">{html.escape(lesson.lesson_minutes)}</span>
             <span class="chip">{html.escape(lesson.core)}</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -2372,7 +2543,7 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
           <div class="tag-row">{render_tags(lesson.tags, "tag")}</div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -2388,19 +2559,38 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
-          {visual_html}
-          <p class="scenario-text">{format_inline(lesson.mental_model)}</p>
+          <div class="llm-figure-grid">
+            {visual_html}
+            {analogy_html}
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>{html.escape(analogy_title)}</strong></p>
+            <p>{format_inline(lesson.mental_model)}</p>
+            <p>对应到机制：{html.escape(visual_caption)}</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          {render_bullets(concept_items)}
+          <div class="llm-explain-grid">
+            {render_llm_explain_cards(lesson)}
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          {render_bullets(lesson.takeaways)}
         </section>
 
         <section class="lesson-section" id="observe">
@@ -2414,23 +2604,6 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
             <pre class="demo-command"><code>{html.escape(lesson.demo_command)}</code></pre>
           </div>
           {render_bullets(lesson.demo_expected, "lesson-list")}
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          {render_bullets(relation_items)}
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          {render_bullets(lesson.pitfalls)}
         </section>
 
         <section class="lesson-section" id="extend">
@@ -3026,6 +3199,11 @@ def main() -> None:
         title, caption, steps = LLM_VISUALS[lesson.slug]
         (ASSETS_DIR / llm_visual_filename(lesson)).write_text(
             build_llm_visual_svg(title, caption, steps),
+            encoding="utf-8",
+        )
+        analogy_title, analogy_caption, analogy_steps = LLM_ANALOGIES[lesson.slug]
+        (ASSETS_DIR / llm_analogy_filename(lesson)).write_text(
+            build_llm_analogy_svg(analogy_title, analogy_caption, analogy_steps),
             encoding="utf-8",
         )
     (DOCS_DIR / ".nojekyll").write_text("", encoding="utf-8")

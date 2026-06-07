@@ -170,7 +170,9 @@ button:focus-visible {
 .format-card,
 .agenda-item,
 .lesson-section,
-.code-card {
+.code-card,
+.explain-card,
+.llm-analogy-note {
   background: var(--panel);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -704,6 +706,69 @@ button:focus-visible {
   border-color: rgba(32, 82, 76, 0.16);
 }
 
+.llm-figure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.llm-figure-grid .lesson-figure {
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.llm-analogy-figure {
+  background: rgba(255, 244, 228, 0.9);
+}
+
+.llm-analogy-figure img {
+  border-color: rgba(178, 76, 42, 0.16);
+}
+
+.llm-analogy-note {
+  padding: 22px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(178, 76, 42, 0.12), transparent 26%),
+    rgba(255, 252, 246, 0.9);
+}
+
+.llm-analogy-note p {
+  margin: 0;
+}
+
+.llm-analogy-note p + p {
+  margin-top: 10px;
+}
+
+.llm-analogy-note strong {
+  color: var(--accent);
+  font-size: 1.12rem;
+}
+
+.llm-explain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.explain-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 248, 236, 0.76);
+}
+
+.explain-card h3,
+.explain-card p {
+  margin: 0;
+}
+
+.explain-card h3 {
+  margin: 6px 0 8px;
+  font-size: 1.12rem;
+}
+
 .lesson-section + .lesson-section {
   margin-top: 18px;
 }
@@ -996,8 +1061,15 @@ code.inline {
   .agenda-item,
   .lesson-section,
   .sidebar-card,
-  .code-card {
+  .code-card,
+  .explain-card,
+  .llm-analogy-note {
     padding: 20px;
+  }
+
+  .llm-figure-grid,
+  .llm-explain-grid {
+    grid-template-columns: 1fr;
   }
 
   .hero-copy h1,

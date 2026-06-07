@@ -217,7 +217,7 @@
         <div class="section-head">
           <p class="eyebrow">Lesson Pack</p>
           <h2>10 页 LLM 讲义</h2>
-          <p>每页围绕文章主旨展开：先把结论讲清楚，再用图示串起概念，最后保留一个可选小实验辅助观察。</p>
+          <p>每页围绕文章主旨展开：一张机制图、一张比喻图，再用三段解释把文章讲顺；实验只保留一条辅助观察。</p>
         </div>
         <div class="lesson-grid">
 
@@ -228,7 +228,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Next Token Prediction</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。</p>
               <div class="lesson-tag-row"><span class="tag">Next Token</span><span class="tag">Probability</span><span class="tag">Temperature</span></div>
@@ -242,7 +242,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Tokenization + BPE</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
               <div class="lesson-tag-row"><span class="tag">Token</span><span class="tag">BPE</span><span class="tag">Tokenizer</span></div>
@@ -256,7 +256,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Embedding Vector</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。</p>
               <div class="lesson-tag-row"><span class="tag">Embedding</span><span class="tag">Vector</span><span class="tag">Similarity</span></div>
@@ -270,7 +270,7 @@
               <div class="lesson-meta">
                 <span>7 分钟</span>
                 <span>Query + Key + Value</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。</p>
               <div class="lesson-tag-row"><span class="tag">Attention</span><span class="tag">QKV</span><span class="tag">Causal Mask</span></div>
@@ -284,7 +284,7 @@
               <div class="lesson-meta">
                 <span>7 分钟</span>
                 <span>Attention + FFN + Residual</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：一层 Transformer 像一次小组讨论：Attention 先看上下文，FFN 再做局部加工，残差连接负责保留原始信息。</p>
               <div class="lesson-tag-row"><span class="tag">Transformer</span><span class="tag">FFN</span><span class="tag">Residual</span></div>
@@ -298,7 +298,7 @@
               <div class="lesson-meta">
                 <span>7 分钟</span>
                 <span>Loss + Gradient Descent</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。</p>
               <div class="lesson-tag-row"><span class="tag">Training</span><span class="tag">Loss</span><span class="tag">Gradient</span></div>
@@ -312,7 +312,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Prefill + Decode + KV Cache</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：推理像餐厅出餐：Prefill 是先读完整菜单和备注，Decode 是一道一道上菜，KV Cache 是把已读过的信息放在手边，不用每次重读。</p>
               <div class="lesson-tag-row"><span class="tag">Inference</span><span class="tag">KV Cache</span><span class="tag">Decode</span></div>
@@ -326,7 +326,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Context Window</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
               <div class="lesson-tag-row"><span class="tag">Context</span><span class="tag">Position</span><span class="tag">KV Cache</span></div>
@@ -340,7 +340,7 @@
               <div class="lesson-meta">
                 <span>6 分钟</span>
                 <span>Scale + Loss</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。</p>
               <div class="lesson-tag-row"><span class="tag">Scaling Law</span><span class="tag">Model Size</span><span class="tag">Loss</span></div>
@@ -354,7 +354,7 @@
               <div class="lesson-meta">
                 <span>7 分钟</span>
                 <span>LLM + Tools + Loop</span>
-                <span>文章讲解</span>
+                <span>双图讲解</span>
               </div>
               <p class="lesson-kicker">讲法：LLM 像大脑，工具像手，循环像“看结果再决定下一步”的工作节奏。三者合在一起，才是最小 Agent。</p>
               <div class="lesson-tag-row"><span class="tag">Agent</span><span class="tag">Tools</span><span class="tag">Loop</span></div>

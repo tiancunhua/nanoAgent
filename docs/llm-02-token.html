@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">6 分钟</span>
             <span class="chip">Tokenization + BPE</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Token</span><span class="tag">BPE</span><span class="tag">Tokenizer</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-02-token.svg" alt="文字进入模型前先变成 token">
       <figcaption>Tokenizer 把自然语言、代码和符号切成 token ID；后续模型只处理这些数字。</figcaption>
     </figure>
 
-          <p class="scenario-text">Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-02-token-analogy.svg" alt="像把句子切成积木块">
+      <figcaption>模型不能直接搬运整句话，只能先把文字拆成它认识的积木块，再给每块编号。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像把句子切成积木块</strong></p>
+            <p>Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
+            <p>对应到机制：Tokenizer 把自然语言、代码和符号切成 token ID；后续模型只处理这些数字。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>Token 是模型真正处理的基本单位。</li><li>BPE 的核心是不断合并高频相邻片段。</li><li>Token 数影响上下文长度、费用和推理开销。</li><li>模型不是看字符，而是看 token ID。</li><li>分词器决定模型第一眼看到的世界长什么样。</li><li>Token 是后续 Embedding、Attention、上下文窗口和计费的共同入口。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先看入口</h3>
+              <p>模型真正接收的不是文字，而是一串 token ID；这一步决定后面所有计算的输入形状。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再看切法</h3>
+              <p>常见片段可能是一整块，不常见片段会拆得更碎，所以字符数和 token 数并不等价。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后看成本</h3>
+              <p>Token 数会直接影响上下文窗口、推理成本和计费，也是理解长文本的入口。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>Token 是模型真正处理的基本单位。</li><li>BPE 的核心是不断合并高频相邻片段。</li><li>Token 数影响上下文长度、费用和推理开销。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/02-token/tokenizer_demo.py &quot;Kubernetes 你好 world&quot;</code></pre>
           </div>
           <ul class="lesson-list"><li><code class="inline">tokenizer_demo.py</code> 会展示文本被切成哪些 token，以及对应的 token ID。</li><li>中文、英文和符号可能被切成不同粒度的片段。</li><li>Token 数会影响上下文长度、费用和后续计算量。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「下一个词预测」提供了前置概念，这一页把它推进到「Token」。</li><li>下一页「Embedding」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Tokenization + BPE。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>Token 不等于中文汉字，也不等于英文单词。</li><li>字符数少不代表 token 少，尤其是代码、符号和 URL。</li><li>不同模型的分词器不同，token 数也会不同。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">

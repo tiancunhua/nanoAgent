@@ -49,7 +49,7 @@
           <div class="chip-row">
             <span class="chip">7 分钟</span>
             <span class="chip">Query + Key + Value</span>
-            <span class="chip">文章讲解</span>
+            <span class="chip">双图讲解</span>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">图解主线</a><a class="toc-link" href="#explain">概念展开</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#map">前后关系</a><a class="toc-link" href="#pitfalls">易混点</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -141,7 +141,7 @@
           <div class="tag-row"><span class="tag">Attention</span><span class="tag">QKV</span><span class="tag">Causal Mask</span></div>
           <div class="hero-actions">
             <a class="primary-btn" href="#thesis">读文章主旨</a>
-            <a class="secondary-btn" href="#visual">看图解主线</a>
+            <a class="secondary-btn" href="#visual">先看两张图</a>
           </div>
         </section>
 
@@ -157,24 +157,66 @@
         <section class="lesson-section" id="visual">
           <div class="lesson-section-head">
             <p class="eyebrow">Visual</p>
-            <h2>图解主线</h2>
+            <h2>两张图看懂</h2>
+            <p>第一张图讲机制怎么流动，第二张图把抽象概念落到生活直觉。</p>
           </div>
+          <div class="llm-figure-grid">
 
     <figure class="lesson-figure llm-flow-figure">
       <img src="assets/llm-04-attention.svg" alt="Attention 给上下文分配权重">
       <figcaption>当前 token 通过 Q 去匹配前文的 K，再按权重取走 V 中的信息。</figcaption>
     </figure>
 
-          <p class="scenario-text">Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。</p>
+
+    <figure class="lesson-figure llm-analogy-figure">
+      <img src="assets/llm-04-attention-analogy.svg" alt="像读文章时划重点">
+      <figcaption>当前词带着问题回看前文，相关位置权重大，不相关位置权重小。</figcaption>
+    </figure>
+
+          </div>
+        </section>
+
+        <section class="lesson-section" id="analogy">
+          <div class="lesson-section-head">
+            <p class="eyebrow">Analogy</p>
+            <h2>核心比喻</h2>
+          </div>
+          <div class="llm-analogy-note">
+            <p><strong>像读文章时划重点</strong></p>
+            <p>Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。</p>
+            <p>对应到机制：当前 token 通过 Q 去匹配前文的 K，再按权重取走 V 中的信息。</p>
+          </div>
         </section>
 
         <section class="lesson-section" id="explain">
           <div class="lesson-section-head">
             <p class="eyebrow">Explain</p>
-            <h2>概念展开</h2>
-            <p>这一页先把文章里的关键判断讲顺，再用一个小观察帮助落地。</p>
+            <h2>概念拆解</h2>
+            <p>按下面三步讲，会比直接抛术语更顺：先建立直觉，再解释机制，最后落到本页结论。</p>
           </div>
-          <ul class="lesson-list"><li>Attention 负责在上下文里分配注意力权重。</li><li>因果语言模型只能看当前位置及之前的 token。</li><li>多头注意力让模型能同时从多个角度理解一句话。</li><li>Q、K、V 可以理解为：我在找什么、每个词提供什么索引、真正取走什么信息。</li><li>Attention 不是人类意义上的专注，而是一组可计算的权重。</li><li>因果掩码保证模型不能偷看未来答案。</li></ul>
+          <div class="llm-explain-grid">
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 01</p>
+              <h3>先问问题</h3>
+              <p>当前 token 会形成 Query，可以理解为“我现在需要找什么线索”。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 02</p>
+              <h3>再匹配线索</h3>
+              <p>前文 token 提供 Key 和 Value；Key 用来匹配，Value 是真正被取走的信息。</p>
+            </article>
+
+            <article class="explain-card">
+              <p class="lesson-index">Step 03</p>
+              <h3>最后加权汇总</h3>
+              <p>Attention 权重不是平均分配，而是让相关位置贡献更多上下文信息。</p>
+            </article>
+
+          </div>
+          <h3 class="summary-subtitle">本页要带走的三句话</h3>
+          <ul class="lesson-list"><li>Attention 负责在上下文里分配注意力权重。</li><li>因果语言模型只能看当前位置及之前的 token。</li><li>多头注意力让模型能同时从多个角度理解一句话。</li></ul>
         </section>
 
         <section class="lesson-section" id="observe">
@@ -188,23 +230,6 @@
             <pre class="demo-command"><code>python3 llm/04-attention/attention.py &quot;The capital of France is&quot; --layer 0</code></pre>
           </div>
           <ul class="lesson-list"><li>Attention 矩阵会显示每个 token 对前面 token 的关注权重。</li><li>右上角未来位置不可见，这是因果掩码的效果。</li><li>最后一个 token 的注意力变化，可以直观看到模型如何汇总前文。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="map">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Map</p>
-            <h2>前后关系</h2>
-            <p>这一页不是孤立知识点，它在整条大模型主线里承担一个具体位置。</p>
-          </div>
-          <ul class="lesson-list"><li>上一页「Embedding」提供了前置概念，这一页把它推进到「Attention」。</li><li>下一页「Transformer」会沿着这条线继续展开，避免把单个概念孤立记忆。</li><li>本页只抓一个关键词：Query + Key + Value。现场讲解时先讲文章结论，再用图示解释为什么。</li></ul>
-        </section>
-
-        <section class="lesson-section" id="pitfalls">
-          <div class="lesson-section-head">
-            <p class="eyebrow">Boundary</p>
-            <h2>易混点</h2>
-          </div>
-          <ul class="lesson-list"><li>Attention 权重不是完整解释，只是一个重要观察窗口。</li><li>某个 head 看起来奇怪很正常，多头合起来才构成整体效果。</li><li>上下文越长，Attention 的计算成本越高。</li></ul>
         </section>
 
         <section class="lesson-section" id="extend">
