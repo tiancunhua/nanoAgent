@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-06-training-analogy.svg" alt="像调音台反复拧旋钮">
-      <figcaption>Loss 告诉你声音偏了多少，梯度告诉每个旋钮往哪边拧，优化器负责真的拧一下。</figcaption>
+      <img src="assets/llm-06-training-analogy.svg" alt="70 亿个旋钮的收音机">
+      <figcaption>训练就是不断试：先听偏差，再靠梯度知道方向，最后按学习率调一点参数。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像调音台反复拧旋钮</strong></p>
-            <p>训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。</p>
+            <p><strong>70 亿个旋钮的收音机</strong></p>
+            <p>文章把训练比成调一台有 70 亿个旋钮的收音机：Loss 告诉你离目标有多远，梯度告诉每个旋钮往哪边转，学习率决定每步走多远。</p>
             <p>对应到机制：模型先预测，再和正确答案比较；梯度告诉参数往哪边调，优化器完成更新。</p>
           </div>
         </section>

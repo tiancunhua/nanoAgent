@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-10-agent-analogy.svg" alt="像大脑接上手和工作循环">
-      <figcaption>LLM 负责想下一步，工具负责真的动手，循环负责看结果后继续调整。</figcaption>
+      <img src="assets/llm-10-agent-analogy.svg" alt="大脑指挥四肢">
+      <figcaption>大模型负责想，外部代码负责做；工具结果回填后，循环继续让模型预测下一步。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像大脑接上手和工作循环</strong></p>
-            <p>LLM 像大脑，工具像手，循环像“看结果再决定下一步”的工作节奏。三者合在一起，才是最小 Agent。</p>
+            <p><strong>大脑指挥四肢</strong></p>
+            <p>文章把大模型系列说成“大脑怎么工作”，把 Agent 系列说成“大脑怎么指挥四肢”：LLM 负责想，外部代码负责做，循环把两者串起来。</p>
             <p>对应到机制：模型输出工具调用意图，外部代码执行动作，再把结果回填给模型进入下一轮。</p>
           </div>
         </section>

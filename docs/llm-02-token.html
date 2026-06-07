@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-02-token-analogy.svg" alt="像把句子切成积木块">
-      <figcaption>模型不能直接搬运整句话，只能先把文字拆成它认识的积木块，再给每块编号。</figcaption>
+      <img src="assets/llm-02-token-analogy.svg" alt="人类语言和模型之间的翻译层">
+      <figcaption>人类写字，模型读 token；Tokenizer 先把文字翻译成 token ID。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像把句子切成积木块</strong></p>
-            <p>Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。</p>
+            <p><strong>人类语言和模型之间的翻译层</strong></p>
+            <p>文章把 Token 说成“人类语言和模型之间的翻译层”：人类写字，模型读 token；分词器先把文本翻译成模型能处理的 token ID。</p>
             <p>对应到机制：Tokenizer 把自然语言、代码和符号切成 token ID；后续模型只处理这些数字。</p>
           </div>
         </section>

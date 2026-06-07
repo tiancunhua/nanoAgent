@@ -592,7 +592,7 @@ LLM_LESSONS = [
         core="Next Token Prediction",
         tags=["Next Token", "Probability", "Temperature"],
         scenario="当你输入“Thank you very”时，模型不会去数据库里查标准答案，而是在词表里给所有可能的下一个 token 排概率，然后选出一个继续往后写。",
-        mental_model="把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。",
+        mental_model="文章把它和手机输入法放在一起理解：输入法根据前文推荐下一个候选词，大模型也是预测下一个 token，只是参考信息更多、模型更大、循环次数更多。",
         demo_command='python3 llm/01-next-token/predict.py "Thank you very"',
         demo_goal="用概率表观察模型如何预测下一个 token。",
         demo_expected=[
@@ -649,7 +649,7 @@ LLM_LESSONS = [
         core="Tokenization + BPE",
         tags=["Token", "BPE", "Tokenizer"],
         scenario="同一句话，在人眼里是自然语言；在模型眼里，是一串数字 ID。为什么中文、代码、URL 更容易吃掉上下文？答案往往从分词开始。",
-        mental_model="Token 像模型的拼图块：常见片段可以是一整块，不常见片段会被拆成更多小块。",
+        mental_model="文章把 Token 说成“人类语言和模型之间的翻译层”：人类写字，模型读 token；分词器先把文本翻译成模型能处理的 token ID。",
         demo_command='python3 llm/02-token/tokenizer_demo.py "Kubernetes 你好 world"',
         demo_goal="用一条混合文本观察：文字进入模型前会先变成 token ID。",
         demo_expected=[
@@ -706,7 +706,7 @@ LLM_LESSONS = [
         core="Embedding Vector",
         tags=["Embedding", "Vector", "Similarity"],
         scenario="模型看到 `Paris` 不是看到一个城市名字，而是看到一串向量。向量之间的距离和方向，承载了“相似”“相关”“语义靠近”等信息。",
-        mental_model="Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。",
+        mental_model="文章用了“特征身份证、拼图、找邻居”三个比喻：Token ID 只是编号，Embedding 把它放进有距离、有邻居的高维空间。",
         demo_command='python3 llm/03-embedding/embedding.py "France" "Paris" "Germany" "Berlin" "cat" "dog"',
         demo_goal="用一组词的相似度观察 Embedding 如何表达关系。",
         demo_expected=[
@@ -763,7 +763,7 @@ LLM_LESSONS = [
         core="Query + Key + Value",
         tags=["Attention", "QKV", "Causal Mask"],
         scenario="一句话里每个词的重要性不同。模型生成最后一个词时，不能平均看前面所有词，而要知道当前最该关注谁。",
-        mental_model="Attention 像读文章时划重点：当前词带着一个问题去前文找线索，相关的地方权重大，不相关的地方权重小。",
+        mental_model="文章把 Attention 比成在图书馆找书：先扫每本书的标签并打分，再把主要精力放到最相关的内容上。",
         demo_command='python3 llm/04-attention/attention.py "The capital of France is" --layer 0',
         demo_goal="把抽象的 Attention 变成可观察的矩阵和热力图。",
         demo_expected=[
@@ -820,7 +820,7 @@ LLM_LESSONS = [
         core="Attention + FFN + Residual",
         tags=["Transformer", "FFN", "Residual"],
         scenario="前面几讲分别看了 token、向量和注意力。现在需要把这些积木放到一张图里，看清一层 Transformer 长什么样，很多层又是如何叠起来的。",
-        mental_model="一层 Transformer 像一次小组讨论：Attention 先看上下文，FFN 再做局部加工，残差连接负责保留原始信息。",
+        mental_model="文章把 Transformer 比成一份报告经过 12 个部门审阅：每层先开会交流，再回工位写总结，同时保留原件、统一格式。",
         demo_command='python3 llm/05-transformer/transformer_anatomy.py "The capital of France is"',
         demo_goal="拆开 GPT-2，看参数分布、数据形状和逐层变化。",
         demo_expected=[
@@ -878,7 +878,7 @@ LLM_LESSONS = [
         core="Loss + Gradient Descent",
         tags=["Training", "Loss", "Gradient"],
         scenario="刚初始化的模型像一台乱猜的机器。训练的目标不是给它写规则，而是让它在大量样本上反复试错，把参数调到更容易猜对的位置。",
-        mental_model="训练像调音台：Loss 告诉你声音偏了多少，梯度告诉你每个旋钮往哪边拧，优化器负责真的拧一下。",
+        mental_model="文章把训练比成调一台有 70 亿个旋钮的收音机：Loss 告诉你离目标有多远，梯度告诉每个旋钮往哪边转，学习率决定每步走多远。",
         demo_command='python3 llm/06-training/train_tiny.py',
         demo_goal="用一个微型模型现场看到 Loss 下降，以及模型从乱猜到能续写训练句子。",
         demo_expected=[
@@ -936,7 +936,7 @@ LLM_LESSONS = [
         core="Prefill + Decode + KV Cache",
         tags=["Inference", "KV Cache", "Decode"],
         scenario="你按下回车后，服务端不是瞬间吐出整段话，而是先处理完整输入，再一个 token 一个 token 地生成输出。",
-        mental_model="推理像餐厅出餐：Prefill 是先读完整菜单和备注，Decode 是一道一道上菜，KV Cache 是把已读过的信息放在手边，不用每次重读。",
+        mental_model="文章抓住了“第一个字慢，后面一个个蹦出来”的体验：Prefill 先一口气处理全部输入，Decode 再逐 token 输出，KV Cache 把历史 K/V 存起来。",
         demo_command='python3 llm/07-inference/inference.py',
         demo_goal="对比有无 KV Cache 时，每一步处理 token 数和耗时的差异。",
         demo_expected=[
@@ -994,7 +994,7 @@ LLM_LESSONS = [
         core="Context Window",
         tags=["Context", "Position", "KV Cache"],
         scenario="为什么模型不能无限记住所有对话？因为每次推理都要把上下文作为输入处理，长度越大，计算和显存压力越明显。",
-        mental_model="上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。",
+        mental_model="文章把上下文窗口叫一次性工作台：窗口内的资料模型能看到，窗口外等于不存在；台子越大，Attention 和 KV Cache 的成本也越高。",
         demo_command='python3 llm/08-context-window/context_window.py',
         demo_goal="从位置编码、超长输入和 KV Cache 三个角度观察上下文窗口的边界。",
         demo_expected=[
@@ -1052,7 +1052,7 @@ LLM_LESSONS = [
         core="Scale + Loss",
         tags=["Scaling Law", "Model Size", "Loss"],
         scenario="为什么行业不断把模型做大、数据做多、算力堆高？不是因为迷信规模，而是经验上规模扩大后 Loss 会按规律下降。",
-        mental_model="Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。",
+        mental_model="文章最关键的比喻是“从赌博变成工程”：先训练小模型、测 Loss、在 log-log 图上画线，再外推大模型的表现。",
         demo_command='python3 llm/09-scaling-law/scaling_law.py --steps 50',
         demo_goal="用几个不同大小的微型模型，观察参数量增加时 Loss 的整体趋势。",
         demo_expected=[
@@ -1110,7 +1110,7 @@ LLM_LESSONS = [
         core="LLM + Tools + Loop",
         tags=["Agent", "Tools", "Loop"],
         scenario="模型可以写出“我会创建文件”，但不会真的创建文件。要让它动手，需要把工具说明发给模型，并由外部代码执行工具调用。",
-        mental_model="LLM 像大脑，工具像手，循环像“看结果再决定下一步”的工作节奏。三者合在一起，才是最小 Agent。",
+        mental_model="文章把大模型系列说成“大脑怎么工作”，把 Agent 系列说成“大脑怎么指挥四肢”：LLM 负责想，外部代码负责做，循环把两者串起来。",
         demo_command='python3 llm/10-agent/tiny_agent.py "查看当前目录下有哪些文件"',
         demo_goal="把前九讲的模型机制接到 Agent：模型负责决策，代码负责执行，结果再回到上下文。",
         demo_expected=[
@@ -1218,54 +1218,54 @@ LLM_VISUALS = {
 
 LLM_ANALOGIES = {
     "next-token": (
-        "像输入法一样续写",
-        "输入法不会一次写完整段落，而是根据前文推荐下一个候选；大模型也是连续做这个动作。",
-        ["前文", "候选词", "选一个", "接着猜"],
+        "手机输入法推到极致",
+        "输入“今天天气”时，输入法推荐下一个词；大模型也是预测下一个 token，只是规模大很多。",
+        ["输入前文", "候选打分", "选 Token", "循环续写"],
     ),
     "token": (
-        "像把句子切成积木块",
-        "模型不能直接搬运整句话，只能先把文字拆成它认识的积木块，再给每块编号。",
-        ["一句话", "切积木", "编号", "送入模型"],
+        "人类语言和模型之间的翻译层",
+        "人类写字，模型读 token；Tokenizer 先把文字翻译成 token ID。",
+        ["人类文字", "Tokenizer", "Token ID", "模型读取"],
     ),
     "embedding": (
-        "像给词发坐标身份证",
-        "Token ID 只是号码，Embedding 才是坐标；坐标近的词，模型更容易认为它们相关。",
-        ["号码", "查表", "坐标", "比较距离"],
+        "把词嵌入有距离的空间",
+        "文章用特征身份证、拼图和找邻居解释 Embedding：编号变坐标后，语义相近的词自然靠近。",
+        ["编号标签", "特征坐标", "找到邻居", "语义接近"],
     ),
     "attention": (
-        "像读文章时划重点",
-        "当前词带着问题回看前文，相关位置权重大，不相关位置权重小。",
-        ["当前问题", "回看前文", "划重点", "取信息"],
+        "图书馆里按标签找书",
+        "先扫书架标签并打分，再把精力放到最相关的书上；Attention 也是先打分再取信息。",
+        ["提出查询", "扫标签", "相关打分", "读高分内容"],
     ),
     "transformer": (
-        "像一栋逐层加工的大楼",
-        "每一层先看上下文，再加工表示；很多层叠起来，简单 token 才逐渐变成复杂理解。",
-        ["进一层", "看上下文", "再加工", "去下一层"],
+        "12 个部门审一份报告",
+        "每层都先开会交流，再回工位写总结，还要保留原件、统一格式。",
+        ["开会交流", "独立总结", "保留原件", "统一格式"],
     ),
     "training": (
-        "像调音台反复拧旋钮",
-        "Loss 告诉你声音偏了多少，梯度告诉每个旋钮往哪边拧，优化器负责真的拧一下。",
-        ["听偏差", "找方向", "拧旋钮", "再听一次"],
+        "70 亿个旋钮的收音机",
+        "训练就是不断试：先听偏差，再靠梯度知道方向，最后按学习率调一点参数。",
+        ["瞎猜", "算 Loss", "看梯度", "调参数"],
     ),
     "inference": (
-        "像餐厅先读菜单再一道道上菜",
-        "Prefill 先读完整输入，Decode 再一个 token 一个 token 输出；KV Cache 把已读信息放在手边。",
-        ["读菜单", "备好信息", "一道道上", "不用重读"],
+        "第一个字慢，后面一个个蹦出来",
+        "Prefill 一次处理全部输入；Decode 逐 token 输出；KV Cache 存历史 K/V，避免重复计算。",
+        ["Prefill", "缓存 K/V", "Decode", "追加缓存"],
     ),
     "context-window": (
-        "像一次工作的桌面",
-        "桌面能放材料，但不是无限大；材料越多，找线索和维护现场的成本越高。",
-        ["放材料", "整理位置", "开始处理", "空间有限"],
+        "一次性工作台，不是长期记忆",
+        "窗口内的资料模型能看到，窗口外等于不存在；台子越大，成本越高。",
+        ["摆资料", "窗口上限", "注意力计算", "缓存占用"],
     ),
     "scaling-law": (
-        "像工程里的压测曲线",
-        "投入更多参数、数据和算力，Loss 往往按趋势下降；它不是神话，而是工程曲线。",
-        ["加资源", "跑实验", "看曲线", "算成本"],
+        "从赌博变成工程",
+        "Scaling Law 让人可以用小模型实验，在 log-log 图上外推大模型表现。",
+        ["训小模型", "测 Loss", "画直线", "外推大模型"],
     ),
     "agent": (
-        "像大脑接上手和工作循环",
-        "LLM 负责想下一步，工具负责真的动手，循环负责看结果后继续调整。",
-        ["想一步", "动一次手", "看结果", "再决定"],
+        "大脑指挥四肢",
+        "大模型负责想，外部代码负责做；工具结果回填后，循环继续让模型预测下一步。",
+        ["LLM 想", "代码做", "结果回填", "继续预测"],
     ),
 }
 
@@ -1966,7 +1966,7 @@ def build_llm_analogy_svg(title: str, caption: str, steps: List[str]) -> str:
   <rect width="{width}" height="{height}" rx="34" fill="url(#paper)" />
   <circle cx="1020" cy="50" r="150" fill="rgba(178,76,42,0.12)" />
   <circle cx="100" cy="375" r="190" fill="rgba(31,36,48,0.08)" />
-  <text x="70" y="78" fill="#b24c2a" font-size="19" font-weight="800" letter-spacing="4">ANALOGY</text>
+  <text x="70" y="78" fill="#b24c2a" font-size="19" font-weight="800" letter-spacing="4">ARTICLE ANALOGY</text>
   <text x="70" y="122" fill="#1f2430" font-size="38" font-weight="800">{html.escape(title)}</text>
   <text x="70" y="350" fill="rgba(31,36,48,0.72)" font-size="22">{html.escape(caption)}</text>
   {"".join(arrows)}
@@ -2458,7 +2458,7 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
     toc_links = [
         ("thesis", "文章主旨"),
         ("visual", "两张图看懂"),
-        ("analogy", "核心比喻"),
+        ("analogy", "原文比喻"),
         ("explain", "概念拆解"),
         ("observe", "可选小实验"),
         ("extend", "继续阅读"),
@@ -2571,7 +2571,7 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
             <p><strong>{html.escape(analogy_title)}</strong></p>

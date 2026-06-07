@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-07-inference-analogy.svg" alt="像餐厅先读菜单再一道道上菜">
-      <figcaption>Prefill 先读完整输入，Decode 再一个 token 一个 token 输出；KV Cache 把已读信息放在手边。</figcaption>
+      <img src="assets/llm-07-inference-analogy.svg" alt="第一个字慢，后面一个个蹦出来">
+      <figcaption>Prefill 一次处理全部输入；Decode 逐 token 输出；KV Cache 存历史 K/V，避免重复计算。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像餐厅先读菜单再一道道上菜</strong></p>
-            <p>推理像餐厅出餐：Prefill 是先读完整菜单和备注，Decode 是一道一道上菜，KV Cache 是把已读过的信息放在手边，不用每次重读。</p>
+            <p><strong>第一个字慢，后面一个个蹦出来</strong></p>
+            <p>文章抓住了“第一个字慢，后面一个个蹦出来”的体验：Prefill 先一口气处理全部输入，Decode 再逐 token 输出，KV Cache 把历史 K/V 存起来。</p>
             <p>对应到机制：Prefill 处理完整输入；Decode 每次生成一个新 token，KV Cache 避免重复计算历史。</p>
           </div>
         </section>

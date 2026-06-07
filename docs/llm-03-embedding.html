@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-03-embedding-analogy.svg" alt="像给词发坐标身份证">
-      <figcaption>Token ID 只是号码，Embedding 才是坐标；坐标近的词，模型更容易认为它们相关。</figcaption>
+      <img src="assets/llm-03-embedding-analogy.svg" alt="把词嵌入有距离的空间">
+      <figcaption>文章用特征身份证、拼图和找邻居解释 Embedding：编号变坐标后，语义相近的词自然靠近。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像给词发坐标身份证</strong></p>
-            <p>Embedding 像给每个 token 发一张数学身份证：不是写着姓名，而是写着一串特征坐标。</p>
+            <p><strong>把词嵌入有距离的空间</strong></p>
+            <p>文章用了“特征身份证、拼图、找邻居”三个比喻：Token ID 只是编号，Embedding 把它放进有距离、有邻居的高维空间。</p>
             <p>对应到机制：Embedding 表把离散 ID 映射成连续向量，模型后续才能计算距离、关系和上下文。</p>
           </div>
         </section>

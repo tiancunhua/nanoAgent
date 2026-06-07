@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-01-next-token-analogy.svg" alt="像输入法一样续写">
-      <figcaption>输入法不会一次写完整段落，而是根据前文推荐下一个候选；大模型也是连续做这个动作。</figcaption>
+      <img src="assets/llm-01-next-token-analogy.svg" alt="手机输入法推到极致">
+      <figcaption>输入“今天天气”时，输入法推荐下一个词；大模型也是预测下一个 token，只是规模大很多。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像输入法一样续写</strong></p>
-            <p>把大模型想成一个特别强的输入法：它每次只猜下一个 token，但猜得足够准、连续猜很多次，就像是在回答问题。</p>
+            <p><strong>手机输入法推到极致</strong></p>
+            <p>文章把它和手机输入法放在一起理解：输入法根据前文推荐下一个候选词，大模型也是预测下一个 token，只是参考信息更多、模型更大、循环次数更多。</p>
             <p>对应到机制：大模型一次只预测下一个 token；把新 token 拼回上下文后，再进入下一轮预测。</p>
           </div>
         </section>

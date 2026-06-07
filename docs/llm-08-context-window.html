@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-08-context-window-analogy.svg" alt="像一次工作的桌面">
-      <figcaption>桌面能放材料，但不是无限大；材料越多，找线索和维护现场的成本越高。</figcaption>
+      <img src="assets/llm-08-context-window-analogy.svg" alt="一次性工作台，不是长期记忆">
+      <figcaption>窗口内的资料模型能看到，窗口外等于不存在；台子越大，成本越高。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像一次工作的桌面</strong></p>
-            <p>上下文窗口像工作台：东西可以放很多，但工作台越大，找东西、移动东西、维护现场的成本也越高。</p>
+            <p><strong>一次性工作台，不是长期记忆</strong></p>
+            <p>文章把上下文窗口叫一次性工作台：窗口内的资料模型能看到，窗口外等于不存在；台子越大，Attention 和 KV Cache 的成本也越高。</p>
             <p>对应到机制：窗口越长，模型能看到的信息越多，但 Attention 和 KV Cache 成本也会增长。</p>
           </div>
         </section>

@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-09-scaling-law-analogy.svg" alt="像工程里的压测曲线">
-      <figcaption>投入更多参数、数据和算力，Loss 往往按趋势下降；它不是神话，而是工程曲线。</figcaption>
+      <img src="assets/llm-09-scaling-law-analogy.svg" alt="从赌博变成工程">
+      <figcaption>Scaling Law 让人可以用小模型实验，在 log-log 图上外推大模型表现。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像工程里的压测曲线</strong></p>
-            <p>Scaling Law 像工程里的压测曲线：不是保证每次都线性变好，但能告诉你继续投入规模时，大概率会往哪个方向走。</p>
+            <p><strong>从赌博变成工程</strong></p>
+            <p>文章最关键的比喻是“从赌博变成工程”：先训练小模型、测 Loss、在 log-log 图上画线，再外推大模型的表现。</p>
             <p>对应到机制：Scaling Law 关注的是趋势：投入更多参数、数据和计算后，Loss 通常按规律下降。</p>
           </div>
         </section>

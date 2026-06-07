@@ -121,7 +121,7 @@
         <div class="sidebar-card">
           <h2>页面目录</h2>
           <nav class="toc">
-            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">核心比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
+            <a class="toc-link" href="#thesis">文章主旨</a><a class="toc-link" href="#visual">两张图看懂</a><a class="toc-link" href="#analogy">原文比喻</a><a class="toc-link" href="#explain">概念拆解</a><a class="toc-link" href="#observe">可选小实验</a><a class="toc-link" href="#extend">继续阅读</a>
           </nav>
         </div>
       </aside>
@@ -169,8 +169,8 @@
 
 
     <figure class="lesson-figure llm-analogy-figure">
-      <img src="assets/llm-05-transformer-analogy.svg" alt="像一栋逐层加工的大楼">
-      <figcaption>每一层先看上下文，再加工表示；很多层叠起来，简单 token 才逐渐变成复杂理解。</figcaption>
+      <img src="assets/llm-05-transformer-analogy.svg" alt="12 个部门审一份报告">
+      <figcaption>每层都先开会交流，再回工位写总结，还要保留原件、统一格式。</figcaption>
     </figure>
 
           </div>
@@ -179,11 +179,11 @@
         <section class="lesson-section" id="analogy">
           <div class="lesson-section-head">
             <p class="eyebrow">Analogy</p>
-            <h2>核心比喻</h2>
+            <h2>原文比喻</h2>
           </div>
           <div class="llm-analogy-note">
-            <p><strong>像一栋逐层加工的大楼</strong></p>
-            <p>一层 Transformer 像一次小组讨论：Attention 先看上下文，FFN 再做局部加工，残差连接负责保留原始信息。</p>
+            <p><strong>12 个部门审一份报告</strong></p>
+            <p>文章把 Transformer 比成一份报告经过 12 个部门审阅：每层先开会交流，再回工位写总结，同时保留原件、统一格式。</p>
             <p>对应到机制：Attention 先整合上下文，FFN 再加工表示，残差与 LayerNorm 让多层堆叠稳定。</p>
           </div>
         </section>
