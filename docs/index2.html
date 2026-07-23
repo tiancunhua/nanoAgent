@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>认识 Agent｜新员工技术分享</title>
+  <meta name="description" content="一场轻松开放的新员工技术分享：快速认识 LLM，重点理解 Agent 的工作循环与 Skill 的作用。">
+  <meta name="theme-color" content="#f6f5ee">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style2.css">
+  <script defer src="assets/site2.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+
+  <header class="share-header">
+    <a class="share-brand" href="#top" aria-label="返回页面顶部">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span>AGENT 101</span>
+    </a>
+    <nav class="share-nav" aria-label="页面导航">
+      <a href="#warmup">先认识 LLM</a>
+      <a href="#agent">Agent 第一讲</a>
+      <a href="#skill">Skill 篇</a>
+      <a href="#takeaway">带走三句话</a>
+    </nav>
+    <a class="github-link" href="https://github.com/GitHubxsy/nanoAgent">查看源码 ↗</a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-sticker sticker-one" aria-hidden="true">TOOL</div>
+      <div class="hero-sticker sticker-two" aria-hidden="true">LOOP</div>
+      <div class="hero-copy">
+        <p class="kicker">NEW HIRE TECH SHARE · 轻松入门</p>
+        <h1>认识 <span>Agent</span></h1>
+        <p class="hero-subtitle">理解 AI 如何为了一个目标工作</p>
+        <p class="hero-intro">今天不背名词。我们只拆一个问题：<strong>一个只会生成文字的模型，怎样开始读文件、跑命令、完成真实任务？</strong></p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#warmup">开始这场分享 <span>↓</span></a>
+          <button class="button button-ghost" type="button" data-random-question>抽一个开场问题</button>
+        </div>
+        <p class="random-question" aria-live="polite">“你上一次让 AI 帮你完成的真实任务是什么？”</p>
+      </div>
+
+      <div class="hero-board" aria-label="课程路线">
+        <div class="board-top">
+          <span>今天的路线</span>
+          <span class="live-pill">45 MIN</span>
+        </div>
+        <ol class="route-list">
+          <li>
+            <span class="route-time">05′</span>
+            <div><small>快速经过</small><strong>LLM 是什么</strong></div>
+          </li>
+          <li class="is-focus">
+            <span class="route-time">20′</span>
+            <div><small>重点一</small><strong>Agent 如何工作</strong></div>
+          </li>
+          <li class="is-focus">
+            <span class="route-time">15′</span>
+            <div><small>重点二</small><strong>Skill 如何教会它工作</strong></div>
+          </li>
+          <li>
+            <span class="route-time">05′</span>
+            <div><small>一起聊聊</small><strong>你会让它做什么</strong></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section warmup-section" id="warmup">
+      <div class="section-heading compact-heading">
+        <p class="section-no">00 / WARM UP</p>
+        <h2>LLM，一笔带过</h2>
+        <p>只保留理解 Agent 必需的那一点。</p>
+      </div>
+
+      <div class="llm-one-liner">
+        <div class="llm-word">
+          <span>LLM</span>
+          <small>Large Language Model</small>
+        </div>
+        <div class="equals" aria-hidden="true">≈</div>
+        <div class="sentence-machine">
+          <p>“今天天气很好，我们去——”</p>
+          <div class="token-options" aria-label="下一个词的候选">
+            <span style="--chance: 88%">散步 <b>88%</b></span>
+            <span style="--chance: 8%">开会 <b>8%</b></span>
+            <span style="--chance: 4%">月球 <b>4%</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="one-line-takeaway">
+        <span>一句话够了</span>
+        <p><strong>LLM 很会预测接下来该说什么，</strong>但“会说”不等于“会把事情做完”。</p>
+      </div>
+    </section>
+
+    <section class="section agent-section" id="agent">
+      <div class="section-heading">
+        <p class="section-no">01 / AGENT FIRST LESSON</p>
+        <h2>从“会回答”到“会做事”</h2>
+        <p>Agent 没有神秘魔法。它只是给 LLM 接上工具，再让它反复观察结果、决定下一步。</p>
+      </div>
+
+      <div class="compare-grid">
+        <article class="compare-card chat-card">
+          <p class="card-label">CHAT · 一问一答</p>
+          <div class="chat-bubble user-bubble">帮我统计项目里有多少个 Python 文件。</div>
+          <div class="chat-bubble ai-bubble">你可以使用 <code>find</code> 命令进行统计……</div>
+          <p class="card-bottom">它给了建议，工作还在你手里。</p>
+        </article>
+
+        <article class="compare-card agent-card">
+          <p class="card-label">AGENT · 目标驱动</p>
+          <div class="chat-bubble user-bubble">帮我统计项目里有多少个 Python 文件。</div>
+          <div class="agent-mini-log">
+            <span><i></i>扫描目录</span>
+            <span><i></i>运行命令</span>
+            <span><i></i>核对结果</span>
+          </div>
+          <div class="chat-bubble ai-bubble">统计完成：共 24 个，结果已写入报告。</div>
+          <p class="card-bottom">你给目标，它负责走完过程。</p>
+        </article>
+      </div>
+
+      <div class="formula" aria-label="Agent 等于大语言模型加工具加循环">
+        <div><span>🧠</span><strong>LLM</strong><small>决定下一步</small></div>
+        <b>+</b>
+        <div><span>🧰</span><strong>Tools</strong><small>作用于真实世界</small></div>
+        <b>+</b>
+        <div><span>🔁</span><strong>Loop</strong><small>直到目标完成</small></div>
+        <b>=</b>
+        <div class="formula-result"><span>✦</span><strong>Agent</strong><small>目标驱动的执行者</small></div>
+      </div>
+
+      <div class="loop-lab">
+        <div class="lab-copy">
+          <p class="card-label">INTERACTIVE · 点一下看看</p>
+          <h3>Agent 工作循环</h3>
+          <p>任务：找到项目中的 TODO，整理成一份清单。</p>
+          <button class="button button-dark" type="button" data-run-loop>运行 Agent <span>▶</span></button>
+          <button class="text-button" type="button" data-reset-loop>重置</button>
+        </div>
+
+        <div class="loop-stage" aria-live="polite">
+          <div class="loop-step is-ready" data-loop-step="0">
+            <span>01</span>
+            <div><strong>思考</strong><small>先搜索项目里的 TODO</small></div>
+          </div>
+          <div class="loop-arrow" aria-hidden="true">→</div>
+          <div class="loop-step" data-loop-step="1">
+            <span>02</span>
+            <div><strong>行动</strong><small>调用文件搜索工具</small></div>
+          </div>
+          <div class="loop-arrow" aria-hidden="true">→</div>
+          <div class="loop-step" data-loop-step="2">
+            <span>03</span>
+            <div><strong>观察</strong><small>读到 6 条搜索结果</small></div>
+          </div>
+          <div class="loop-arrow loop-arrow-back" aria-hidden="true">↩</div>
+          <div class="loop-step" data-loop-step="3">
+            <span>04</span>
+            <div><strong>完成</strong><small>生成 todo-report.md</small></div>
+          </div>
+        </div>
+
+        <div class="terminal" aria-label="Agent 运行日志">
+          <div class="terminal-bar"><i></i><i></i><i></i><span>nano-agent / live</span></div>
+          <pre data-loop-log><span class="terminal-muted">$ 等待运行…</span></pre>
+        </div>
+      </div>
+
+      <aside class="open-note">
+        <span class="note-icon">!</span>
+        <div>
+          <strong>真正执行动作的不是 LLM。</strong>
+          <p>LLM 只输出“我想调用哪个工具、参数是什么”；程序负责执行。理解这个分工，也就理解了权限、安全和可控性的起点。</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section skill-section" id="skill">
+      <div class="section-heading">
+        <p class="section-no">02 / SKILL</p>
+        <h2>Skill：给聪明新员工一份工作手册</h2>
+        <p>模型有通用能力，但不知道你公司的流程、标准和坑。Skill 把人的经验变成 Agent 可以反复使用的操作说明。</p>
+      </div>
+
+      <div class="skill-story">
+        <article>
+          <span class="story-status status-before">没有 Skill</span>
+          <p class="story-ask">“帮我发布这次版本。”</p>
+          <blockquote>“当然。你可以先运行测试，然后提交代码……”</blockquote>
+          <p class="story-result">礼貌地告诉你怎么做。</p>
+        </article>
+        <div class="story-arrow" aria-hidden="true">→</div>
+        <article class="story-after">
+          <span class="story-status status-after">装上发布 Skill</span>
+          <p class="story-ask">“帮我发布这次版本。”</p>
+          <ul>
+            <li>检查测试与变更范围</li>
+            <li>扫描敏感信息</li>
+            <li>生成发布说明并等待确认</li>
+          </ul>
+          <p class="story-result">按照团队 SOP 把事做稳。</p>
+        </article>
+      </div>
+
+      <div class="skill-anatomy">
+        <div class="anatomy-copy">
+          <p class="card-label">SKILL.MD · 四块就够</p>
+          <h3>一份好 Skill 写清楚什么？</h3>
+          <div class="anatomy-tabs" role="tablist" aria-label="Skill 结构">
+            <button class="is-active" type="button" role="tab" aria-selected="true" data-skill-tab="trigger">1. 何时使用</button>
+            <button type="button" role="tab" aria-selected="false" data-skill-tab="steps">2. 怎么做</button>
+            <button type="button" role="tab" aria-selected="false" data-skill-tab="guardrail">3. 注意什么</button>
+            <button type="button" role="tab" aria-selected="false" data-skill-tab="output">4. 交付什么</button>
+          </div>
+          <div class="tab-note" data-skill-note>
+            <strong>触发器要具体。</strong>
+            <p>写出任务类型和用户常用说法，让 Agent 知道什么时候应该加载这份手册。</p>
+          </div>
+        </div>
+
+        <div class="skill-file" aria-label="SKILL.md 示例">
+          <div class="file-bar"><span>SKILL.md</span><span>● ● ●</span></div>
+          <pre><code><span class="code-muted">---</span>
+<span class="code-key">name:</span> release-check
+<mark data-code-part="trigger"><span class="code-key">description:</span> 发布前检查。
+  Use when 用户说“发布、上线、推送”。</mark>
+<span class="code-muted">---</span>
+
+<span class="code-key"># Workflow</span>
+<mark data-code-part="steps">1. 运行测试
+2. 检查变更范围
+3. 生成发布摘要</mark>
+
+<span class="code-key"># Guardrails</span>
+<mark data-code-part="guardrail">- 发现密钥立即停止
+- 推送前必须获得确认</mark>
+
+<span class="code-key"># Output</span>
+<mark data-code-part="output">返回：检查结果、风险、下一步</mark></code></pre>
+        </div>
+      </div>
+
+      <div class="skill-not">
+        <h3>Skill 不是……</h3>
+        <div>
+          <p><s>更聪明的模型</s><strong>是经验的封装</strong></p>
+          <p><s>一大段万能 Prompt</s><strong>是按需加载的流程</strong></p>
+          <p><s>代替所有工具</s><strong>是教 Agent 怎么用工具</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section workshop-section" id="workshop">
+      <div class="workshop-card">
+        <div>
+          <p class="section-no">OPEN DISCUSSION</p>
+          <h2>把你熟悉的一件事，教给 Agent</h2>
+          <p>想一个你每周都会重复的任务。不要先想“AI 能不能做”，先写下你会怎样教一个聪明的新同事。</p>
+        </div>
+        <ol>
+          <li><span>01</span><p><strong>什么时候触发？</strong>用户会怎么提出这个任务？</p></li>
+          <li><span>02</span><p><strong>标准步骤是什么？</strong>先做什么，再做什么？</p></li>
+          <li><span>03</span><p><strong>哪里最容易出错？</strong>什么时候必须停下来问人？</p></li>
+          <li><span>04</span><p><strong>完成长什么样？</strong>文件、消息还是一份报告？</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section takeaway-section" id="takeaway">
+      <div class="section-heading">
+        <p class="section-no">TAKEAWAY</p>
+        <h2>今天只带走三句话</h2>
+      </div>
+      <div class="takeaway-list">
+        <article><span>01</span><p><strong>LLM 会生成，</strong>但它本身不会操作真实世界。</p></article>
+        <article><span>02</span><p><strong>Agent = LLM + 工具 + 循环，</strong>把回答变成行动。</p></article>
+        <article><span>03</span><p><strong>Skill 把人的经验写成工作手册，</strong>让行动稳定、可复用。</p></article>
+      </div>
+      <div class="closing">
+        <p>别把 Agent 想成一个无所不知的人。</p>
+        <h2>把它当作一个聪明、肯干、<br>但需要明确工具与方法的新同事。</h2>
+        <a class="button button-primary" href="#top">回到开场 ↑</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>nanoAgent · New Hire Share</span>
+    <p>保持好奇，先从一个小任务开始。</p>
+    <span>2026</span>
+  </footer>
+</body>
+</html>
