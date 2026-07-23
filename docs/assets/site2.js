@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const randomButton = document.querySelector("[data-random-question]");
   const randomOutput = document.querySelector(".random-question");
   const questions = [
-    "“你上一次让 AI 帮你完成的真实任务是什么？”",
+    "“你们安装过哪些 Agent？OpenClaw、Claude Code，还是 Codex？”",
     "“如果 AI 能替你完成一件重复工作，你会选什么？”",
     "“AI 给出建议，和 AI 完成任务，区别在哪里？”",
     "“你会放心让 Agent 直接发布代码吗？为什么？”",
