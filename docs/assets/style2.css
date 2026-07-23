@@ -505,9 +505,18 @@ footer {
   background: var(--lime);
 }
 
-.token-options span > * ,
 .token-options span {
   isolation: isolate;
+}
+
+.token-options span > * {
+  position: relative;
+  z-index: 1;
+}
+
+.token-options em {
+  font-style: normal;
+  font-weight: 750;
 }
 
 .token-options b {
