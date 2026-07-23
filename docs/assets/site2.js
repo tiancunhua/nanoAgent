@@ -22,43 +22,84 @@ document.addEventListener("DOMContentLoaded", () => {
   const loopSteps = [...document.querySelectorAll("[data-loop-step]")];
   const loopLog = document.querySelector("[data-loop-log]");
   const loopDecision = document.querySelector("[data-loop-decision]");
+  const loopDetails = [...document.querySelectorAll("[data-loop-detail]")];
+  const loopRound = document.querySelector("[data-loop-round]");
   const logLines = [
     '<span class="terminal-blue">[think]</span> 我需要先找到所有 TODO 标记。',
     '<span class="terminal-coral">[tool]</span> search_files({ query: "TODO" })',
     '<span class="terminal-lime">[result]</span> 找到 6 条结果，分布在 4 个文件。',
-    '<span class="terminal-blue">[think]</span> 信息足够。按文件和优先级整理。',
+    '<span class="terminal-blue">[loop]</span> 还没完成。带着搜索结果重新思考。',
+    '<span class="terminal-blue">[think]</span> 信息足够。现在按文件和优先级整理。',
     '<span class="terminal-coral">[tool]</span> write_file({ path: "todo-report.md" })',
     '<span class="terminal-lime">[done]</span> 清单已生成：todo-report.md',
   ];
+  const loopFrames = [
+    { step: 0, logCount: 1, round: "first", details: ["先搜索项目里的 TODO", "调用文件搜索工具", "等待读取结果"] },
+    { step: 1, logCount: 2, round: "first" },
+    { step: 2, logCount: 3, round: "first" },
+    { step: null, decision: "return", logCount: 4, round: "return" },
+    { step: 0, revisit: true, logCount: 5, round: "second", details: ["根据搜索结果制定整理方案", "写入清单文件", "检查写入结果"] },
+    { step: 1, logCount: 6, round: "second" },
+    { step: 2, logCount: 6, round: "second" },
+    { step: null, decision: "complete", logCount: 7, round: "second" },
+    { step: 3, decision: "complete", logCount: 7, round: "done" },
+  ];
   let loopTimer = null;
-  let loopIndex = -1;
+  let loopFrameIndex = -1;
 
   function resetLoop() {
     window.clearInterval(loopTimer);
     loopTimer = null;
-    loopIndex = -1;
+    loopFrameIndex = -1;
     runButton.disabled = false;
     runButton.innerHTML = "运行 Agent <span>▶</span>";
     loopSteps.forEach((step, index) => {
-      step.classList.remove("is-active", "is-done");
+      step.classList.remove("is-active", "is-done", "is-revisited");
       step.classList.toggle("is-ready", index === 0);
     });
-    loopDecision?.classList.remove("is-active");
+    loopDecision?.classList.remove("is-active", "is-returning", "is-complete");
+    if (loopRound) {
+      loopRound.className = "loop-round";
+      loopRound.innerHTML = "<span>第 1 轮</span> 从目标出发";
+    }
+    const initialDetails = ["先搜索项目里的 TODO", "调用文件搜索工具", "读到 6 条搜索结果"];
+    loopDetails.forEach((detail, index) => {
+      detail.textContent = initialDetails[index];
+    });
     loopLog.innerHTML = '<span class="terminal-muted">$ 等待运行…</span>';
   }
 
   function renderLoopFrame() {
+    const frame = loopFrames[loopFrameIndex];
     loopSteps.forEach((step, index) => {
-      step.classList.toggle("is-active", index === loopIndex);
-      step.classList.toggle("is-done", index < loopIndex || loopIndex === loopSteps.length);
+      step.classList.toggle("is-active", index === frame.step);
+      step.classList.toggle("is-revisited", Boolean(index === frame.step && frame.revisit));
+      step.classList.toggle("is-done", frame.step === 3 && index < 3);
       step.classList.remove("is-ready");
     });
-    loopDecision?.classList.toggle("is-active", loopIndex >= 2);
+    loopDecision?.classList.toggle("is-active", Boolean(frame.decision));
+    loopDecision?.classList.toggle("is-returning", frame.decision === "return");
+    loopDecision?.classList.toggle("is-complete", frame.decision === "complete");
+    if (loopRound) {
+      const roundCopy = {
+        first: "<span>第 1 轮</span> 先寻找信息",
+        return: "<span>未完成</span> ↺ 回到思考",
+        second: "<span>第 2 轮</span> 带着结果继续",
+        done: "<span>完成</span> 输出最终结果",
+      };
+      loopRound.innerHTML = roundCopy[frame.round];
+      loopRound.classList.toggle("is-returning", frame.round === "return");
+      loopRound.classList.toggle("is-second", frame.round === "second");
+    }
 
-    const visibleLineCount = Math.min((loopIndex + 1) * 2, logLines.length);
-    loopLog.innerHTML = logLines.slice(0, visibleLineCount).join("\n");
+    if (frame.details) {
+      loopDetails.forEach((detail, index) => {
+        detail.textContent = frame.details[index];
+      });
+    }
+    loopLog.innerHTML = logLines.slice(0, frame.logCount).join("\n");
 
-    if (loopIndex >= loopSteps.length) {
+    if (loopFrameIndex >= loopFrames.length - 1) {
       window.clearInterval(loopTimer);
       loopTimer = null;
       runButton.disabled = false;
@@ -70,12 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resetLoop();
     runButton.disabled = true;
     runButton.textContent = "Agent 运行中…";
-    loopIndex = 0;
+    loopFrameIndex = 0;
     renderLoopFrame();
     loopTimer = window.setInterval(() => {
-      loopIndex += 1;
+      loopFrameIndex += 1;
       renderLoopFrame();
-    }, 900);
+    }, 1000);
   });
 
   resetButton?.addEventListener("click", resetLoop);

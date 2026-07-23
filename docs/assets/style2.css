@@ -715,6 +715,37 @@ footer {
   gap: 14px;
 }
 
+.loop-round {
+  width: fit-content;
+  margin: 0 0 -2px;
+  padding: 6px 11px;
+  color: #536058;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition: color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.loop-round span {
+  color: var(--blue);
+}
+
+.loop-round.is-returning {
+  color: white;
+  background: var(--blue);
+  transform: translateX(8px);
+}
+
+.loop-round.is-returning span {
+  color: var(--lime);
+}
+
+.loop-round.is-second {
+  color: var(--ink);
+  background: var(--yellow);
+}
+
 .loop-track {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
@@ -745,6 +776,16 @@ footer {
   background: var(--yellow);
   border-color: var(--ink);
   transform: scale(1.03) rotate(-1deg);
+}
+
+.loop-step.is-revisited {
+  animation: loop-revisit 520ms ease;
+}
+
+@keyframes loop-revisit {
+  0% { transform: scale(0.94); }
+  45% { transform: scale(1.08) rotate(-2deg); box-shadow: 0 0 0 8px rgba(49, 92, 255, 0.16); }
+  100% { transform: scale(1.03) rotate(-1deg); box-shadow: none; }
 }
 
 .loop-step.is-done {
@@ -807,6 +848,16 @@ footer {
   transform: translateY(2px);
 }
 
+.loop-decision.is-returning::before {
+  border-color: var(--blue);
+  animation: return-path 720ms ease-in-out infinite alternate;
+}
+
+@keyframes return-path {
+  from { opacity: 0.35; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(3px); }
+}
+
 .decision-question,
 .decision-return,
 .decision-done {
@@ -832,6 +883,20 @@ footer {
 
 .decision-done {
   justify-self: start;
+}
+
+.loop-decision.is-returning .decision-return,
+.loop-decision.is-complete .decision-done {
+  color: white;
+  background: var(--blue);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--ink);
+  transform: translateY(-2px);
+}
+
+.loop-decision.is-returning .decision-done,
+.loop-decision.is-complete .decision-return {
+  opacity: 0.35;
 }
 
 .loop-finish {
@@ -1366,6 +1431,11 @@ footer p {
 
   .loop-decision::before {
     display: none;
+  }
+
+  .loop-decision.is-returning .decision-return,
+  .loop-decision.is-complete .decision-done {
+    transform: none;
   }
 
   .decision-question,
