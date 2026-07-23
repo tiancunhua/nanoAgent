@@ -72,7 +72,7 @@
     <section class="section warmup-section" id="warmup">
       <div class="section-heading compact-heading">
         <p class="section-no">00 / WARM UP</p>
-        <h2>先用 5 分钟认识 LLM</h2>
+        <h2>认识 LLM</h2>
         <p>只保留理解 Agent 必需的那一点。</p>
       </div>
 
@@ -190,9 +190,9 @@
         </div>
 
         <aside class="teaching-note">
-          <strong>现场讲解建议：</strong>
-          先问大家“哪一行让它变成了 Agent？”答案不是某一行，而是 <code>tools</code>、真实函数和 <code>for</code> 循环共同组成的闭环。
-          <span>这是一份教学用最小实现，生产环境还需要权限、超时、路径隔离和人工确认。</span>
+          <strong>读代码时只看一条主线：</strong>
+          LLM 根据目标选择工具，Python 执行工具，结果写回 <code>messages</code>，LLM 再根据新信息决定下一步。
+          <span>这四步不断重复，直到模型不再发起工具调用。教学代码刻意保持最小，真实系统还会加入权限、超时、路径隔离和人工确认。</span>
         </aside>
       </div>
 
