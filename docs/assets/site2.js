@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetButton = document.querySelector("[data-reset-loop]");
   const loopSteps = [...document.querySelectorAll("[data-loop-step]")];
   const loopLog = document.querySelector("[data-loop-log]");
+  const loopDecision = document.querySelector("[data-loop-decision]");
   const logLines = [
     '<span class="terminal-blue">[think]</span> 我需要先找到所有 TODO 标记。',
     '<span class="terminal-coral">[tool]</span> search_files({ query: "TODO" })',
@@ -42,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       step.classList.remove("is-active", "is-done");
       step.classList.toggle("is-ready", index === 0);
     });
+    loopDecision?.classList.remove("is-active");
     loopLog.innerHTML = '<span class="terminal-muted">$ 等待运行…</span>';
   }
 
@@ -51,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       step.classList.toggle("is-done", index < loopIndex || loopIndex === loopSteps.length);
       step.classList.remove("is-ready");
     });
+    loopDecision?.classList.toggle("is-active", loopIndex >= 2);
 
     const visibleLineCount = Math.min((loopIndex + 1) * 2, logLines.length);
     loopLog.innerHTML = logLines.slice(0, visibleLineCount).join("\n");

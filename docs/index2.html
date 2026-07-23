@@ -146,22 +146,30 @@
         </div>
 
         <div class="loop-stage" aria-live="polite">
-          <div class="loop-step is-ready" data-loop-step="0">
-            <span>01</span>
-            <div><strong>思考</strong><small>先搜索项目里的 TODO</small></div>
+          <div class="loop-track">
+            <div class="loop-step is-ready" data-loop-step="0">
+              <span>01</span>
+              <div><strong>思考</strong><small>先搜索项目里的 TODO</small></div>
+            </div>
+            <div class="loop-arrow" aria-hidden="true">→</div>
+            <div class="loop-step" data-loop-step="1">
+              <span>02</span>
+              <div><strong>行动</strong><small>调用文件搜索工具</small></div>
+            </div>
+            <div class="loop-arrow" aria-hidden="true">→</div>
+            <div class="loop-step" data-loop-step="2">
+              <span>03</span>
+              <div><strong>观察</strong><small>读到 6 条搜索结果</small></div>
+            </div>
           </div>
-          <div class="loop-arrow" aria-hidden="true">→</div>
-          <div class="loop-step" data-loop-step="1">
-            <span>02</span>
-            <div><strong>行动</strong><small>调用文件搜索工具</small></div>
+
+          <div class="loop-decision" data-loop-decision>
+            <span class="decision-question">目标完成了吗？</span>
+            <span class="decision-return"><b>还没有</b> ↺ 带着结果回到“思考”</span>
+            <span class="decision-done"><b>完成了</b> ↓ 输出结果</span>
           </div>
-          <div class="loop-arrow" aria-hidden="true">→</div>
-          <div class="loop-step" data-loop-step="2">
-            <span>03</span>
-            <div><strong>观察</strong><small>读到 6 条搜索结果</small></div>
-          </div>
-          <div class="loop-arrow loop-arrow-back" aria-hidden="true">↩</div>
-          <div class="loop-step" data-loop-step="3">
+
+          <div class="loop-step loop-finish" data-loop-step="3">
             <span>04</span>
             <div><strong>完成</strong><small>生成 todo-report.md</small></div>
           </div>
