@@ -17,6 +17,79 @@ document.addEventListener("DOMContentLoaded", () => {
     randomOutput.textContent = questions[questionIndex];
   });
 
+  const codeRangeButtons = [...document.querySelectorAll("[data-code-range]")];
+  const agentSource = document.querySelector("[data-agent-source]");
+  const agentCodeScroll = document.querySelector("[data-agent-code-scroll]");
+  const codeCaption = document.querySelector("[data-code-caption]");
+  const codeExplanations = {
+    "13-53": {
+      title: "01 · 工具说明书",
+      body: "这里不是在执行工具，而是在告诉 LLM：“你可以做什么，调用时要给什么参数。”",
+    },
+    "56-69": {
+      title: "02 · 工具的真实动作",
+      body: "LLM 只提出调用意图。真正运行命令、读取和写入文件的是这些普通 Python 函数。",
+    },
+    "72-72": {
+      title: "03 · 调用分发",
+      body: "这张路由表把模型给出的工具名映射到真实函数，是“想做”与“真的做”之间的桥。",
+    },
+    "75-99": {
+      title: "04 · 核心循环",
+      body: "模型决策 → 执行工具 → 把结果追加回 messages → 再让模型决策，直到不再调用工具。",
+    },
+  };
+
+  function activateCodeRange(range, shouldScroll = true) {
+    const [start, end] = range.split("-").map(Number);
+    codeRangeButtons.forEach((button) => {
+      const active = button.dataset.codeRange === range;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    const codeLines = [...document.querySelectorAll("[data-agent-line]")];
+    codeLines.forEach((line) => {
+      const lineNumber = Number(line.dataset.agentLine);
+      line.classList.toggle("is-highlight", lineNumber >= start && lineNumber <= end);
+    });
+    const explanation = codeExplanations[range];
+    codeCaption.innerHTML = `<strong>${explanation.title}</strong><p>${explanation.body}</p>`;
+    if (shouldScroll) {
+      const firstLine = document.querySelector(`[data-agent-line="${start}"]`);
+      agentCodeScroll?.scrollTo({ top: Math.max(0, firstLine.offsetTop - 70), behavior: "smooth" });
+    }
+  }
+
+  codeRangeButtons.forEach((button) => {
+    button.addEventListener("click", () => activateCodeRange(button.dataset.codeRange));
+  });
+
+  if (agentSource) {
+    fetch("assets/agent-essence.py")
+      .then((response) => {
+        if (!response.ok) throw new Error("Source unavailable");
+        return response.text();
+      })
+      .then((source) => {
+        agentSource.textContent = "";
+        source.replace(/\s+$/, "").split("\n").forEach((text, index) => {
+          const line = document.createElement("span");
+          line.className = "agent-code-line";
+          line.dataset.agentLine = String(index + 1);
+          const lineNumber = document.createElement("span");
+          lineNumber.className = "agent-line-no";
+          lineNumber.textContent = String(index + 1);
+          line.appendChild(lineNumber);
+          line.appendChild(document.createTextNode(text || " "));
+          agentSource.appendChild(line);
+        });
+        activateCodeRange("13-53", false);
+      })
+      .catch(() => {
+        agentSource.textContent = "源码加载失败，请点击右上角“下载完整代码”查看。";
+      });
+  }
+
   const runButton = document.querySelector("[data-run-loop]");
   const resetButton = document.querySelector("[data-reset-loop]");
   const loopSteps = [...document.querySelectorAll("[data-loop-step]")];

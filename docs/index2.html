@@ -136,6 +136,66 @@
         <div class="formula-result"><span>✦</span><strong>Agent</strong><small>目标驱动的执行者</small></div>
       </div>
 
+      <div class="code-walkthrough">
+        <div class="code-walkthrough-head">
+          <div>
+            <p class="card-label">CODE TOGETHER · 一起读源码</p>
+            <h3>105 行 Python，Agent 就在这里</h3>
+            <p>先别急着逐行读。从四个路标出发，你会发现核心真正决定行为的代码并不多。</p>
+          </div>
+          <div class="code-metrics" aria-label="代码规模">
+            <span><strong>105</strong> 行代码</span>
+            <span><strong>3</strong> 个工具</span>
+            <span><strong>1</strong> 个循环</span>
+          </div>
+        </div>
+
+        <div class="code-reader">
+          <div class="code-guide" role="tablist" aria-label="Agent 源码讲解步骤">
+            <button class="is-active" type="button" role="tab" aria-selected="true" data-code-range="13-53">
+              <span>01</span>
+              <strong>先给模型工具说明书</strong>
+              <small>第 13–53 行 · 工具名称、用途和参数</small>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-code-range="56-69">
+              <span>02</span>
+              <strong>再写工具的真实动作</strong>
+              <small>第 56–69 行 · 命令、读取与写入</small>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-code-range="72-72">
+              <span>03</span>
+              <strong>用名字找到对应函数</strong>
+              <small>第 72 行 · 意图与执行的路由表</small>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-code-range="75-99">
+              <span>04</span>
+              <strong>让结果回到循环</strong>
+              <small>第 75–99 行 · Agent 的核心闭环</small>
+            </button>
+          </div>
+
+          <div class="code-window">
+            <div class="code-window-bar">
+              <span><i></i><i></i><i></i> agent-essence.py</span>
+              <a href="assets/agent-essence.py" download>下载完整代码 ↓</a>
+            </div>
+            <div class="agent-code-scroll" data-agent-code-scroll>
+              <pre><code data-agent-source>正在加载完整源码…</code></pre>
+            </div>
+            <div class="code-caption" data-code-caption>
+              <strong>01 · 工具说明书</strong>
+              <p>这里不是在执行工具，而是在告诉 LLM：“你可以做什么，调用时要给什么参数。”</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="teaching-note">
+          <strong>现场讲解建议：</strong>
+          先问大家“哪一行让它变成了 Agent？”答案不是某一行，而是 <code>tools</code>、真实函数和 <code>for</code> 循环共同组成的闭环。
+          <span>这是一份教学用最小实现，生产环境还需要权限、超时、路径隔离和人工确认。</span>
+        </aside>
+      </div>
+
       <div class="loop-lab">
         <div class="lab-copy">
           <p class="card-label">INTERACTIVE · 点一下看看</p>
