@@ -114,6 +114,21 @@ class Resource:
     path: Path
 
 
+@dataclass
+class VideoEpisode:
+    number: str
+    title: str
+    short_title: str
+    duration: str
+    duration_iso: str
+    size_label: str
+    source_url: str
+    video_url: str
+    lesson_href: str
+    summary: str
+    focus_points: List[str]
+
+
 def detect_source_branch() -> str:
     try:
         result = subprocess.run(
@@ -1324,6 +1339,61 @@ LLM_EXPLAINERS = {
 }
 
 
+LLM_VIDEO_EPISODES = [
+    VideoEpisode(
+        number="01",
+        title='第一期：一切从“猜下一个词”开始',
+        short_title="猜下一个词",
+        duration="约 4 分钟",
+        duration_iso="PT4M",
+        size_label="约 162MB",
+        source_url="https://www.hiascend.com/document/video-detail/5113",
+        video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741230578275305.mp4",
+        lesson_href="llm-01-next-token.html",
+        summary="先把大模型从黑盒降下来：它不是一次写完整答案，而是在每一步预测下一个 token。",
+        focus_points=[
+            "把“会聊天”拆成连续很多次小预测。",
+            "用手机输入法类比 next token prediction。",
+            "为后面的 Token、Embedding、Attention 建立入口。",
+        ],
+    ),
+    VideoEpisode(
+        number="02",
+        title='第二期：Token——大模型眼中的“字”长什么样？',
+        short_title="Token",
+        duration="约 4 分钟",
+        duration_iso="PT4M",
+        size_label="约 239MB",
+        source_url="https://www.hiascend.com/document/video-detail/5114",
+        video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741378634850493.mp4",
+        lesson_href="llm-02-token.html",
+        summary="解释模型真正读到的不是文字，而是一串 token ID；上下文、成本和计费都从这里开始。",
+        focus_points=[
+            "Token 是人类语言和模型之间的翻译层。",
+            "同样的文字，不同切法会带来不同 token 数。",
+            "Token 数直接影响上下文长度和推理成本。",
+        ],
+    ),
+    VideoEpisode(
+        number="03",
+        title='第三期：大模型是怎么“理解”词义的',
+        short_title="Embedding",
+        duration="约 6 分钟",
+        duration_iso="PT6M",
+        size_label="约 403MB",
+        source_url="https://www.hiascend.com/document/video-detail/5115",
+        video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741438741642921.mp4",
+        lesson_href="llm-03-embedding.html",
+        summary="从 Token ID 走到 Embedding：把离散编号放进有距离的向量空间，才能计算相似和关系。",
+        focus_points=[
+            "Token ID 只是编号，Embedding 才是可计算的坐标。",
+            "用特征身份证、拼图和找邻居解释词义空间。",
+            "Embedding 是理解上下文前的第一层数学表示。",
+        ],
+    ),
+]
+
+
 HOME_FORMAT_CARDS = [
     (
         "场景切入",
@@ -1577,6 +1647,58 @@ def llm_home_structured_data() -> List[dict]:
     ]
 
 
+def llm_video_structured_data() -> List[dict]:
+    video_items = []
+    for index, episode in enumerate(LLM_VIDEO_EPISODES, start=1):
+        video_items.append(
+            {
+                "@type": "ListItem",
+                "position": index,
+                "item": {
+                    "@type": "VideoObject",
+                    "name": episode.title,
+                    "description": episode.summary,
+                    "duration": episode.duration_iso,
+                    "contentUrl": episode.video_url,
+                    "url": episode.source_url,
+                    "uploadDate": "2026-08-07",
+                    "inLanguage": "zh-CN",
+                },
+            }
+        )
+    return [
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "从零开始理解大模型系列视频版",
+            "description": "从 next token、Token 到 Embedding，三段短视频把大模型入门主线讲清楚。",
+            "dateModified": BUILD_DATE,
+            "inLanguage": "zh-CN",
+            "author": site_publisher(),
+            "publisher": site_publisher(),
+            "url": page_url("llm-video.html"),
+            "isPartOf": {
+                "@type": "CreativeWorkSeries",
+                "name": "从零开始理解大模型",
+                "url": page_url("llm.html"),
+            },
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "从零开始理解大模型系列视频版",
+            "itemListElement": video_items,
+        },
+        breadcrumb_schema(
+            [
+                ("首页", page_url("index.html")),
+                ("LLM 讲义", page_url("llm.html")),
+                ("视频版", page_url("llm-video.html")),
+            ]
+        ),
+    ]
+
+
 def llm_lesson_structured_data(lesson: LLMLesson) -> List[dict]:
     filename = llm_lesson_filename(lesson)
     return [
@@ -1619,6 +1741,35 @@ def render_bullets(items: List[str], class_name: str = "lesson-list") -> str:
 def render_steps(items: List[str]) -> str:
     body = "".join(f"<li>{format_inline(item)}</li>" for item in items)
     return f'<ol class="lesson-steps">{body}</ol>'
+
+
+def render_video_episode_cards() -> str:
+    cards = []
+    for episode in LLM_VIDEO_EPISODES:
+        cards.append(
+            f"""
+            <article class="video-card" id="video-{episode.number}">
+              <div class="video-frame">
+                <video controls preload="metadata" playsinline>
+                  <source src="{html.escape(episode.video_url)}" type="video/mp4">
+                  当前浏览器不支持直接播放视频，请使用下方 mp4 链接打开。
+                </video>
+              </div>
+              <div class="video-copy">
+                <p class="lesson-index">视频 {episode.number} · {html.escape(episode.duration)} · {html.escape(episode.size_label)}</p>
+                <h3>{html.escape(episode.title)}</h3>
+                <p>{html.escape(episode.summary)}</p>
+                {render_bullets(episode.focus_points)}
+                <div class="deep-links">
+                  <a class="primary-btn" href="{html.escape(episode.source_url)}">原始页面</a>
+                  <a class="secondary-btn" href="{html.escape(episode.video_url)}">打开 / 下载 mp4</a>
+                  <a class="secondary-btn" href="{html.escape(episode.lesson_href)}">对应讲义</a>
+                </div>
+              </div>
+            </article>
+            """
+        )
+    return "".join(cards)
 
 
 def markdown_title(path: Path) -> str:
@@ -1836,6 +1987,7 @@ def build_footer() -> str:
       <p>本讲义保留现场分享需要的主线、演示与延伸线索；收束页、番外与完整原文请见下方入口。</p>
       <div class="footer-links">
         <a href="llm.html">LLM 讲义</a>
+        <a href="llm-video.html">LLM 视频版</a>
         <a href="summary.html">收束与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub 仓库</a>
         <a href="{github_blob_url(ROOT / 'README_CN.md')}">系列导读</a>
@@ -2145,6 +2297,7 @@ def build_home_page() -> str:
         <a href="#format">分享结构</a>
         <a href="#lessons">七讲讲义</a>
         <a href="llm.html">LLM 讲义</a>
+        <a href="llm-video.html">视频版</a>
         <a href="summary.html">总结与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
@@ -2207,6 +2360,7 @@ def build_home_page() -> str:
         </div>
         <div class="hero-actions">
           <a class="primary-btn" href="llm.html">进入 LLM 讲义</a>
+          <a class="secondary-btn" href="llm-video.html">观看视频版</a>
           <a class="secondary-btn" href="summary.html#llm">查看大模型目录</a>
         </div>
       </section>
@@ -2346,6 +2500,7 @@ def build_llm_home_page() -> str:
       </a>
       <nav class="top-nav">
         <a href="index.html">Agent 首页</a>
+        <a href="llm-video.html">视频版</a>
         <a href="#route">课程主线</a>
         <a href="#lessons">10 页讲义</a>
         <a href="#bonus">番外目录</a>
@@ -2362,6 +2517,7 @@ def build_llm_home_page() -> str:
           <p class="mode-note">核心路径：Next Token → Token → Embedding → Attention → Transformer → Training → Inference → Context → Scaling Law → Agent</p>
           <div class="hero-actions">
             <a class="primary-btn" href="{llm_lesson_filename(LLM_LESSONS[0])}">从第 01 页开始</a>
+            <a class="secondary-btn" href="llm-video.html">观看视频版</a>
             <a class="secondary-btn" href="index.html">返回 Agent 讲义</a>
           </div>
           <div class="hero-metrics">
@@ -2451,6 +2607,146 @@ def build_llm_home_page() -> str:
 """
 
 
+def build_llm_video_page() -> str:
+    return f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  {build_head("从零开始理解大模型系列视频版", "三段短视频：从 next token、Token 到 Embedding，把大模型入门主线讲清楚。", "llm-video.html", "article", structured_data=llm_video_structured_data())}
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LLM</span>
+        <span class="brand-text">从零开始理解大模型</span>
+      </a>
+      <nav class="top-nav">
+        <a href="index.html">Agent 首页</a>
+        <a href="llm.html">LLM 讲义</a>
+        <a href="#videos">视频列表</a>
+        <a href="#how-to-use">观看顺序</a>
+        <a href="{REPO_WEB_BASE}">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero-panel home-hero llm-hero video-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Video Release</p>
+          <h1>从零开始理解大模型系列视频版</h1>
+          <p class="hero-lead">文字版适合慢读，视频版适合先建立直觉。前三期先讲最底层的三件事：大模型如何续写、模型眼中的文字是什么、词义如何变成可计算的向量。</p>
+          <p class="mode-note">建议顺序：先看 3 段视频建立直觉，再回到 10 页 LLM 讲义补完整路线。</p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#videos">观看视频</a>
+            <a class="secondary-btn" href="llm.html">回到 LLM 讲义</a>
+          </div>
+          <div class="hero-metrics">
+            <span><strong>3</strong> 期视频</span>
+            <span><strong>14</strong> 分钟左右</span>
+            <span><strong>3</strong> 个入门概念</span>
+          </div>
+        </div>
+        <div class="hero-side hero-map">
+          <div class="hero-map-head">
+            <p class="eyebrow">Video Route</p>
+            <h2>先抓住三个入口</h2>
+          </div>
+          <div class="route-stack">
+            <article class="route-step">
+              <span>01</span>
+              <div><strong>Next Token</strong><p>把“智能回答”拆成连续预测下一个 token。</p></div>
+            </article>
+            <article class="route-step">
+              <span>02</span>
+              <div><strong>Token</strong><p>解释模型真正读到的是 token ID。</p></div>
+            </article>
+            <article class="route-step">
+              <span>03</span>
+              <div><strong>Embedding</strong><p>把 token 放进向量空间，词义才开始可计算。</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block video-intro-block">
+        <div class="section-head">
+          <p class="eyebrow">Why Video</p>
+          <h2>为什么先做前三讲视频版</h2>
+          <p>大模型入门最容易卡在抽象词上。前三讲刚好构成一条最短链路：先知道模型在预测，再知道输入被切成 token，最后知道 token 如何进入向量空间。把这三件事讲顺，后面再讲 Attention、Transformer、训练和推理就不会突兀。</p>
+        </div>
+        <div class="format-grid">
+          <article class="format-card format-card-feature">
+            <span class="format-step">01</span>
+            <h3>从动作开始</h3>
+            <p>先把大模型看成连续预测系统，而不是神秘黑盒。</p>
+          </article>
+          <article class="format-card format-card-feature">
+            <span class="format-step">02</span>
+            <h3>从入口看成本</h3>
+            <p>Token 是理解上下文长度、费用和推理开销的共同入口。</p>
+          </article>
+          <article class="format-card format-card-feature">
+            <span class="format-step">03</span>
+            <h3>从向量讲理解</h3>
+            <p>Embedding 让“词义”变成距离、方向和相似度。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="videos">
+        <div class="section-head">
+          <p class="eyebrow">Episodes</p>
+          <h2>三期视频</h2>
+          <p>视频源来自昇腾社区公开页面。本站直接嵌入源视频；如果需要离线观看，可通过每个视频下方的 mp4 链接打开或保存。</p>
+        </div>
+        <div class="video-list">
+          {render_video_episode_cards()}
+        </div>
+      </section>
+
+      <section class="section-block" id="how-to-use">
+        <div class="section-head">
+          <p class="eyebrow">How To Use</p>
+          <h2>怎么和文字讲义配合</h2>
+          <p>这三段视频不替代完整课程。它们适合在分享前做预热，也适合在讲义第 01-03 页之间穿插播放。</p>
+        </div>
+        <div class="agenda-list">
+          <article class="agenda-item">
+            <p class="agenda-time">先看</p>
+            <div class="agenda-content">
+              <h3>用视频建立直觉</h3>
+              <p>先看完三段视频，只需要记住三个关键词：预测、切分、向量。</p>
+            </div>
+          </article>
+          <article class="agenda-item">
+            <p class="agenda-time">再讲</p>
+            <div class="agenda-content">
+              <h3>用讲义补完整链路</h3>
+              <p>回到 10 页讲义继续看 Attention、Transformer、训练、推理和 Agent。</p>
+            </div>
+          </article>
+          <article class="agenda-item">
+            <p class="agenda-time">最后</p>
+            <div class="agenda-content">
+              <h3>接到 Agent 系列</h3>
+              <p>理解模型怎么生成 token 之后，再看工具、循环和执行边界，会更容易形成完整技术地图。</p>
+            </div>
+          </article>
+        </div>
+        <div class="deep-links video-bottom-actions">
+          <a class="primary-btn" href="llm.html">进入 10 页 LLM 讲义</a>
+          <a class="secondary-btn" href="index.html">进入 Agent 技术分享</a>
+        </div>
+      </section>
+    </main>
+    {build_footer()}
+  </div>
+</body>
+</html>
+"""
+
+
 def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
     prev_lesson = LLM_LESSONS[index - 1] if index > 0 else None
     next_lesson = LLM_LESSONS[index + 1] if index < len(LLM_LESSONS) - 1 else None
@@ -2496,6 +2792,7 @@ def build_llm_lesson_page(index: int, lesson: LLMLesson) -> str:
       </a>
       <nav class="top-nav">
         <a href="llm.html">LLM 目录</a>
+        <a href="llm-video.html">视频版</a>
         <a href="index.html">Agent 讲义</a>
         <a href="summary.html">总结与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
@@ -3024,6 +3321,7 @@ def build_summary_page() -> str:
           </div>
           <div class="deep-links">
             <a class="primary-btn" href="llm.html">进入 LLM 教学讲义</a>
+            <a class="secondary-btn" href="llm-video.html">观看视频版</a>
             <a class="secondary-btn" href="{github_blob_url(REPO_ROOT / 'llm/README.md')}">查看大模型导读</a>
           </div>
           <p class="lesson-index">正篇十讲</p>
@@ -3077,6 +3375,7 @@ def build_not_found_page() -> str:
       <nav class="top-nav">
         <a href="index.html">首页</a>
         <a href="llm.html">LLM 讲义</a>
+        <a href="llm-video.html">LLM 视频版</a>
         <a href="summary.html">总结与延伸</a>
         <a href="{REPO_WEB_BASE}">GitHub</a>
       </nav>
@@ -3091,6 +3390,7 @@ def build_not_found_page() -> str:
           <div class="hero-actions">
             <a class="primary-btn" href="index.html">返回首页</a>
             <a class="secondary-btn" href="llm.html">进入 LLM 讲义</a>
+            <a class="secondary-btn" href="llm-video.html">观看 LLM 视频版</a>
             <a class="secondary-btn" href="summary.html">进入收束页</a>
           </div>
         </div>
@@ -3136,6 +3436,7 @@ def build_sitemap_xml() -> str:
         "index.html",
         "summary.html",
         "llm.html",
+        "llm-video.html",
         *[f"{lesson.slug}.html" for lesson in LESSONS],
         *[llm_lesson_filename(lesson) for lesson in LLM_LESSONS],
     ]
@@ -3184,6 +3485,7 @@ def main() -> None:
     ensure_dirs()
     (DOCS_DIR / "index.html").write_text(tidy_output(build_home_page()), encoding="utf-8")
     (DOCS_DIR / "llm.html").write_text(tidy_output(build_llm_home_page()), encoding="utf-8")
+    (DOCS_DIR / "llm-video.html").write_text(tidy_output(build_llm_video_page()), encoding="utf-8")
     for index, lesson in enumerate(LLM_LESSONS):
         page = tidy_output(build_llm_lesson_page(index, lesson))
         (DOCS_DIR / llm_lesson_filename(lesson)).write_text(page, encoding="utf-8")

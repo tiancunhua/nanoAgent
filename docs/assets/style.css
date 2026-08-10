@@ -172,6 +172,7 @@ button:focus-visible {
 .lesson-section,
 .code-card,
 .explain-card,
+.video-card,
 .llm-analogy-note {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -243,6 +244,13 @@ button:focus-visible {
     rgba(255, 252, 246, 0.92);
 }
 
+.video-intro-block {
+  border-color: rgba(32, 82, 76, 0.18);
+  background:
+    radial-gradient(circle at 90% 12%, rgba(137, 202, 185, 0.16), transparent 22%),
+    rgba(255, 252, 246, 0.94);
+}
+
 .home-hero .hero-copy,
 .home-hero .hero-side {
   position: relative;
@@ -261,7 +269,8 @@ button:focus-visible {
 .lesson-card h3,
 .agenda-content h3,
 .format-card h3,
-.code-card h3 {
+.code-card h3,
+.video-copy h3 {
   margin: 0;
   font-family: Georgia, "Songti SC", serif;
   line-height: 1.15;
@@ -294,6 +303,7 @@ button:focus-visible {
 .agenda-content p,
 .article-hero p,
 .sidebar-card p,
+.video-copy p,
 .lesson-section-head p {
   color: var(--muted);
 }
@@ -555,6 +565,57 @@ button:focus-visible {
 
 .lesson-card {
   position: relative;
+}
+
+.video-list {
+  display: grid;
+  gap: 22px;
+}
+
+.video-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 24px;
+  align-items: stretch;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+}
+
+.video-frame {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(31, 36, 48, 0.14);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(242, 189, 115, 0.18), transparent 28%),
+    #111722;
+}
+
+.video-frame video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  background: #0c1119;
+}
+
+.video-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.video-copy h3 {
+  font-size: clamp(1.45rem, 2.3vw, 2.15rem);
+}
+
+.video-copy .lesson-list {
+  margin: 16px 0;
+}
+
+.video-bottom-actions {
+  margin-top: 20px;
 }
 
 .lesson-kicker {
@@ -1021,6 +1082,7 @@ code.inline {
   .hero-panel,
   .format-grid,
   .lesson-grid,
+  .video-card,
   .article-layout {
     grid-template-columns: 1fr;
   }
@@ -1063,6 +1125,7 @@ code.inline {
   .sidebar-card,
   .code-card,
   .explain-card,
+  .video-card,
   .llm-analogy-note {
     padding: 20px;
   }
@@ -1105,5 +1168,10 @@ code.inline {
 
   .loop-steps {
     grid-template-columns: 1fr;
+  }
+
+  .video-frame {
+    padding: 6px;
+    border-radius: 18px;
   }
 }
