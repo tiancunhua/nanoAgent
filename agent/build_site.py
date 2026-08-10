@@ -126,7 +126,9 @@ class VideoEpisode:
     video_url: str
     lesson_href: str
     summary: str
+    main_content: List[str]
     focus_points: List[str]
+    takeaway: str
 
 
 def detect_source_branch() -> str:
@@ -1351,11 +1353,18 @@ LLM_VIDEO_EPISODES = [
         video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741230578275305.mp4",
         lesson_href="llm-01-next-token.html",
         summary="先把大模型从黑盒降下来：它不是一次写完整答案，而是在每一步预测下一个 token。",
+        main_content=[
+            "先回答“大模型到底在做什么”：不是检索标准答案，而是根据前文预测下一个 token。",
+            "用手机输入法作类比：输入法给候选词，大模型给候选 token，只是参考的上下文和参数规模大得多。",
+            "解释为什么连续预测很多次后，看起来就像模型在写一整段回答。",
+            "引出采样与概率：模型面对的是一组候选概率，不是一个永远固定的唯一答案。",
+        ],
         focus_points=[
             "把“会聊天”拆成连续很多次小预测。",
             "用手机输入法类比 next token prediction。",
             "为后面的 Token、Embedding、Attention 建立入口。",
         ],
+        takeaway="大模型最小的工作单元，是“看已有上下文，猜下一个 token”。理解这一点，后续所有结构都能接上。",
     ),
     VideoEpisode(
         number="02",
@@ -1368,11 +1377,18 @@ LLM_VIDEO_EPISODES = [
         video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741378634850493.mp4",
         lesson_href="llm-02-token.html",
         summary="解释模型真正读到的不是文字，而是一串 token ID；上下文、成本和计费都从这里开始。",
+        main_content=[
+            "先解释 Token 是什么：它不是严格等于汉字、英文单词或字符，而是模型真正读取的最小片段。",
+            "展示文字进入模型前的转换链路：原始文本先被 Tokenizer 切分，再变成 token ID。",
+            "说明为什么同样长度的中文、英文、代码、URL，消耗的 token 数可能差异很大。",
+            "把 Token 和上下文窗口、推理成本、费用联系起来：模型不是按人眼字符数工作，而是按 token 工作。",
+        ],
         focus_points=[
             "Token 是人类语言和模型之间的翻译层。",
             "同样的文字，不同切法会带来不同 token 数。",
             "Token 数直接影响上下文长度和推理成本。",
         ],
+        takeaway="Token 是大模型的输入入口。只要涉及上下文长度、计费或推理成本，第一步都要先看 token 数。",
     ),
     VideoEpisode(
         number="03",
@@ -1385,11 +1401,18 @@ LLM_VIDEO_EPISODES = [
         video_url="https://res-video.hc-cdn.com/cloudbu-site/china/zh-cn/Ascend_video/1785741438741642921.mp4",
         lesson_href="llm-03-embedding.html",
         summary="从 Token ID 走到 Embedding：把离散编号放进有距离的向量空间，才能计算相似和关系。",
+        main_content=[
+            "先区分 Token ID 和词义：ID 只是编号，本身不能表达“巴黎”和“法国”为什么相关。",
+            "解释 Embedding 的作用：把 token ID 查成一串向量，让文字进入可计算的数学空间。",
+            "用“特征身份证、拼图、找邻居”解释向量空间：相近词在空间里更容易靠近。",
+            "说明 Embedding 只是理解的起点，后续还需要 Attention 和 Transformer 继续结合上下文加工。",
+        ],
         focus_points=[
             "Token ID 只是编号，Embedding 才是可计算的坐标。",
             "用特征身份证、拼图和找邻居解释词义空间。",
             "Embedding 是理解上下文前的第一层数学表示。",
         ],
+        takeaway="Embedding 让模型可以计算词与词之间的距离和关系，但它只是第一层表示，不等于完整理解。",
     ),
 ]
 
@@ -1758,8 +1781,18 @@ def render_video_episode_cards() -> str:
               <div class="video-copy">
                 <p class="lesson-index">视频 {episode.number} · {html.escape(episode.duration)} · {html.escape(episode.size_label)}</p>
                 <h3>{html.escape(episode.title)}</h3>
-                <p>{html.escape(episode.summary)}</p>
-                {render_bullets(episode.focus_points)}
+                <p class="video-summary">{html.escape(episode.summary)}</p>
+                <div class="video-main-content">
+                  <p class="lesson-index">本期主要讲</p>
+                  {render_bullets(episode.main_content)}
+                </div>
+                <div class="video-takeaway">
+                  <strong>看完能带走：</strong>{html.escape(episode.takeaway)}
+                </div>
+                <details class="video-details">
+                  <summary>讲解抓手</summary>
+                  {render_bullets(episode.focus_points)}
+                </details>
                 <div class="deep-links">
                   <a class="primary-btn" href="{html.escape(episode.source_url)}">原始页面</a>
                   <a class="secondary-btn" href="{html.escape(episode.video_url)}">打开 / 下载 mp4</a>

@@ -610,8 +610,52 @@ button:focus-visible {
   font-size: clamp(1.45rem, 2.3vw, 2.15rem);
 }
 
+.video-summary {
+  margin-bottom: 14px;
+}
+
+.video-main-content {
+  padding: 16px 18px;
+  border: 1px solid rgba(32, 82, 76, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 248, 236, 0.68);
+}
+
+.video-main-content .lesson-index {
+  margin: 0 0 8px;
+}
+
 .video-copy .lesson-list {
-  margin: 16px 0;
+  margin: 0;
+}
+
+.video-takeaway {
+  margin: 14px 0;
+  padding: 13px 15px;
+  border-left: 3px solid var(--accent);
+  border-radius: 14px;
+  background: rgba(178, 76, 42, 0.08);
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+.video-takeaway strong {
+  color: var(--accent);
+}
+
+.video-details {
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
+.video-details summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.video-details .lesson-list {
+  margin-top: 10px;
 }
 
 .video-bottom-actions {
