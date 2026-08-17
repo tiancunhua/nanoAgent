@@ -124,6 +124,7 @@ python agent/01-essence/agent-essence.py "找到所有 .py 文件并统计总代
 | 14 | [14-eval/](./14-eval/) | [Agent 怎么知道自己做完了？](./14-eval/nanoAgent-bonus-eval.md) | — |
 | 15 | [15-agent-creation-modes/](./15-agent-creation-modes/) | [谁来创建 Agent？](./15-agent-creation-modes/nanoagent-bonus-agent-creation-modes.md) | `agent-preset.py` |
 | 16 | [16-mcp-real/](./16-mcp-real/) | [真正的 MCP 长什么样？](./16-mcp-real/nanoagent-bonus-mcp-real.md) | `nano_mcp_http_server.py` / `nano_mcp_http_agent.py` |
+| 17 | [17-skill-progressive/](./17-skill-progressive/) | [Skill 的渐进式披露](./17-skill-progressive/nanoAgent-bonus-progressive-skill.md) | `agent-progressive-skill.py` |
 | 18 | [18-everything-is-plugin/](./18-everything-is-plugin/) | [nanoDeepSeekHarness：用最小实现理解“一切皆插件”](./18-everything-is-plugin/nanoagent-bonus-everything-is-plugin.md) | [nanodeepseekharness](https://github.com/GitHubxsy/nanodeepseekharness) |
 
 ## 许可证
