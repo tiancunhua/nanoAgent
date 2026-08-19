@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。">
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/site.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"01. 底层原理，约 100 行","description":"没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。","dateModified":"2026-08-10","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/essence.html","keywords":["工具调用","Agent Loop","最小实现"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"01. 底层原理，约 100 行","description":"没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。","dateModified":"2026-08-19","inLanguage":"zh-CN","author":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"publisher":{"@type":"Organization","name":"GitHubxsy","url":"https://github.com/GitHubxsy/nanoAgent"},"url":"https://githubxsy.github.io/nanoAgent/essence.html","keywords":["工具调用","Agent Loop","最小实现"],"isPartOf":{"@type":"CreativeWorkSeries","name":"从零开始理解agent","url":"https://githubxsy.github.io/nanoAgent/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://githubxsy.github.io/nanoAgent/"},{"@type":"ListItem","position":2,"name":"七讲讲义","item":"https://githubxsy.github.io/nanoAgent/#lessons"},{"@type":"ListItem","position":3,"name":"第 01 讲","item":"https://githubxsy.github.io/nanoAgent/essence.html"}]}</script>
 </head>
 <body class="article-body">
@@ -48,7 +48,7 @@
           <p>没有框架，直接运行 Agent 的最小闭环：模型选择工具，代码执行工具，结果回填给模型。</p>
           <div class="chip-row">
             <span class="chip">8 分钟</span>
-            <span class="chip">105 行代码</span>
+            <span class="chip">131 行代码</span>
             <span class="chip">LLM + 工具 + 循环</span>
           </div>
         </div>
@@ -161,33 +161,48 @@
                   <p class="lesson-index">最小 Agent 循环</p>
                   <h3>围绕这二十余行展开：请求模型、获取 tool call、执行工具、回填结果、进入下一轮。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L75-L99">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L84-L123">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  75 def run_agent(user_message, max_iterations=5):
-  76     messages = [
-  77         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant. Be concise.&quot;},
-  78         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
-  79     ]
-  80     for _ in range(max_iterations):
-  81         response = client.chat.completions.create(
-  82             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
-  83             messages=messages,
-  84             tools=tools,
-  85         )
-  86         message = response.choices[0].message
-  87         messages.append(message)
-  88         if not message.tool_calls:
-  89             return message.content
-  90         for tool_call in message.tool_calls:
-  91             name = tool_call.function.name
-  92             args = json.loads(tool_call.function.arguments)
-  93             print(f&quot;[Tool] {name}({args})&quot;)
-  94             if name not in functions:
-  95                 result = f&quot;Error: Unknown tool &#x27;{name}&#x27;&quot;
-  96             else:
-  97                 result = functions[name](**args)
-  98             messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: result})
-  99     return &quot;Max iterations reached&quot;</code></pre>
+              <pre class="code-block"><code class="language-python">  84 def run_agent(user_message, max_iterations=5):
+  85     &quot;&quot;&quot;运行 Agent，直到模型直接回答，或达到最大循环次数。&quot;&quot;&quot;
+  86     # messages 就是 Agent 的短期记忆；每次模型调用都会看到完整历史。
+  87     messages = [
+  88         {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant. Be concise.&quot;},
+  89         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message},
+  90     ]
+  91
+  92     # 每轮只有两种结果：模型直接回答，或要求执行一个/多个工具。
+  93     for _ in range(max_iterations):
+  94         response = client.chat.completions.create(
+  95             model=os.environ.get(&quot;OPENAI_MODEL&quot;, &quot;gpt-4o-mini&quot;),
+  96             messages=messages,
+  97             tools=tools,
+  98         )
+  99         message = response.choices[0].message
+ 100
+ 101         # 必须先保存 assistant 消息，其中包含模型发出的 tool_call id。
+ 102         messages.append(message)
+ 103
+ 104         # 没有工具调用，说明模型认为任务已经完成。
+ 105         if not message.tool_calls:
+ 106             return message.content
+ 107
+ 108         for tool_call in message.tool_calls:
+ 109             name = tool_call.function.name
+ 110             # OpenAI 协议中的 arguments 是 JSON 字符串，要先还原成参数字典。
+ 111             args = json.loads(tool_call.function.arguments)
+ 112             print(f&quot;[Tool] {name}({args})&quot;)
+ 113             if name not in functions:
+ 114                 result = f&quot;Error: Unknown tool &#x27;{name}&#x27;&quot;
+ 115             else:
+ 116                 result = functions[name](**args)
+ 117
+ 118             # tool_call_id 将执行结果和模型刚才的请求配对。
+ 119             # 写回 messages 后，模型下一轮才能根据这个“观察”继续判断。
+ 120             messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;tool_call_id&quot;: tool_call.id, &quot;content&quot;: result})
+ 121
+ 122     # 上限用于防止模型陷入无限工具调用，并不是正常完成条件。
+ 123     return &quot;Max iterations reached&quot;</code></pre>
             </article>
 
             <article class="code-card">
@@ -196,49 +211,49 @@
                   <p class="lesson-index">Tool 声明</p>
                   <h3>这段代码决定了模型能看到哪些能力，以及每个工具需要什么参数。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L13-L53">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L18-L58">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  13 tools = [
-  14     {
-  15         &quot;type&quot;: &quot;function&quot;,
-  16         &quot;function&quot;: {
-  17             &quot;name&quot;: &quot;execute_bash&quot;,
-  18             &quot;description&quot;: &quot;Execute a bash command&quot;,
-  19             &quot;parameters&quot;: {
-  20                 &quot;type&quot;: &quot;object&quot;,
-  21                 &quot;properties&quot;: {&quot;command&quot;: {&quot;type&quot;: &quot;string&quot;}},
-  22                 &quot;required&quot;: [&quot;command&quot;],
-  23             },
-  24         },
-  25     },
-  26     {
-  27         &quot;type&quot;: &quot;function&quot;,
-  28         &quot;function&quot;: {
-  29             &quot;name&quot;: &quot;read_file&quot;,
-  30             &quot;description&quot;: &quot;Read a file&quot;,
-  31             &quot;parameters&quot;: {
-  32                 &quot;type&quot;: &quot;object&quot;,
-  33                 &quot;properties&quot;: {&quot;path&quot;: {&quot;type&quot;: &quot;string&quot;}},
-  34                 &quot;required&quot;: [&quot;path&quot;],
-  35             },
-  36         },
-  37     },
-  38     {
-  39         &quot;type&quot;: &quot;function&quot;,
-  40         &quot;function&quot;: {
-  41             &quot;name&quot;: &quot;write_file&quot;,
-  42             &quot;description&quot;: &quot;Write to a file&quot;,
-  43             &quot;parameters&quot;: {
-  44                 &quot;type&quot;: &quot;object&quot;,
-  45                 &quot;properties&quot;: {
-  46                     &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
-  47                     &quot;content&quot;: {&quot;type&quot;: &quot;string&quot;},
-  48                 },
-  49                 &quot;required&quot;: [&quot;path&quot;, &quot;content&quot;],
-  50             },
-  51         },
-  52     },
-  53 ]</code></pre>
+              <pre class="code-block"><code class="language-python">  18 tools = [
+  19     {
+  20         &quot;type&quot;: &quot;function&quot;,
+  21         &quot;function&quot;: {
+  22             &quot;name&quot;: &quot;execute_bash&quot;,
+  23             &quot;description&quot;: &quot;Execute a bash command&quot;,
+  24             &quot;parameters&quot;: {
+  25                 &quot;type&quot;: &quot;object&quot;,
+  26                 &quot;properties&quot;: {&quot;command&quot;: {&quot;type&quot;: &quot;string&quot;}},
+  27                 &quot;required&quot;: [&quot;command&quot;],
+  28             },
+  29         },
+  30     },
+  31     {
+  32         &quot;type&quot;: &quot;function&quot;,
+  33         &quot;function&quot;: {
+  34             &quot;name&quot;: &quot;read_file&quot;,
+  35             &quot;description&quot;: &quot;Read a file&quot;,
+  36             &quot;parameters&quot;: {
+  37                 &quot;type&quot;: &quot;object&quot;,
+  38                 &quot;properties&quot;: {&quot;path&quot;: {&quot;type&quot;: &quot;string&quot;}},
+  39                 &quot;required&quot;: [&quot;path&quot;],
+  40             },
+  41         },
+  42     },
+  43     {
+  44         &quot;type&quot;: &quot;function&quot;,
+  45         &quot;function&quot;: {
+  46             &quot;name&quot;: &quot;write_file&quot;,
+  47             &quot;description&quot;: &quot;Write to a file&quot;,
+  48             &quot;parameters&quot;: {
+  49                 &quot;type&quot;: &quot;object&quot;,
+  50                 &quot;properties&quot;: {
+  51                     &quot;path&quot;: {&quot;type&quot;: &quot;string&quot;},
+  52                     &quot;content&quot;: {&quot;type&quot;: &quot;string&quot;},
+  53                 },
+  54                 &quot;required&quot;: [&quot;path&quot;, &quot;content&quot;],
+  55             },
+  56         },
+  57     },
+  58 ]</code></pre>
             </article>
 
             <article class="code-card">
@@ -247,25 +262,29 @@
                   <p class="lesson-index">工具映射到真实函数</p>
                   <h3>Tool 并非抽象概念，最终会映射到真实函数；模型选中的名字就在这里被执行。</h3>
                 </div>
-                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L56-L72">看 GitHub 行号</a>
+                <a class="source-link" href="https://github.com/GitHubxsy/nanoAgent/blob/book/agent/01-essence/agent-essence.py#L61-L81">看 GitHub 行号</a>
               </div>
-              <pre class="code-block"><code class="language-python">  56 def execute_bash(command):
-  57     result = subprocess.run(command, shell=True, capture_output=True, text=True)
-  58     return result.stdout + result.stderr
-  59
-  60
-  61 def read_file(path):
-  62     with open(path, &quot;r&quot;) as f:
-  63         return f.read()
-  64
+              <pre class="code-block"><code class="language-python">  61 def execute_bash(command):
+  62     &quot;&quot;&quot;运行 shell 命令，并把标准输出和错误输出都返回给模型。&quot;&quot;&quot;
+  63     result = subprocess.run(command, shell=True, capture_output=True, text=True)
+  64     return result.stdout + result.stderr
   65
-  66 def write_file(path, content):
-  67     with open(path, &quot;w&quot;) as f:
-  68         f.write(content)
-  69     return f&quot;Wrote to {path}&quot;
-  70
+  66
+  67 def read_file(path):
+  68     &quot;&quot;&quot;读取文本文件，让模型能够观察本地文件内容。&quot;&quot;&quot;
+  69     with open(path, &quot;r&quot;) as f:
+  70         return f.read()
   71
-  72 functions = {&quot;execute_bash&quot;: execute_bash, &quot;read_file&quot;: read_file, &quot;write_file&quot;: write_file}</code></pre>
+  72
+  73 def write_file(path, content):
+  74     &quot;&quot;&quot;写入文本文件，让模型的决定真正作用到本地环境。&quot;&quot;&quot;
+  75     with open(path, &quot;w&quot;) as f:
+  76         f.write(content)
+  77     return f&quot;Wrote to {path}&quot;
+  78
+  79
+  80 # 调度表把模型返回的工具名映射到真正的 Python 函数。
+  81 functions = {&quot;execute_bash&quot;: execute_bash, &quot;read_file&quot;: read_file, &quot;write_file&quot;: write_file}</code></pre>
             </article>
 
           </div>

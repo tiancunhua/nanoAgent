@@ -124,12 +124,14 @@ after_hooks = [hook_truncate]
 
 def execute_with_hooks(tool_name, args, func):
     """通用工具执行: before hooks → 执行 → after hooks"""
+    # before hook 可以在副作用发生前阻止调用，例如危险命令或用户拒绝。
     for hook in before_hooks:
         blocked, msg = hook(tool_name, args)
         if blocked:
             print(f"  {msg}")
             return msg
     result = func(**args)
+    # after hook 只处理已经产生的结果，例如截断过长输出。
     for hook in after_hooks:
         result = hook(tool_name, result)
     return result
@@ -229,6 +231,7 @@ def subagent(role, task):
         },
         {"role": "user", "content": task},
     ]
+    # 子智能体拥有独立 messages，主 Agent 的历史不会自动泄漏进来。
     sub_tools = [t for t in base_tools if t["function"]["name"] != "subagent"]
     for _ in range(10):
         response = client.chat.completions.create(
@@ -246,6 +249,7 @@ def subagent(role, task):
                 f"  [SubAgent:{role}] {fn}({json.dumps(args, ensure_ascii=False)[:80]})"
             )
             result = execute_with_hooks(fn, args, raw_functions[fn])
+            # 工具结果只写回子智能体自己的上下文。
             sub_messages.append(
                 {"role": "tool", "tool_call_id": tc.id, "content": result}
             )
@@ -254,6 +258,7 @@ def subagent(role, task):
 
 # --- 工具注册 ---
 
+# 执行侧注册表：模型返回工具名后，用它找到本地 Python 函数。
 raw_functions = {
     "read": read,
     "write": write,
@@ -264,6 +269,7 @@ raw_functions = {
     "subagent": subagent,
 }
 
+# 描述侧注册表：这里只放 schema，告诉模型有哪些工具、参数如何填写。
 base_tools = [
     {
         "type": "function",
@@ -382,6 +388,7 @@ MCP_CONFIG = ".agent/mcp.json"
 
 
 def load_rules():
+    """读取全局规则；它们会作为 system prompt 的一部分始终生效。"""
     if not os.path.exists(RULES_DIR):
         return ""
     try:
@@ -395,6 +402,7 @@ def load_rules():
 
 
 def load_skills():
+    """读取 Skill 摘要，帮助模型了解可复用能力。"""
     if not os.path.exists(SKILLS_DIR):
         return []
     try:
@@ -408,6 +416,7 @@ def load_skills():
 
 
 def load_mcp_tools():
+    """读取外部 MCP 工具 schema，并合并到模型可选工具列表。"""
     if not os.path.exists(MCP_CONFIG):
         return []
     try:
@@ -430,6 +439,7 @@ MEMORY_FILE = "agent_memory.md"
 
 
 def load_memory():
+    """只取最近 50 行长期记忆，控制每次请求的上下文大小。"""
     if not os.path.exists(MEMORY_FILE):
         return ""
     try:
@@ -441,6 +451,7 @@ def load_memory():
 
 
 def save_memory(task, result):
+    """把任务与结果追加到磁盘，供下一次进程启动时恢复。"""
     try:
         with open(MEMORY_FILE, "a") as f:
             f.write(
@@ -457,9 +468,11 @@ KEEP_RECENT = 6
 
 
 def compact_messages(messages):
+    """把较旧的对话压成摘要，同时保留 system 指令和最近交互。"""
     if len(messages) <= COMPACT_THRESHOLD:
         return messages
     print(f"\n[Compact] {len(messages)} 条消息 → 压缩中...")
+    # system 指令不能被摘要改写；近期消息保留原文以维持当前任务细节。
     system_msg = messages[0]
     old_messages = messages[1:-KEEP_RECENT]
     recent_messages = messages[-KEEP_RECENT:]
@@ -477,6 +490,7 @@ def compact_messages(messages):
         )
         if content:
             old_text += f"[{role}]: {content}\n"
+    # 压缩本身也是一次 LLM 调用：用更短的摘要换取后续轮次的空间。
     summary_resp = client.chat.completions.create(
         model=MODEL,
         messages=[
@@ -521,10 +535,12 @@ class Agent:
         print(f"  [创建] {name} ({role})")
 
     def receive(self, sender, message):
+        # 收件箱与对话历史分开，消息会在该 Agent 下次工作时才被消费。
         self.inbox.append({"from": sender, "content": message})
 
     def chat(self, task):
         if self.inbox:
+            # 先消化团队来信，再开始自己的新任务。
             mail = "\n".join(f"[来自 {m['from']}]: {m['content']}" for m in self.inbox)
             self.messages.append(
                 {"role": "user", "content": f"你收到了团队消息:\n{mail}"}
@@ -586,12 +602,15 @@ class Team:
 
 
 def run_agent(messages, all_tools, max_iterations=30):
+    """完整单 Agent 循环：压缩 → 模型 → 工具 → 观察，直到最终回答。"""
     for _ in range(max_iterations):
+        # 在每次模型请求前检查上下文，避免历史持续膨胀。
         messages = compact_messages(messages)
         response = client.chat.completions.create(
             model=MODEL, messages=messages, tools=all_tools
         )
         message = response.choices[0].message
+        # assistant 消息中含 Tool Call，必须先保存，才能和 tool 结果配对。
         messages.append(message)
         if not message.tool_calls:
             return message.content, messages
@@ -603,6 +622,7 @@ def run_agent(messages, all_tools, max_iterations=30):
                 result = execute_with_hooks(fn, args, raw_functions[fn])
             else:
                 result = f"Tool {fn} not implemented"
+            # 结果作为“观察”写回；下一轮模型据此决定继续调用还是结束。
             messages.append({"role": "tool", "tool_call_id": tc.id, "content": result})
     return "Max iterations reached", messages
 
@@ -673,10 +693,12 @@ def run_team_mode(task):
     for i, m in enumerate(members, 1):
         print(f"  {i}. {m['name']} — {m['role']} → {m['task']}")
 
+    # 先创建全部成员，确保后续广播时每个人都已经存在。
     for m in members:
         team.hire(m["name"], m["role"])
 
     results = {}
+    # 成员依次工作；每份结果都会广播，成为后续成员的输入。
     for i, m in enumerate(members):
         print(
             f"\n{'─' * 50}\n  [{i + 1}/{len(members)}] {m['name']} 开始工作\n{'─' * 50}"

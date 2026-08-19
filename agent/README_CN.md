@@ -6,7 +6,7 @@
 
 ## 这个系列讲什么
 
-很多人会用 ChatGPT，但不理解 Agent。这个系列从一个仅 **103 行**的极简实现出发，每篇增加一个核心能力，最终搭建出涵盖记忆、规划、工具扩展、多智能体、安全等所有关键特性的完整 Agent。
+很多人会用 ChatGPT，但不理解 Agent。这个系列从一个约 **130 行（含教学注释）** 的极简实现出发，每篇增加一个核心能力，最终搭建出涵盖记忆、规划、工具扩展、多智能体、安全等所有关键特性的完整 Agent。
 
 **一句话总结：** Agent = LLM + 工具 + 循环。理解了这个，你就理解了 Claude Code、Cursor、Devin 的底层。
 
@@ -56,7 +56,7 @@ python agent/01-essence/agent-essence.py "读取 README.md 的内容"
 4. 将结果返回给模型
 5. 重复直到任务完成
 
-就这样。约 100 行代码。
+就这样。核心逻辑约 100 行，加上帮助理解数据流的教学注释约 130 行。
 
 ```python
 # 定义工具
@@ -103,13 +103,13 @@ python agent/01-essence/agent-essence.py "找到所有 .py 文件并统计总代
 
 | # | 目录 | 文章 | 代码 | 行数 |
 |---|------|------|------|------|
-| 01 | [01-essence/](./01-essence/) | [底层原理，只有 100 行](./01-essence/agent-essence.md) | `agent-essence.py` | 103 |
-| 02 | [02-memory/](./02-memory/) | [记忆与规划](./02-memory/agent-memory.md) | `agent-memory.py` | 206 |
-| 03 | [03-skills-mcp/](./03-skills-mcp/) | [Rules、Skills 与 MCP](./03-skills-mcp/agent-skills-mcp.md) | `agent-skills-mcp.py` | 282 |
-| 04 | [04-subagent/](./04-subagent/) | [SubAgent 子智能体](./04-subagent/agent-subagent.md) | `agent-subagent.py` | 192 |
-| 05 | [05-teams/](./05-teams/) | [多智能体团队协作](./05-teams/agent-teams.md) | `agent-teams.py` | 270 |
-| 06 | [06-compact/](./06-compact/) | [上下文压缩](./06-compact/agent-compact.md) | `agent-compact.py` | 169 |
-| 07 | [07-safety/](./07-safety/) | [三道安全防线](./07-safety/agent-safe.md) | `agent-safe.py` | 219 |
+| 01 | [01-essence/](./01-essence/) | [底层原理，只有 100 行](./01-essence/agent-essence.md) | `agent-essence.py` | 131 |
+| 02 | [02-memory/](./02-memory/) | [记忆与规划](./02-memory/agent-memory.md) | `agent-memory.py` | 160 |
+| 03 | [03-skills-mcp/](./03-skills-mcp/) | [Rules、Skills 与 MCP](./03-skills-mcp/agent-skills-mcp.md) | `agent-skills-mcp.py` | 409 |
+| 04 | [04-subagent/](./04-subagent/) | [SubAgent 子智能体](./04-subagent/agent-subagent.md) | `agent-subagent.py` | 347 |
+| 05 | [05-teams/](./05-teams/) | [多智能体团队协作](./05-teams/agent-teams.md) | `agent-teams.py` | 398 |
+| 06 | [06-compact/](./06-compact/) | [上下文压缩](./06-compact/agent-compact.md) | `agent-compact.py` | 266 |
+| 07 | [07-safety/](./07-safety/) | [三道安全防线](./07-safety/agent-safe.md) | `agent-safe.py` | 291 |
 
 ### 番外篇
 
